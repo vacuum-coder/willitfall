@@ -164,8 +164,11 @@ function reshape(s: AppState, vertices: Vec[], mapWall: (old: number) => number[
       const raw = (p.x - f.a.x) * f.t.x + (p.y - f.a.y) * f.t.y;
       const off = clamp(raw, 0, f.len - width);
       const overlap = Math.min(raw + width, f.len) - Math.max(raw, 0);
-      // Nearest wall first (several candidates when the outline changed completely), then the best overlap.
-      const dist = Math.max(distToWall(p, f), distToWall(q, f));
+      // Several candidates when the outline changed completely: prefer the wall on the same line (parallel and
+      // close to it), then the nearest segment, then the best overlap.
+      const o = oldF[wall].t, onLine = (r: Vec) => Math.abs((r.x - f.a.x) * f.inward.x + (r.y - f.a.y) * f.inward.y);
+      const dist = Math.max(onLine(p), onLine(q)) + 1000 * (1 - Math.abs(o.x * f.t.x + o.y * f.t.y))
+        + 1e-3 * Math.max(distToWall(p, f), distToWall(q, f));
       if (!best || dist < best.dist - 1e-6 || (Math.abs(dist - best.dist) <= 1e-6 && overlap > best.overlap)) {
         best = { wall: nw, offset: Math.round(off * 1e6) / 1e6, overlap, dist };
       }
