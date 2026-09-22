@@ -1,5 +1,13 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+// Fonts are served with the site (no requests to third parties, works offline): only the weights the tokens use.
+import '@fontsource/literata/500.css';
+import '@fontsource/literata/600.css';
+import '@fontsource/literata/500-italic.css';
+import '@fontsource/manrope/400.css';
+import '@fontsource/manrope/500.css';
+import '@fontsource/manrope/600.css';
+import '@fontsource/manrope/700.css';
 import './styles/theme.css';
 import { App } from './ui/App';
 
