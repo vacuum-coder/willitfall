@@ -73,6 +73,27 @@ describe('Rapier world matches the tipping condition', () => {
     expect(r.maxTiltDeg).toBe(0);
   });
 
+  it('the second horizontal component shakes the floor across the first', async () => {
+    // Shaking along x (dir) meets the 1 m width: far below tipping. Along z (the second component) the 0.58 m depth tips.
+    const threshold = (G * (PAX.d / 2)) / PAX.comH, pulse = longPulse(1.15 * threshold, 2, 3);
+    const [alongX] = await simulateRoom({ items: [PAX], floorDisp: pulse, dt: SIM_DT, dir: { x: 1, y: 0 }, mu: 1.0 });
+    expect(alongX.result).toBe('stood');
+    const [across] = await simulateRoom({
+      items: [PAX], floorDisp: new Float64Array(pulse.length), floorDisp2: pulse, dt: SIM_DT, dir: { x: 1, y: 0 }, mu: 1.0,
+    });
+    expect(across.result).toBe('fell');
+  });
+
+  it('a shelf on weak plugs hangs until the floor reaches 0.3 g, then tears off and falls', async () => {
+    const shelf: SimItem = { id: 'shelf', x: 0, z: 0, w: 0.8, d: 0.25, H: 0.2, angleDeg: 0, comH: 0.1, anchored: false, y0: 1.5, releaseG: 0.3 };
+    const [holds] = await simulateRoom({ items: [shelf], floorDisp: longPulse(0.2 * G, 1, 1), dt: SIM_DT, dir: { x: 0, y: 1 } });
+    expect(holds.result).toBe('stood');
+    const [tears] = await simulateRoom({ items: [shelf], floorDisp: longPulse(0.4 * G, 1, 1), dt: SIM_DT, dir: { x: 0, y: 1 } });
+    expect(tears.result).toBe('fell');
+    const [anchored] = await simulateRoom({ items: [{ ...shelf, releaseG: undefined, anchored: true }], floorDisp: longPulse(0.4 * G, 1, 1), dt: SIM_DT, dir: { x: 0, y: 1 } });
+    expect(anchored.result).toBe('stood');
+  });
+
   it('furniture standing flush against a wall is not pushed by it', async () => {
     // The wardrobe (depth 0.58, centred at z = 0) has its back face on the wall line z = 0.29; the room is on the −z side.
     const [r] = await simulateRoom({

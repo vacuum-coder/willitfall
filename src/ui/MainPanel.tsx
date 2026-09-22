@@ -41,7 +41,8 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
   const floorOffset = playback ? floorAt(playback.result, playback.t) : undefined;
 
   const walls = !!state.walls;
-  const hazards = room.items.filter((i) => i.kind !== 'bed' && i.mount.kind !== 'wall');
+  // Everything that can fall, wall-mounted items included (they tear off in the simulation too).
+  const hazards = room.items.filter((i) => i.kind !== 'bed');
   const simFell = playback?.phase === 'done' ? playback.result.outcomes.filter((o) => o.result === 'fell' && hazards.some((i) => i.id === o.id)).length : null;
   const formulaFalls = result.assessments.filter((a) => status(a) === 'falls' && hazards.some((i) => i.id === a.itemId)).length;
 

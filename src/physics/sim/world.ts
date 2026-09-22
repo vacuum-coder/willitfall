@@ -31,8 +31,10 @@ export interface SimItem {
   /** Height of the centre of mass above the floor. */
   comH: number;
   anchored: boolean;
-  /** Height of the surface it stands on (another item's top), metres; 0 on the floor. */
+  /** Height of the surface it stands on (another item's top) or of its wall mount, metres; 0 on the floor. */
   y0?: number;
+  /** Wall-mounted on a weak fastening: held by the wall until the floor acceleration reaches this many g, then it tears off. */
+  releaseG?: number;
 }
 
 /** A wall segment; (nx, nz) points into the room, so the wall's thickness is built outside the room. */
@@ -56,6 +58,8 @@ export interface SimOptions {
   items: SimItem[];
   /** Floor displacement along `dir`, metres, sampled every `dt` seconds. */
   floorDisp: Float64Array;
+  /** The second horizontal component, across `dir` (dir turned 90° on the plan), same sampling. */
+  floorDisp2?: Float64Array;
   dt: number;
   /** Shaking direction on the plan (x, y_plan); normalised internally. */
   dir: { x: number; y: number };
@@ -121,6 +125,7 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
   const restitution = opts.restitution ?? DEFAULT_RESTITUTION;
   const len = Math.hypot(opts.dir.x, opts.dir.y);
   const dir = { x: opts.dir.x / len, z: opts.dir.y / len };
+  const across = { x: -dir.z, z: dir.x };
 
   const world = new RAPIER.World(opts.gravity ?? { x: 0, y: -G, z: 0 });
   try {
@@ -144,14 +149,15 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
 
     const bodies = opts.items.map((it) => {
       const box = RAPIER.ColliderDesc.cuboid(it.w / 2, it.H / 2, it.d / 2);
-      if (it.anchored) {
+      if (it.anchored && it.releaseG === undefined) {
         fixture(box.setTranslation(it.x, (it.y0 ?? 0) + it.H / 2, it.z).setRotation(yaw(it.angleDeg)));
         return null;
       }
       // Mass is irrelevant for tipping (it cancels); it only sets the solver's scale. 300 kg/m³ ≈ a loaded cabinet.
       const m = 300 * it.w * it.d * it.H;
+      // A weak wall mount starts as part of the wall (kinematic) and becomes a free body when it tears off.
       const body = world.createRigidBody(
-        RAPIER.RigidBodyDesc.dynamic()
+        (it.releaseG !== undefined ? RAPIER.RigidBodyDesc.kinematicPositionBased() : RAPIER.RigidBodyDesc.dynamic())
           .setTranslation(it.x, (it.y0 ?? 0) + it.H / 2, it.z)
           .setRotation(yaw(it.angleDeg))
           .setCanSleep(false)
@@ -168,14 +174,23 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
     });
 
     const n = opts.floorDisp.length;
-    // After the record the floor keeps its last velocity: stopping it dead would be a spurious jolt.
-    const vEnd = n > 1 ? (opts.floorDisp[n - 1] - opts.floorDisp[n - 2]) / opts.dt : 0;
-    const dispAt = (t: number) => {
-      const x = t / opts.dt;
-      if (x <= 0) return 0;
-      if (x >= n - 1) return opts.floorDisp[n - 1] + vEnd * (t - (n - 1) * opts.dt);
-      const i = Math.floor(x);
-      return opts.floorDisp[i] + (x - i) * (opts.floorDisp[i + 1] - opts.floorDisp[i]);
+    const track = (d: Float64Array | undefined) => {
+      if (!d || d.length < 2) return () => 0;
+      const m = d.length;
+      // After the record the floor keeps its last velocity: stopping it dead would be a spurious jolt.
+      const vEnd = (d[m - 1] - d[m - 2]) / opts.dt;
+      return (t: number) => {
+        const x = t / opts.dt;
+        if (x <= 0) return 0;
+        if (x >= m - 1) return d[m - 1] + vEnd * (t - (m - 1) * opts.dt);
+        const i = Math.floor(x);
+        return d[i] + (x - i) * (d[i + 1] - d[i]);
+      };
+    };
+    const along = track(opts.floorDisp), side = track(opts.floorDisp2);
+    const floorAt = (t: number) => {
+      const u = along(t), v = side(t);
+      return { x: dir.x * u + across.x * v, z: dir.z * u + across.z * v };
     };
     const settle = Math.round(SETTLE_S / SIM_DT);
     const steps = settle + Math.ceil(((n - 1) * opts.dt) / SIM_DT) + Math.round(AFTERMATH_S / SIM_DT);
@@ -186,11 +201,11 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
     const frames: SimFrames | null = every > 0
       ? { dt: every * SIM_DT, floor: new Float32Array(recorded * 2), poses: new Map(opts.items.flatMap((it, i) => (bodies[i] ? [[it.id, new Float32Array(recorded * 7)]] : []))) }
       : null;
-    const capture = (s: number, u: number) => {
+    const capture = (s: number, o: { x: number; z: number }) => {
       if (!frames || s < settle || (s - settle) % every !== 0) return;
       const f = (s - settle) / every;
-      frames.floor[f * 2] = dir.x * u;
-      frames.floor[f * 2 + 1] = dir.z * u;
+      frames.floor[f * 2] = o.x;
+      frames.floor[f * 2 + 1] = o.z;
       opts.items.forEach((it, i) => {
         const b = bodies[i];
         if (!b) return;
@@ -198,26 +213,46 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
         arr.set([p.x, p.y, p.z, q.x, q.y, q.z, q.w], f * 7);
       });
     };
-    capture(settle, 0);
+    capture(settle, { x: 0, z: 0 });
+
+    // Weak wall mounts ride with the wall until the floor acceleration reaches their limit.
+    const home = bodies.map((b) => (b ? { ...b.translation() } : null));
+    const released = opts.items.map(() => false);
+    let prev = { x: 0, z: 0 }, prev2 = { x: 0, z: 0 };
 
     for (let s = 1; s <= steps; s++) {
-      const u = dispAt((s - settle) * SIM_DT);
-      floor.setNextKinematicTranslation({ x: dir.x * u, y: 0, z: dir.z * u });
+      const o = floorAt((s - settle) * SIM_DT);
+      floor.setNextKinematicTranslation({ x: o.x, y: 0, z: o.z });
+      const accG = Math.hypot(o.x - 2 * prev.x + prev2.x, o.z - 2 * prev.z + prev2.z) / (SIM_DT * SIM_DT) / G;
+      opts.items.forEach((it, i) => {
+        const b = bodies[i];
+        if (!b || it.releaseG === undefined || released[i]) return;
+        if (s > settle && accG >= it.releaseG) {
+          released[i] = true;
+          b.setBodyType(RAPIER.RigidBodyType.Dynamic, true);
+          b.setLinvel({ x: (o.x - prev.x) / SIM_DT, y: 0, z: (o.z - prev.z) / SIM_DT }, true);
+        } else {
+          b.setNextKinematicTranslation({ x: home[i]!.x + o.x, y: home[i]!.y, z: home[i]!.z + o.z });
+        }
+      });
       world.step();
       const tilts = bodies.map((b) => (b ? tiltDeg(b.rotation()) : 0));
       tilts.forEach((v, i) => { maxTilt[i] = Math.max(maxTilt[i], v); });
       opts.trace?.((s - settle) * SIM_DT, tilts);
-      capture(s, u);
+      capture(s, o);
       if (s === settle) start = bodies.map((b) => (b ? { ...b.translation() } : null));
+      prev2 = prev;
+      prev = o;
     }
 
-    const uEnd = dispAt((steps - settle) * SIM_DT);
+    const end = floorAt((steps - settle) * SIM_DT);
     const outcomes: SimOutcome[] = opts.items.map((it, i) => {
       const b = bodies[i];
-      if (!b) return { id: it.id, result: 'stood', maxTiltDeg: 0, finalPos: { x: it.x + dir.x * uEnd, z: it.z + dir.z * uEnd } };
+      if (!b) return { id: it.id, result: 'stood', maxTiltDeg: 0, finalPos: { x: it.x + end.x, z: it.z + end.z } };
       const p = b.translation(), tilt = tiltDeg(b.rotation());
-      const travel = Math.hypot(p.x - start[i]!.x - dir.x * uEnd, p.z - start[i]!.z - dir.z * uEnd);
-      const result = tilt > FELL_DEG ? 'fell' : travel > SLID_M && tilt < SLID_MAX_TILT_DEG ? 'slid' : 'stood';
+      const travel = Math.hypot(p.x - start[i]!.x - end.x, p.z - start[i]!.z - end.z);
+      // A mount that tore off has fallen off the wall, whatever angle it landed at.
+      const result = released[i] || tilt > FELL_DEG ? 'fell' : travel > SLID_M && tilt < SLID_MAX_TILT_DEG ? 'slid' : 'stood';
       return { id: it.id, result, maxTiltDeg: maxTilt[i], finalPos: { x: p.x, z: p.z } };
     });
     return { outcomes, frames };

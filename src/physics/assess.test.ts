@@ -35,8 +35,18 @@ describe('floor motion from the building model', () => {
     expect(criticalIntensity(0.2468, 0.1234)).toBeCloseTo(8, 12);
   });
 
-  it('the ground floor feels exactly the ground motion: 0.1 g at 7 points', () => {
-    expect(peakFloorAccelAt7(elCentro, nine, 1)).toBeCloseTo(0.1, 9);
+  it('the ground floor feels exactly the ground motion: 0.1 g at 7 points (one component)', () => {
+    const oneComponent = { ...elCentro, accelG2: undefined };
+    expect(peakFloorAccelAt7(oneComponent, nine, 1)).toBeCloseTo(0.1, 9);
+  });
+
+  it('with both components the peak is that of the resultant |a(t)|, never below either component', () => {
+    const both = peakFloorAccelAt7(elCentro, nine, 1);
+    expect(both).toBeGreaterThanOrEqual(0.1);
+    // Resultant of the two scaled ground records at the same instants, computed directly.
+    const k = 0.1 / Math.max(...Array.from(elCentro.accelG, Math.abs));
+    const direct = Math.max(...Array.from(elCentro.accelG, (a, i) => Math.hypot(a, elCentro.accelG2![i]) * k));
+    expect(both).toBeCloseTo(direct, 3);
   });
 
   it('the 9th floor of a 9-storey building shakes harder than the ground under El Centro', () => {

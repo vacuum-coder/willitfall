@@ -8,7 +8,6 @@ import { status, tag } from './verdict';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
 import { criticalIntensity, supportTop, WALL_THROW } from '../physics/assess';
 import { tiltAngleDeg, type Filling } from '../physics/tipping';
-import { intensityToAccel } from '../physics/intensity';
 import { product } from '../data/furniture';
 import type { Fastening, Item, ItemAssessment } from '../physics/types';
 
@@ -94,7 +93,7 @@ export function ItemCard({ result }: { result: RoomAssessment }) {
         </p>
       )}
 
-      {item.kind !== 'bed' && a && <Verdict item={item} a={a} pfa7={pfa7} floor={state.settings.floor} />}
+      {item.kind !== 'bed' && a && <Verdict item={item} a={a} pfa7={pfa7} peak1={result.peak1} floor={state.settings.floor} />}
 
       {item.kind !== 'bed' && a && (
         <dl style={{ margin: sp(14, 0, 0), display: 'grid', gridTemplateColumns: '1fr auto', ...fs(14) }}>
@@ -162,7 +161,7 @@ function Badge({ tone, children }: { tone: string; children: ReactNode }) {
   );
 }
 
-function Verdict({ item, a, pfa7, floor }: { item: Item; a: ItemAssessment; pfa7: number | null; floor: number }) {
+function Verdict({ item, a, pfa7, peak1, floor }: { item: Item; a: ItemAssessment; pfa7: number | null; peak1: number | null; floor: number }) {
   const st = status(a);
   const big: CSSProperties = { margin: 0, display: 'flex', alignItems: 'baseline', gap: sp(8), fontFamily: FONT.display, fontWeight: 500, color: TONE[st] };
   const sub: CSSProperties = { margin: sp(4, 0, 0), ...fs(14), fontWeight: 600, color: C.text };
@@ -185,7 +184,7 @@ function Verdict({ item, a, pfa7, floor }: { item: Item; a: ItemAssessment; pfa7
       </>
     );
   } else if (a.criticalIntensity !== null) {
-    const at1 = a.thresholdG !== null && !a.cascadeFrom ? criticalIntensity(a.thresholdG, intensityToAccel(7)) : null;
+    const at1 = a.thresholdG !== null && !a.cascadeFrom && peak1 !== null ? criticalIntensity(a.thresholdG, peak1) : null;
     body = (
       <>
         <p style={big}>

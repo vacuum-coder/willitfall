@@ -88,6 +88,8 @@ export interface GroundRecord {
   dt: number;
   accelG: Float64Array;
   peakG: number;
+  /** The other horizontal component on the same time grid (the first is the stronger one). */
+  accelG2?: Float64Array;
   source: string;
   citation: string;
   note: string;
@@ -103,12 +105,17 @@ export function parseRecord(json: unknown): GroundRecord {
     r.accelG.every((v) => typeof v === 'number' && Number.isFinite(v)) &&
     typeof r.peakG === 'number';
   if (!ok) throw new Error(`invalid ground-motion record ${String(r.id)}`);
+  const a2 = r.accelG2;
+  if (a2 !== undefined && !(Array.isArray(a2) && a2.length === (r.accelG as number[]).length && a2.every((v) => Number.isFinite(v)))) {
+    throw new Error(`invalid second component in record ${String(r.id)}`);
+  }
   return {
     id: r.id as string,
     name: String(r.name ?? r.id),
     dt: r.dt as number,
     accelG: Float64Array.from(r.accelG as number[]),
     peakG: r.peakG as number,
+    ...(a2 ? { accelG2: Float64Array.from(a2 as number[]) } : {}),
     source: String(r.source ?? ''),
     citation: String(r.citation ?? ''),
     note: String(r.note ?? ''),

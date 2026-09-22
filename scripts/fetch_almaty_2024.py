@@ -55,6 +55,9 @@ for tr in st:
     print(f"{tr.id}: PGA {np.abs(acc_g).max():.5f} g, dt {tr.stats.delta}, {tr.stats.npts} samples")
 
 ch, (tr, acc_g) = max(records.items(), key=lambda kv: np.abs(kv[1][1]).max())
+ch2, (tr2, acc_g2) = next((k, v) for k, v in records.items() if k != ch)
+if tr2.stats.npts != tr.stats.npts or tr2.stats.delta != tr.stats.delta:
+    sys.exit("the two horizontal components are not on the same time grid")
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps({
     "id": "almaty-2024-kndc",
@@ -62,13 +65,16 @@ OUT.write_text(json.dumps({
     "dt": tr.stats.delta,
     "accelG": [float(f"{v:.6g}") for v in acc_g],
     "peakG": float(f"{np.abs(acc_g).max():.6g}"),
+    "accelG2": [float(f"{v:.6g}") for v in acc_g2],
+    "peakG2": float(f"{np.abs(acc_g2).max():.6g}"),
+    "components": [ch, ch2],
     "source": f"EarthScope/IRIS FDSN dataselect + station (level=response), KZ.KNDC..{ch}, "
               f"{t0.isoformat()}–{t1.isoformat()} UTC; instrument response removed with ObsPy (output=ACC)",
     "citation": f"Network KZ (Kazakhstan National Data Center), DOI 10.7914/SN/KZ; station KNDC "
                 f"{sta.latitude:.4f}N {sta.longitude:.4f}E, STS-2. Event: {origin.time.isoformat()} UTC, "
                 f"{origin.latitude:.2f}N {origin.longitude:.2f}E, M{mag.mag} {mag.magnitude_type} (USGS event {re.search(r'eventid=([^&]+)', ev.resource_id.id).group(1)})",
     "note": "Broadband velocity sensor, differentiated via full response removal; stronger horizontal "
-            f"component ({ch}); pre-filter 0.05–0.1 Hz / {0.8 * nyq:.0f}–{0.9 * nyq:.0f} Hz. "
+            f"component ({ch}) first, the other ({ch2}) second; pre-filter 0.05–0.1 Hz / {0.8 * nyq:.0f}–{0.9 * nyq:.0f} Hz. "
             f"Real recording {dist_km:.0f} km from the epicentre, shape of shaking only — the app scales it to the chosen intensity.",
 }, ensure_ascii=False), encoding="utf-8")
 print(f"wrote {OUT} ({ch})")

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ShakeRequest, ShakeResponse, ShakeResult } from '../physics/sim/shake.worker';
 import type { SimItem, SimWall } from '../physics/sim/world';
 import { COM_FRACTION } from '../physics/tipping';
-import { supportTop } from '../physics/assess';
+import { supportTop, WALL_TEAR_OFF_G } from '../physics/assess';
 import { wallFrames } from '../state/placement';
 import { periodFor } from '../data/buildings';
 import type { ItemAssessment, Room, Settings } from '../physics/types';
@@ -19,15 +19,19 @@ export type QuakeState =
 const M = (cm: number) => cm / 100;
 
 export function toSimItems(room: Room): SimItem[] {
-  return room.items
-    .filter((i) => i.mount.kind !== 'wall')
-    .map((i) => ({
+  return room.items.map((i) => {
+    const base = {
       id: i.id, x: M(i.x), z: M(i.y), w: M(i.w), d: M(i.d), H: M(i.height), angleDeg: i.angle,
       comH: M(i.height) * COM_FRACTION[i.filling ?? 'even'],
-      // The bed is too low and wide to tip; it moves with the room as an obstacle, like anchored furniture.
-      anchored: i.anchored || i.kind === 'bed',
-      y0: M(supportTop(i, room)),
-    }));
+    };
+    if (i.mount.kind === 'wall') {
+      // Hung on the wall at its mounting height; weak or unknown fastening tears off at WALL_TEAR_OFF_G (assumption).
+      const strong = i.anchored || i.mount.fastening === 'anchor';
+      return { ...base, comH: M(i.height) / 2, y0: M(i.mount.mountHeight), anchored: strong, ...(strong ? {} : { releaseG: WALL_TEAR_OFF_G }) };
+    }
+    // The bed is too low and wide to tip; it moves with the room as an obstacle, like anchored furniture.
+    return { ...base, anchored: i.anchored || i.kind === 'bed', y0: M(supportTop(i, room)) };
+  });
 }
 
 export function toSimWalls(room: Room): SimWall[] {

@@ -120,9 +120,10 @@ export function HowItWorks() {
   const { settings, room } = state;
   const floors = Array.from({ length: settings.totalFloors }, (_, i) => i + 1);
   const peaks = useFloorPeaks(settings, floors);
-  const gains = floors.map((f) => { const p = peaks.get(f)!; return p.status === 'ready' ? p.pfa7G / intensityToAccel(7) : null; });
+  const p1 = peaks.get(1)!, ground = p1.status === 'ready' ? p1.pfa7G : null;
+  const gains = floors.map((f) => { const p = peaks.get(f)!; return p.status === 'ready' && ground !== null ? p.pfa7G / ground : null; });
   const pfa7 = result.peak.status === 'ready' ? result.peak.pfa7G : null;
-  const gain = pfa7 === null ? null : pfa7 / intensityToAccel(7);
+  const gain = pfa7 === null || ground === null ? null : pfa7 / ground;
 
   const chosen = state.selectedId ? room.items.find((i) => i.id === state.selectedId && i.kind !== 'bed' && i.mount.kind !== 'wall') : undefined;
   const item = chosen ?? result.checklist.map((a) => room.items.find((i) => i.id === a.itemId)!).find((i) => i && i.kind !== 'bed' && i.mount.kind !== 'wall');
@@ -226,7 +227,7 @@ export function HowItWorks() {
             <p style={{ margin: sp(12, 0, 0), ...fs(14), color: C.text, borderTop: `1px solid ${C.border}`, paddingTop: sp(12) }}>
               Чтобы {item.name.toLowerCase()} упал, хватит <strong>{num(a.thresholdG, 2)} g</strong> на полу: {onFloor(settings.floor)} это{' '}
               <strong style={{ color: C.danger }}>≈{num(a.criticalIntensity)} балла</strong>
-              {!a.cascadeFrom && settings.floor !== 1 && `, на 1-м — ${num(criticalIntensity(a.thresholdG, intensityToAccel(7)))}`}.
+              {!a.cascadeFrom && settings.floor !== 1 && ground !== null && `, на 1-м — ${num(criticalIntensity(a.thresholdG, ground))}`}.
             </p>
           )}
         </Section>

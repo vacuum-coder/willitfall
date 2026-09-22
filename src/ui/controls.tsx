@@ -7,7 +7,6 @@ import { num, onFloor, points } from './format';
 import { status } from './verdict';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
 import { CITY_DESIGN_INTENSITY } from '../data/records';
-import { intensityToAccel } from '../physics/intensity';
 import { layoutFlags } from './scaleLabels';
 import { useElementWidth, textWidth } from './useElementWidth';
 import type { BuildingType } from '../physics/types';
@@ -23,7 +22,8 @@ export function floorNumbers(result: RoomAssessment, intensity: number) {
   const pfa7 = result.peak.status === 'ready' ? result.peak.pfa7G : null;
   return {
     pfa7,
-    gain: pfa7 === null ? null : pfa7 / intensityToAccel(7),
+    // How much harder this floor shakes than the ground floor, both computed the same way.
+    gain: pfa7 === null || result.peak1 === null ? null : pfa7 / result.peak1,
     floorAccel: pfa7 === null ? null : pfa7 * 2 ** (intensity - 7),
   };
 }

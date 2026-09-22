@@ -79,6 +79,8 @@ export function useFloorPeak(settings: Settings): Peak {
 
 export interface RoomAssessment {
   peak: Peak;
+  /** Peak at 7 points on the ground floor, the same way (the reference for «×N» and «на 1-м этаже»). */
+  peak1: number | null;
   assessments: ItemAssessment[];
   checklist: ItemAssessment[];
   byId: Map<string, ItemAssessment>;
@@ -87,10 +89,13 @@ export interface RoomAssessment {
 /** Engine verdict for every item at the current settings; empty until the floor peak is ready. */
 export function useAssessment(): RoomAssessment {
   const { state } = useRoom();
-  const peak = useFloorPeak(state.settings);
+  const peaks = useFloorPeaks(state.settings, [state.settings.floor, 1]);
+  const peak = peaks.get(state.settings.floor)!;
+  const ground = peaks.get(1)!;
+  const peak1 = ground.status === 'ready' ? ground.pfa7G : null;
   return useMemo(() => {
-    if (peak.status !== 'ready') return { peak, assessments: [], checklist: [], byId: new Map() };
+    if (peak.status !== 'ready') return { peak, peak1, assessments: [], checklist: [], byId: new Map() };
     const { assessments, checklist } = assessRoom(state.room, state.settings, { pfa7G: peak.pfa7G });
-    return { peak, assessments, checklist, byId: new Map(assessments.map((a) => [a.itemId, a])) };
-  }, [peak, state.room, state.settings]);
+    return { peak, peak1, assessments, checklist, byId: new Map(assessments.map((a) => [a.itemId, a])) };
+  }, [peak, peak1, state.room, state.settings]);
 }

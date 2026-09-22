@@ -4,7 +4,7 @@
 
 import { G } from './units';
 import { intensityToAccel } from './intensity';
-import { resample, scaleToPeak, peakAbs, type GroundRecord } from './record';
+import { resample, peakAbs, type GroundRecord } from './record';
 import { floorResponse, type Building } from './building';
 import { tipThresholdG, slidesFirst, DEFAULT_MU } from './tipping';
 import {
@@ -28,11 +28,21 @@ export interface AssessContext {
   mu?: number;
 }
 
-/** Peak absolute acceleration of `floor` (g) when the record is scaled to 0.1 g at the ground. */
+/**
+ * Peak absolute acceleration of `floor` (g) when the record's stronger component is scaled to 0.1 g at the ground.
+ * With two horizontal components (the same factor for both) it is the peak of the resultant |a(t)|: a weak wall mount
+ * tears off whichever way it is pulled, and for tipping it is the cautious bound.
+ */
 export function peakFloorAccelAt7(record: GroundRecord, building: Building, floor: number): number {
   const t = Array.from(record.accelG, (_, i) => i * record.dt);
-  const ag = resample(t, Array.from(scaleToPeak(record.accelG, intensityToAccel(7))), BUILDING_DT).map((a) => a * G);
-  return peakAbs(floorResponse(building, ag, BUILDING_DT, floor).accel) / G;
+  const k = (intensityToAccel(7) / peakAbs(record.accelG)) * G;
+  const floorOf = (a: Float64Array) => floorResponse(building, resample(t, Array.from(a, (v) => v * k), BUILDING_DT), BUILDING_DT, floor).accel;
+  const a1 = floorOf(record.accelG);
+  if (!record.accelG2) return peakAbs(a1) / G;
+  const a2 = floorOf(record.accelG2);
+  let peak = 0;
+  for (let i = 0; i < a1.length; i++) peak = Math.max(peak, Math.hypot(a1[i], a2[i]));
+  return peak / G;
 }
 
 export const criticalIntensity = (thresholdG: number, pfa7G: number): number => 7 + Math.log2(thresholdG / pfa7G);

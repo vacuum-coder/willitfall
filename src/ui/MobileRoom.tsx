@@ -12,7 +12,6 @@ import { status, tag, summaryCounts } from './verdict';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
 import { useQuake, poseAt, floorAt, type Pose } from '../three/useQuake';
 import { criticalIntensity } from '../physics/assess';
-import { intensityToAccel } from '../physics/intensity';
 import { RECORDS } from '../data/records';
 import { PANEL_BEDROOM } from '../data/presets';
 import type { BuildingType, FurnitureKind, Item } from '../physics/types';
@@ -259,7 +258,7 @@ function MobileItemCard({ item, result }: { item: Item; result: RoomAssessment }
   const { state, dispatch } = useRoom();
   const a = result.byId.get(item.id);
   const st = a ? status(a) : 'stands';
-  const at1 = a?.thresholdG != null && !a.cascadeFrom ? criticalIntensity(a.thresholdG, intensityToAccel(7)) : null;
+  const at1 = a?.thresholdG != null && !a.cascadeFrom && result.peak1 !== null ? criticalIntensity(a.thresholdG, result.peak1) : null;
   return (
     <section aria-labelledby="m-item" style={{ flex: 'none', margin: sp(0, 16), padding: sp(12, 16), background: C.surface, border: `1px solid ${C.border}`, borderRadius: R.lg, boxShadow: SH[1] }}>
       <div style={{ height: 28, display: 'flex', alignItems: 'baseline', gap: sp(8) }}>
