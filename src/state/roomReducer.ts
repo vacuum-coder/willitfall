@@ -62,7 +62,10 @@ export const WALL_KINDS: FurnitureKind[] = ['wallShelf', 'picture'];
 export const DEFAULT_MOUNT_HEIGHT_CM = 150;
 
 export const initialState = (room: Room, settings: Settings = DEFAULT_SETTINGS): AppState =>
-  ({ room: structuredClone(room), settings, selectedId: null, notice: null, nextId: 1, walls: null });
+  ({ room: clone(room), settings, selectedId: null, notice: null, nextId: 1, walls: null });
+
+/** Deep copy of plain room data; structuredClone is missing before iOS 15.4. */
+const clone = <T,>(v: T): T => (typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v)));
 
 const round1 = (v: number) => Math.round(v * 10) / 10;
 const withItems = (s: AppState, items: Item[]): AppState => ({ ...s, room: { ...s.room, items } });
@@ -272,7 +275,7 @@ function addItem(s: AppState, spec: CustomItem): AppState {
 export function roomReducer(s: AppState, a: Action): AppState {
   switch (a.type) {
     case 'LOAD_PRESET':
-      return { ...s, room: structuredClone(a.room), selectedId: null, notice: null };
+      return { ...s, room: clone(a.room), selectedId: null, notice: null };
     case 'CLEAR_NOTICE':
       return { ...s, notice: null };
     case 'BEGIN_WALLS':

@@ -9,7 +9,7 @@ import { useRoom, type RoomAssessment } from '../state/RoomContext';
 import { CITY_DESIGN_INTENSITY } from '../data/records';
 import { useQuake, poseAt, floorAt, duration, type Pose } from '../three/useQuake';
 import type { CameraPreset } from '../three/Scene3D';
-import { SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
+import { SceneBoundary, SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
 import { useElementWidth } from './useElementWidth';
 
 const Scene3D = lazy(() => import('../three/Scene3D'));
@@ -94,7 +94,7 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
           {no3d ? (
             <SceneUnavailable height={510} onOpenPlan={() => document.querySelector<SVGElement>('svg[aria-label^="План комнаты"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' })} />
           ) : (
-          <Suspense fallback={<SceneLoading height={510} />}>
+          <SceneBoundary onError={() => setNo3d(true)}><Suspense fallback={<SceneLoading height={510} />}>
             <Scene3D
               onLost={() => setNo3d(true)}
               room={room}
@@ -107,7 +107,7 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
               width={sceneWidth || 518}
               height={510}
             />
-          </Suspense>
+          </Suspense></SceneBoundary>
           )}
           {q.phase === 'computing' && (
             <p role="status" style={{ position: 'absolute', left: 0, bottom: 0, margin: 0, padding: sp(6, 10), borderRadius: R.md, background: C.surface, boxShadow: SH[2], ...fs(13), color: C.text }}>

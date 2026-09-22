@@ -1,5 +1,6 @@
 // 3D placeholders (artboard C-States): while the 3D code loads, and when the browser cannot show 3D.
 
+import { Component, type ReactNode } from 'react';
 import { C, fs, sp, R, button } from './ds';
 
 /** WebGL is available in this browser (checked once). */
@@ -51,4 +52,18 @@ export function SceneUnavailable({ height, onOpenPlan }: { height: number; onOpe
       <button type="button" onClick={onOpenPlan} style={{ ...button.primary, marginTop: sp(12) }}>Открыть план</button>
     </div>
   );
+}
+
+/** Catches a 3D chunk that failed to load or a renderer that threw, so the rest of the page keeps working. */
+export class SceneBoundary extends Component<{ onError: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    this.props.onError();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
 }

@@ -16,7 +16,7 @@ import { RECORDS } from '../data/records';
 import { PANEL_BEDROOM } from '../data/presets';
 import type { BuildingType, FurnitureKind, Item } from '../physics/types';
 import type { Route } from './Header';
-import { SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
+import { SceneBoundary, SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
 import { WallsPlan } from './WallsPlan';
 import { ShapeCard, DoorCard } from './WallsPanels';
 import { shapeKind } from '../state/placement';
@@ -187,9 +187,9 @@ function Mobile3D({ result, onView }: { result: RoomAssessment; onView: (v: '3d'
       <section aria-label="3D-сцена комнаты" style={{ flex: 'none', background: C.surface }}>
         <div style={{ position: 'relative', height: 336 }}>
           {no3d ? <SceneUnavailable height={336} onOpenPlan={() => onView('plan')} /> : (
-          <Suspense fallback={<SceneLoading height={336} />}>
+          <SceneBoundary onError={() => setNo3d(true)}><Suspense fallback={<SceneLoading height={336} />}>
             <Scene3D onLost={() => setNo3d(true)} room={room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} preset="overview" poses={poses} floorOffset={playback ? floorAt(playback.result, playback.t) : undefined} width={width} height={336} />
-          </Suspense>
+          </Suspense></SceneBoundary>
           )}
           <div style={{ position: 'absolute', left: 16, top: 12 }}><ViewToggle view="3d" onChange={onView} /></div>
           <ul aria-label="Легенда" style={{ position: 'absolute', left: 16, bottom: 10, listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: sp(2), ...fs(12), color: C.text }}>
