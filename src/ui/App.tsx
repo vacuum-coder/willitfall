@@ -6,6 +6,7 @@ import { MainPanel } from './MainPanel';
 import { ItemCard } from './ItemCard';
 import { Summary } from './Summary';
 import { C, sp } from './ds';
+import { MobileHeader, MobileRoom } from './MobileRoom';
 
 function useRoute(): Route {
   const read = (): Route => {
@@ -21,8 +22,20 @@ function useRoute(): Route {
   return route;
 }
 
-function RoomScreen() {
+function useIsPhone(): boolean {
+  const query = '(max-width: 899px)';
+  const [phone, setPhone] = useState(() => matchMedia(query).matches);
+  useEffect(() => {
+    const m = matchMedia(query), on = () => setPhone(m.matches);
+    m.addEventListener('change', on);
+    return () => m.removeEventListener('change', on);
+  }, []);
+  return phone;
+}
+
+function RoomScreen({ phone }: { phone: boolean }) {
   const result = useAssessment();
+  if (phone) return <MobileRoom result={result} />;
   return (
     <main
       id="room"
@@ -43,11 +56,12 @@ function RoomScreen() {
 
 export function App() {
   const route = useRoute();
+  const phone = useIsPhone();
   return (
     <RoomProvider>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: C.bg, color: C.text }}>
-        <Header route={route} />
-        {route === 'room' && <RoomScreen />}
+      <div style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', background: C.bg, color: C.text }}>
+        {phone ? <MobileHeader route={route} /> : <Header route={route} />}
+        {route === 'room' && <RoomScreen phone={phone} />}
       </div>
     </RoomProvider>
   );

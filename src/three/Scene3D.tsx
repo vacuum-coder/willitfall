@@ -230,12 +230,17 @@ function Callouts({ room, byId }: { room: Room; byId: Map<string, ItemAssessment
 function Cameras({ preset, room }: { preset: CameraPreset; room: Room }) {
   const xs = room.vertices.map((v) => v.x), ys = room.vertices.map((v) => v.y);
   const cx = M((Math.min(...xs) + Math.max(...xs)) / 2), cz = M((Math.min(...ys) + Math.max(...ys)) / 2);
-  const span = Math.max(M(Math.max(...xs) - Math.min(...xs)), M(Math.max(...ys) - Math.min(...ys)));
   const bed = room.items.find((i) => i.kind === 'bed');
   const controls = useRef<never>(null);
   const { size } = useThree();
-  // 64 px per metre along each axis in the artboard; an orthographic zoom Z shows an axis at Z·√(2/3) px/m.
-  const isoZoom = Math.min(64 / Math.sqrt(2 / 3), (size.width / (span * 1.7)) / Math.sqrt(2 / 3) * 1.2);
+  // An orthographic zoom Z shows each axis at Z·√(2/3) px/m. The artboard uses 64 px/m; smaller canvases
+  // fit the room's isometric footprint: width (W + D)·cos30°, height (W + D)/2 + ceiling.
+  const W = M(Math.max(...xs) - Math.min(...xs)), D = M(Math.max(...ys) - Math.min(...ys)), k = Math.sqrt(2 / 3);
+  const isoZoom = Math.min(
+    64 / k,
+    (size.width * 0.9) / ((W + D) * Math.cos(Math.PI / 6) * k),
+    (size.height * 0.85) / (((W + D) / 2 + M(CEILING_CM)) * k),
+  );
   const target: [number, number, number] = [cx, M(CEILING_CM) * 0.3, cz];
 
   if (preset === 'pillow' && bed) {

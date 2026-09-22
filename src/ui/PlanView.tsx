@@ -1,6 +1,6 @@
 // 2D plan (artboard C-Desktop, «План»): SVG in centimetres, drawn from the room state and the engine verdict.
 
-import { useRef, type PointerEvent as ReactPointerEvent, type KeyboardEvent } from 'react';
+import { createContext, useContext, useRef, type PointerEvent as ReactPointerEvent, type KeyboardEvent } from 'react';
 import type { Dispatch } from 'react';
 import { C } from './ds';
 import { status, type Status } from './verdict';
@@ -11,6 +11,8 @@ import type { Action } from '../state/roomReducer';
 import type { Item, ItemAssessment, Room } from '../physics/types';
 
 const TEXT = { fontFamily: 'Manrope, sans-serif' } as const;
+/** Label size in plan units: 20 in the desktop card, 15 on the phone (artboards C-Desktop / C-Mobile-Plan). */
+const LabelSize = createContext(20);
 const WALL = 12;
 
 const rad = (deg: number) => (deg * Math.PI) / 180;
@@ -56,16 +58,22 @@ interface Props {
   dispatch: Dispatch<Action>;
   width?: number;
   height?: number;
+  /** 'card': room with dimensions and scale bar (desktop); 'fill': the room fills a phone screen. */
+  fit?: 'card' | 'fill';
+  labelSize?: number;
 }
 
-export function PlanView({ room, byId, selectedId, dispatch, width = 240, height = 324 }: Props) {
+export function PlanView({ room, byId, selectedId, dispatch, width = 240, height = 324, fit = 'card', labelSize = 20 }: Props) {
   const svg = useRef<SVGSVGElement>(null);
   const drag = useRef<{ id: string; kind: 'move' | 'rotate'; start: Vec; item: Item; pointer: number } | null>(null);
   const frame = useRef(0);
 
   const xs = room.vertices.map((v) => v.x), ys = room.vertices.map((v) => v.y);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-  const viewBox = `${x0 - 60} ${y0 - 50} ${x1 - x0 + 100} ${y1 - y0 + 120}`;
+  const fillH = y1 - y0 + 80, fillW = (fillH * width) / height;
+  const viewBox = fit === 'card'
+    ? `${x0 - 60} ${y0 - 50} ${x1 - x0 + 100} ${y1 - y0 + 120}`
+    : `${(x0 + x1) / 2 - 18 - fillW / 2} ${y0 - 55} ${fillW} ${fillH}`;
 
   const toPlan = (e: { clientX: number; clientY: number }): Vec => {
     const s = svg.current!, m = s.getScreenCTM()!.inverse();
@@ -130,6 +138,7 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
   };
 
   return (
+    <LabelSize.Provider value={labelSize}>
     <svg
       ref={svg}
       viewBox={viewBox}
@@ -186,7 +195,7 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
             <path d={path(doorZone(room.vertices, o))} fill="none" style={{ stroke: C.safe }} strokeWidth="1.2" strokeDasharray="4 3" />
             <path d={`M${tip.x},${tip.y} A${o.width},${o.width} 0 0 ${sweep} ${jamb.x},${jamb.y}`} fill="none" style={{ stroke: C.text }} strokeWidth="0.9" strokeDasharray="3 3" />
             <line x1={hinge.x} y1={hinge.y} x2={tip.x} y2={tip.y} style={{ stroke: C.text }} strokeWidth="2.4" />
-            <text x={mid.x} y={mid.y} textAnchor="middle" {...TEXT} fontSize="20" fontWeight="700" style={{ fill: C.safe, stroke: C.surface2 }} strokeWidth="4" strokeLinejoin="round" paintOrder="stroke">выход</text>
+            <text x={mid.x} y={mid.y} textAnchor="middle" {...TEXT} fontSize={labelSize} fontWeight="700" style={{ fill: C.safe, stroke: C.surface2 }} strokeWidth="4" strokeLinejoin="round" paintOrder="stroke">выход</text>
           </g>
         );
       })}
@@ -222,8 +231,9 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
 
       {others.concat(bed).map((i) => <Label key={`l-${i.id}`} item={i} />)}
 
-      <Dimensions x0={x0} x1={x1} y0={y0} y1={y1} />
+      <Dimensions x0={x0} x1={x1} y0={y0} y1={y1} scaleBar={fit === 'card'} />
     </svg>
+    </LabelSize.Provider>
   );
 
   function itemHandlers(i: Item) {
@@ -285,12 +295,13 @@ function ItemShape({ item, st, selected }: { item: Item; st: Status; selected: b
 
 /** Name of the item: inside when it fits, otherwise next to it on a halo. */
 function Label({ item }: { item: Item }) {
+  const size = useContext(LabelSize);
   if (item.kind === 'bed') {
     const turn = HEAD_TURN[item.headSide ?? 'back'];
     const D = turn === 90 || turn === -90 ? item.w : item.d;
     const t = rad(turn), local = { s: -(D / 2 - 36) * Math.sin(t), t: (D / 2 - 36) * Math.cos(t) };
     const p = toWorld(item, local.s, local.t);
-    return <text x={p.x} y={p.y + 7} textAnchor="middle" {...TEXT} fontSize="20" fontWeight="600" style={{ fill: C.text }} pointerEvents="none">{item.name}</text>;
+    return <text x={p.x} y={p.y + 7} textAnchor="middle" {...TEXT} fontSize={size} fontWeight="600" style={{ fill: C.text }} pointerEvents="none">{item.name}</text>;
   }
   const textLen = item.name.length * 12.5;
   const long = Math.max(item.w, item.d), short = Math.min(item.w, item.d);
@@ -301,7 +312,7 @@ function Label({ item }: { item: Item }) {
     const down = { x: -Math.sin(rad(phi)), y: Math.cos(rad(phi)) };
     const x = item.x + down.x * 7, y = item.y + down.y * 7;
     return (
-      <text x={x} y={y} transform={`rotate(${phi} ${x} ${y})`} textAnchor="middle" {...TEXT} fontSize="20" fontWeight="700" style={{ fill: C.text }} pointerEvents="none">
+      <text x={x} y={y} transform={`rotate(${phi} ${x} ${y})`} textAnchor="middle" {...TEXT} fontSize={size} fontWeight="700" style={{ fill: C.text }} pointerEvents="none">
         {item.name}
       </text>
     );
@@ -310,7 +321,7 @@ function Label({ item }: { item: Item }) {
   const halfX = (Math.abs(Math.cos(a)) * item.w + Math.abs(Math.sin(a)) * item.d) / 2;
   const toRight = item.x < 150;
   return (
-    <text x={toRight ? item.x + halfX + 10 : item.x - halfX - 10} y={item.y + 7} textAnchor={toRight ? 'start' : 'end'} {...TEXT} fontSize="20" fontWeight="700" style={{ fill: C.text, stroke: C.surface2 }} strokeWidth="4" strokeLinejoin="round" paintOrder="stroke" pointerEvents="none">
+    <text x={toRight ? item.x + halfX + 10 : item.x - halfX - 10} y={item.y + 7} textAnchor={toRight ? 'start' : 'end'} {...TEXT} fontSize={size} fontWeight="700" style={{ fill: C.text, stroke: C.surface2 }} strokeWidth="4" strokeLinejoin="round" paintOrder="stroke" pointerEvents="none">
       {item.name}
     </text>
   );
@@ -342,6 +353,7 @@ function Selection({ item, onRotate }: { item: Item; onRotate: (e: ReactPointerE
 
 /** «2,4 м — высота шкафа» across the fall zone of the selected item. */
 function FallDimension({ item, side, zone }: { item: Item; side: Side; zone?: Vec[] }) {
+  const size = useContext(LabelSize);
   if (!zone?.length) return null;
   const a = rad(item.angle);
   const u = { x: Math.cos(a), y: Math.sin(a) }, n = { x: -Math.sin(a), y: Math.cos(a) };
@@ -357,12 +369,13 @@ function FallDimension({ item, side, zone }: { item: Item; side: Side; zone?: Ve
   return (
     <g pointerEvents="none">
       <line x1={p0.x} y1={p0.y} x2={p1.x} y2={p1.y} style={{ stroke: C.text }} strokeWidth="1" markerStart="url(#pArrInk)" markerEnd="url(#pArrInk)" />
-      <text x={mid.x} y={mid.y} textAnchor="middle" {...TEXT} fontSize="20" fontWeight="700" style={{ fill: C.text, stroke: C.surface }} strokeWidth="5" strokeLinejoin="round" paintOrder="stroke">{text}</text>
+      <text x={mid.x} y={mid.y} textAnchor="middle" {...TEXT} fontSize={size} fontWeight="700" style={{ fill: C.text, stroke: C.surface }} strokeWidth="5" strokeLinejoin="round" paintOrder="stroke">{text}</text>
     </g>
   );
 }
 
-function Dimensions({ x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1: number }) {
+function Dimensions({ x0, x1, y0, y1, scaleBar }: { x0: number; x1: number; y0: number; y1: number; scaleBar: boolean }) {
+  const size = useContext(LabelSize);
   const mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
   return (
     <g pointerEvents="none">
@@ -378,12 +391,16 @@ function Dimensions({ x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1
         <line x1={x0 - 33} y1={y0 + 5} x2={x0 - 23} y2={y0 - 5} />
         <line x1={x0 - 33} y1={y1 + 5} x2={x0 - 23} y2={y1 - 5} />
       </g>
-      <text x={mx} y={y0 - 34} textAnchor="middle" {...TEXT} fontSize="20" fontWeight="600" style={{ fill: C.text2 }}>{Math.round(x1 - x0)}</text>
-      <text x={x0 - 35} y={my} transform={`rotate(-90 ${x0 - 35} ${my})`} textAnchor="middle" {...TEXT} fontSize="20" fontWeight="600" style={{ fill: C.text2 }}>{Math.round(y1 - y0)}</text>
-      <rect x={x0} y={y1 + 30} width="50" height="6" style={{ fill: C.text }} />
-      <rect x={x0 + 50} y={y1 + 30} width="50" height="6" style={{ fill: C.surface, stroke: C.text }} strokeWidth="1" />
-      <text x={x0} y={y1 + 62} textAnchor="middle" {...TEXT} fontSize="20" style={{ fill: C.text2 }}>0</text>
-      <text x={x0 + 100} y={y1 + 62} textAnchor="middle" {...TEXT} fontSize="20" style={{ fill: C.text2 }}>1 м</text>
+      <text x={mx} y={y0 - 34} textAnchor="middle" {...TEXT} fontSize={size} fontWeight="600" style={{ fill: C.text2 }}>{Math.round(x1 - x0)}</text>
+      <text x={x0 - 35} y={my} transform={`rotate(-90 ${x0 - 35} ${my})`} textAnchor="middle" {...TEXT} fontSize={size} fontWeight="600" style={{ fill: C.text2 }}>{Math.round(y1 - y0)}</text>
+      {scaleBar && (
+        <>
+          <rect x={x0} y={y1 + 30} width="50" height="6" style={{ fill: C.text }} />
+          <rect x={x0 + 50} y={y1 + 30} width="50" height="6" style={{ fill: C.surface, stroke: C.text }} strokeWidth="1" />
+          <text x={x0} y={y1 + 62} textAnchor="middle" {...TEXT} fontSize={size} style={{ fill: C.text2 }}>0</text>
+          <text x={x0 + 100} y={y1 + 62} textAnchor="middle" {...TEXT} fontSize={size} style={{ fill: C.text2 }}>1 м</text>
+        </>
+      )}
     </g>
   );
 }

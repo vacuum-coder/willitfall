@@ -83,3 +83,41 @@ export const LegendAnchored = () => (
     <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" style={{ fill: 'var(--scene-mirror-x)', stroke: C.safe }} />
   </svg>
 );
+
+export const MenuIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" {...hidden}>
+    <path d="M3 6h14M3 10h14M3 14h14" style={{ stroke: C.text }} strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+
+export const ChevronRight = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" {...hidden} style={{ marginLeft: 'auto' }}>
+    <path d="M6 3.5L10.5 8 6 12.5" fill="none" style={{ stroke: C.text }} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const AnchorIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" {...hidden}>
+    <path d="M3 2.5v10.5h10.5" fill="none" style={{ stroke: C.onAccent }} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M3 7.5h2.5M8.5 13v-2.5" style={{ stroke: C.onAccent }} strokeWidth="1.4" strokeLinecap="round" />
+  </svg>
+);
+
+export const PlusBig = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" {...hidden}>
+    <path d="M12 5v14M5 12h14" fill="none" style={{ stroke: C.text }} strokeWidth="2.25" strokeLinecap="round" />
+  </svg>
+);
+
+export const RotateIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" {...hidden}>
+    <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" fill="none" style={{ stroke: C.text }} strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M21 3v5h-5" fill="none" style={{ stroke: C.text }} strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const TrashIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" {...hidden}>
+    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" fill="none" style={{ stroke: C.text }} strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
