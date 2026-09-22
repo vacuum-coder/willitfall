@@ -78,6 +78,7 @@ export function assessItem(
     const severity = !fallsNow ? 0 : hitsPillow ? 4 : blocksDoor ? 3 : hitsBed ? 2 : 1;
     return {
       itemId: item.id, mode, thresholdG: null, criticalIntensity: null, sides: [], hitsWall: false,
+      slideIntensity: null, slidesNow: false,
       ...x, zones, fallsNow, hitsPillow, blocksDoor, hitsBed, severity,
     };
   };
@@ -97,10 +98,16 @@ export function assessItem(
   const blocked = detectBlockedSides(item, room);
   const open = SIDES.filter((s) => !blocked.includes(s));
   let mode: Mode = 'blocked', thresholdG: number | null = null, Icrit: number | null = null, sides: Side[] = [];
+  let slideIntensity: number | null = null;
+  const mu = ctx.mu ?? DEFAULT_MU;
   if (open.length > 0) {
     const g = governing(item, open);
     ({ thresholdG, sides } = g);
-    if (slidesFirst(g.thresholdG, ctx.mu ?? DEFAULT_MU)) mode = 'slides';
+    if (slidesFirst(g.thresholdG, mu)) {
+      mode = 'slides';
+      // Friction holds until the floor pushes harder than μ·g.
+      slideIntensity = criticalIntensity(mu, ctx.pfa7G);
+    }
     else {
       mode = 'tips';
       Icrit = criticalIntensity(g.thresholdG, ctx.pfa7G);
@@ -118,14 +125,15 @@ export function assessItem(
     Icrit = supI;
     cascadeFrom = support!.id;
   }
-  if (Icrit === null) return done(mode, { thresholdG, sides });
+  const slide = { slideIntensity, slidesNow: slideIntensity !== null && settings.intensity >= slideIntensity };
+  if (Icrit === null) return done(mode, { thresholdG, sides, ...slide });
 
   // Falling from a support reaches further: zone length = own height + height of the surface.
   const own = sides.map((s) => zonePolygon(item, s, item.height + supportTop(item, room), room.vertices));
   const zones = [...(supI !== null ? sup!.zones : []), ...own.map((z) => z.poly)];
   return done(mode, {
     thresholdG, criticalIntensity: Icrit, fallsNow: settings.intensity >= Icrit, cascadeFrom, sides,
-    zones, hitsWall: own.some((z) => z.hitsWall),
+    zones, hitsWall: own.some((z) => z.hitsWall), ...slide,
   });
 }
 

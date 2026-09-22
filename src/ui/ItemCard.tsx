@@ -172,8 +172,18 @@ function Verdict({ item, a, pfa7, floor }: { item: Item; a: ItemAssessment; pfa7
     body = (<><p style={big}><span style={{ ...fs(26) }}>{capital(tag(item, a))}</span></p><p style={sub}>не опрокинется</p><p style={note}>Верно, если крепёж вкручен в несущую стену по инструкции.</p></>);
   } else if (a.mode === 'blocked' && a.criticalIntensity === null) {
     body = (<><p style={big}><span style={{ ...fs(26) }}>Не опрокинется</span></p><p style={note}>Со всех сторон стены ближе 5 см.</p></>);
-  } else if (a.mode === 'slides' && a.criticalIntensity === null) {
-    body = (<><p style={big}><span style={{ ...fs(26) }}>Сдвинется</span></p><p style={sub}>скорее поедет по полу, чем упадёт</p><p style={note}>Трение 0,4 срывается раньше, чем {num(a.thresholdG ?? 0, 2)} g нужно для опрокидывания.</p></>);
+  } else if (a.mode === 'slides' && a.criticalIntensity === null && a.slideIntensity !== null) {
+    const slideTone = a.slidesNow ? C.slide : C.text2;
+    body = (
+      <>
+        <p style={{ ...big, color: slideTone }}>
+          <span style={{ ...fs(44), letterSpacing: LS.number }}>{a.slideIntensity > 10 ? '>10' : `≈${num(a.slideIntensity)}`}</span>
+          <span style={{ ...fs(22) }}>{points(Math.min(a.slideIntensity, 10)).split(' ')[1]}</span>
+        </p>
+        <p style={sub}>сдвинется по полу при такой силе толчка {onFloor(floor)}</p>
+        <p style={note}>Опрокинуться не успеет: трение 0,4 срывается раньше, чем пол доходит до {num(a.thresholdG ?? 0, 2)} g.</p>
+      </>
+    );
   } else if (a.criticalIntensity !== null) {
     const at1 = a.thresholdG !== null && !a.cascadeFrom ? criticalIntensity(a.thresholdG, intensityToAccel(7)) : null;
     body = (

@@ -68,6 +68,9 @@ export interface ItemAssessment {
   thresholdG: number | null;
   criticalIntensity: number | null;
   fallsNow: boolean;
+  /** Items that slide rather than tip: from which intensity friction gives way, and whether it does now. */
+  slideIntensity: number | null;
+  slidesNow: boolean;
   cascadeFrom?: string;
   /** Sides the item tips over (the governing directions). */
   sides: Side[];

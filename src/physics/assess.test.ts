@@ -79,8 +79,16 @@ describe('assessItem', () => {
   it('MALM slides instead of tipping at μ = 0.4', () => {
     const a = assessItem(malm, room([malm]), at(10), ctx);
     expect(a.mode).toBe('slides');
+    expect(a.slidesNow).toBe(true);
+    expect(a.slideIntensity).toBeCloseTo(7 + Math.log2(0.4 / 0.1), 12);
     expect(a.zones).toEqual([]);
     expect(a.severity).toBe(0);
+  });
+
+  it('MALM stays put while the floor pushes less than friction holds', () => {
+    const a = assessItem(malm, room([malm]), at(8.9), ctx); // floor 0.1·2^1.9 = 0.37 g < 0.4
+    expect(a.mode).toBe('slides');
+    expect(a.slidesNow).toBe(false);
   });
 
   it('anchored furniture is safe', () => {

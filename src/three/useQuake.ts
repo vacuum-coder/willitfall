@@ -31,7 +31,7 @@ export function toSimItems(room: Room): SimItem[] {
 }
 
 export function toSimWalls(room: Room): SimWall[] {
-  return wallFrames(room.vertices).map((f) => ({ ax: M(f.a.x), az: M(f.a.y), bx: M(f.b.x), bz: M(f.b.y) }));
+  return wallFrames(room.vertices).map((f) => ({ ax: M(f.a.x), az: M(f.a.y), bx: M(f.b.x), bz: M(f.b.y), nx: f.inward.x, nz: f.inward.y }));
 }
 
 /** Shaking axis: the tipping direction of the most dangerous item (spec: «худшая для самого опасного предмета»). */

@@ -35,7 +35,8 @@ export interface SimItem {
   y0?: number;
 }
 
-export interface SimWall { ax: number; az: number; bx: number; bz: number }
+/** A wall segment; (nx, nz) points into the room, so the wall's thickness is built outside the room. */
+export interface SimWall { ax: number; az: number; bx: number; bz: number; nx?: number; nz?: number }
 
 export interface SimOutcome {
   id: string;
@@ -132,9 +133,11 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
     fixture(RAPIER.ColliderDesc.cuboid(200, 0.5, 200).setTranslation(0, -0.5, 0));
     for (const w of opts.walls ?? []) {
       const lenW = Math.hypot(w.bx - w.ax, w.bz - w.az);
+      // The collider's inner face lies on the wall line: furniture standing flush against it is not pushed away.
+      const out = WALL_THICKNESS / 2;
       fixture(
         RAPIER.ColliderDesc.cuboid(lenW / 2, WALL_HEIGHT / 2, WALL_THICKNESS / 2)
-          .setTranslation((w.ax + w.bx) / 2, WALL_HEIGHT / 2, (w.az + w.bz) / 2)
+          .setTranslation((w.ax + w.bx) / 2 - (w.nx ?? 0) * out, WALL_HEIGHT / 2, (w.az + w.bz) / 2 - (w.nz ?? 0) * out)
           .setRotation(yaw((Math.atan2(w.bz - w.az, w.bx - w.ax) * 180) / Math.PI)),
       );
     }
@@ -177,7 +180,8 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
     const settle = Math.round(SETTLE_S / SIM_DT);
     const steps = settle + Math.ceil(((n - 1) * opts.dt) / SIM_DT) + Math.round(AFTERMATH_S / SIM_DT);
     const maxTilt = bodies.map(() => 0);
-    const start = bodies.map((b) => (b ? { ...b.translation() } : null));
+    // Travel is measured from where each item rests once settled, not from where it was created.
+    let start = bodies.map((b) => (b ? { ...b.translation() } : null));
     const recorded = every > 0 ? Math.floor((steps - settle) / every) + 1 : 0;
     const frames: SimFrames | null = every > 0
       ? { dt: every * SIM_DT, floor: new Float32Array(recorded * 2), poses: new Map(opts.items.flatMap((it, i) => (bodies[i] ? [[it.id, new Float32Array(recorded * 7)]] : []))) }
@@ -204,6 +208,7 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
       tilts.forEach((v, i) => { maxTilt[i] = Math.max(maxTilt[i], v); });
       opts.trace?.((s - settle) * SIM_DT, tilts);
       capture(s, u);
+      if (s === settle) start = bodies.map((b) => (b ? { ...b.translation() } : null));
     }
 
     const uEnd = dispAt((steps - settle) * SIM_DT);

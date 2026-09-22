@@ -73,6 +73,16 @@ describe('Rapier world matches the tipping condition', () => {
     expect(r.maxTiltDeg).toBe(0);
   });
 
+  it('furniture standing flush against a wall is not pushed by it', async () => {
+    // The wardrobe (depth 0.58, centred at z = 0) has its back face on the wall line z = 0.29; the room is on the −z side.
+    const [r] = await simulateRoom({
+      items: [PAX], floorDisp: still(2), dt: SIM_DT, dir: { x: 1, y: 0 },
+      walls: [{ ax: 1, az: 0.29, bx: -1, bz: 0.29, nx: 0, nz: -1 }],
+    });
+    expect(r.result).toBe('stood');
+    expect(Math.hypot(r.finalPos.x, r.finalPos.z)).toBeLessThan(0.005);
+  });
+
   it('a low dresser slides instead of tipping at μ = 0.4', async () => {
     const malm: SimItem = { id: 'malm', x: 0, z: 0, w: 0.8, d: 0.48, H: 1.0, angleDeg: 0, comH: 0.5, anchored: false };
     const [r] = await simulateRoom({

@@ -7,7 +7,7 @@ export type Status = 'falls' | 'slides' | 'safe' | 'stands';
 export function status(a: ItemAssessment): Status {
   if (a.mode === 'anchored' || a.mode === 'wallSafe') return 'safe';
   if (a.fallsNow) return 'falls';
-  if (a.mode === 'slides') return 'slides';
+  if (a.mode === 'slides' && a.slidesNow) return 'slides';
   return 'stands';
 }
 
@@ -32,6 +32,7 @@ export function advice(_item: Item, a: ItemAssessment): string {
   if (s === 'safe') return 'Ничего делать не нужно';
   if (s === 'slides') return 'Противоскользящие накладки';
   if (a.mode === 'wallFalls') return 'Перевесить на анкеры в несущую стену';
+  if (s === 'stands' && a.mode === 'slides') return 'Сдвинется при более сильном толчке — противоскользящие накладки';
   if (s === 'stands') return 'Закрепить заранее — упадёт при более сильном толчке';
   if (a.blocksDoor && !a.hitsPillow) return 'Закрепить или переставить от двери';
   return 'Закрепить уголком к несущей стене';

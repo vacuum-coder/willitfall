@@ -278,7 +278,9 @@ function MobileItemCard({ item, result }: { item: Item; result: RoomAssessment }
         </>
       ) : a ? (
         <p style={{ margin: sp(6, 0, 0), ...fs(13), fontWeight: 600, color: TONE[st] }}>
-          {st === 'safe' ? 'Закреплено — не опрокинется, если крепёж в несущей стене.' : st === 'slides' ? 'Скорее сдвинется по полу, чем упадёт.' : 'Не опрокинется: стены со всех сторон.'}
+          {st === 'safe' ? 'Закреплено — не опрокинется, если крепёж в несущей стене.'
+            : a.mode === 'slides' && a.slideIntensity !== null ? `Сдвинется по полу при ≈${num(Math.min(a.slideIntensity, 10))} балла ${onFloor(state.settings.floor)}, опрокинуться не успеет.`
+            : 'Не опрокинется: стены со всех сторон.'}
         </p>
       ) : null}
       {item.kind !== 'bed' && item.mount.kind !== 'wall' && (
