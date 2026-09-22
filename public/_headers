@@ -1,0 +1,19 @@
+# Cloudflare Pages headers. The site loads nothing from other origins; WebAssembly (Rapier) needs 'wasm-unsafe-eval',
+# React and three.js set inline style attributes, the 3D hatch texture is drawn to a canvas, the build inlines
+# the smallest font subsets as data: URLs.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+
+# Hashed build files never change: cache them for a year.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The service worker and the entry page must always be fresh.
+/sw.js
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
