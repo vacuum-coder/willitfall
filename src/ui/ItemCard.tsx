@@ -137,7 +137,7 @@ export function ItemCard({ result }: { result: RoomAssessment }) {
         </div>
       )}
 
-      <div style={{ marginTop: sp(16), display: 'flex', gap: sp(8) }}>
+      <div style={{ marginTop: sp(16), display: 'flex', flexWrap: 'wrap', gap: sp(8) }}>
         {item.kind !== 'bed' && item.mount.kind !== 'wall' && (
           item.anchored
             ? <button type="button" onClick={() => dispatch({ type: 'TOGGLE_ANCHOR', id: item.id })} style={{ ...button.secondary, flex: 1, padding: sp(0, 10) }}>Открепить</button>

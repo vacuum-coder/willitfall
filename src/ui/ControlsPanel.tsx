@@ -6,6 +6,8 @@ import { Chevron, Move, Plus, ZoneSwatch, PassageSwatch } from './icons';
 import { FloorStepper, BuildingLine, IntensityScale, floorNumbers } from './controls';
 import { PlanView } from './PlanView';
 import { WallsPlan } from './WallsPlan';
+import { shapeKind } from '../state/placement';
+import { useElementWidth } from './useElementWidth';
 import { CustomItemForm } from './CustomItemForm';
 import { num, onFloor, points } from './format';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
@@ -31,6 +33,9 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
   const { state, dispatch } = useRoom();
   const { settings, room } = state;
   const [custom, setCustom] = useState<FurnitureKind | null>(null);
+  // The plan keeps the artboard size (240 × 324) when the column is 392 px and shrinks with a narrower column.
+  const [planRow, rowWidth] = useElementWidth<HTMLDivElement>(358);
+  const planW = Math.min(240, Math.max(160, rowWidth - 126)), planH = Math.round(planW * 1.35);
   const { gain, floorAccel } = floorNumbers(result, settings.intensity);
   const isPreset = room.id === PANEL_BEDROOM.id;
 
@@ -73,8 +78,8 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
             <h2 style={{ margin: 0, fontFamily: FONT.display, fontWeight: 600, ...fs(22) }}>План</h2>
             <span style={{ ...fs(12), color: C.text2, marginLeft: 'auto' }}>Шаблон</span>
             <div role="group" aria-label="Шаблон комнаты" style={{ display: 'flex', height: H.md, boxSizing: 'border-box', border: `1px solid ${C.borderStrong}`, borderRadius: R.md, overflow: 'hidden' }}>
-              {([['rect', 'Прямоугольная', 4], ['L', 'Г', 6], ['U', 'П', 8]] as const).map(([t, text, count]) => {
-                const on = room.vertices.length === count;
+              {([['rect', 'Прямоугольная'], ['L', 'Г'], ['U', 'П']] as const).map(([t, text]) => {
+                const on = shapeKind(room.vertices) === t;
                 return (
                   <button key={t} type="button" aria-pressed={on} onClick={() => dispatch({ type: 'APPLY_ROOM_TEMPLATE', template: t })} style={{ border: 0, padding: sp(0, 12), background: on ? C.text : C.surface, color: on ? C.onAccent : C.text, ...fs(13), fontWeight: on ? 700 : 500 }}>
                     {text}
@@ -84,7 +89,7 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
             </div>
           </div>
           <div style={{ marginTop: sp(8), display: 'flex', justifyContent: 'center' }}>
-            <WallsPlan room={room} dispatch={dispatch} width={340} height={340} />
+            <WallsPlan room={room} dispatch={dispatch} width={Math.min(340, rowWidth)} height={Math.min(340, rowWidth)} />
           </div>
         </div>
       ) : (
@@ -93,15 +98,18 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
           <h2 style={{ margin: 0, fontFamily: FONT.display, fontWeight: 600, ...fs(16) }}>План</h2>
           <span style={{ ...fs(12), color: C.text2 }}>вид сверху · размеры в см</span>
         </div>
-        <div style={{ display: 'flex', gap: sp(8), marginTop: sp(8) }}>
-          <PlanView room={room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} />
+        <div ref={planRow} style={{ display: 'flex', gap: sp(8), marginTop: sp(8) }}>
+          <PlanView room={room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} width={planW} height={planH} />
           <div role="group" aria-label="Добавить предмет" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: sp(6), minWidth: 0 }}>
+            {room.items.every((i) => i.kind === 'bed') && (
+              <p style={{ margin: sp(0, 0, 6), ...fs(13), fontWeight: 600, color: C.text }}>Добавьте шкаф или стеллаж — начнём с самого высокого</p>
+            )}
             <span style={{ ...fs(12), fontWeight: 600, color: C.text2 }}>Добавить:</span>
-            {ADD.map((b) => (
+            {ADD.map((b, k) => (
               <button
                 key={b.label}
                 type="button"
-                style={addButton}
+                style={k === 0 && room.items.every((i) => i.kind === 'bed') ? { ...addButton, border: 0, background: C.danger, color: C.onAccent } : addButton}
                 onClick={() => (b.productKey ? dispatch({ type: 'ADD_ITEM', productKey: b.productKey }) : setCustom(b.kind))}
               >
                 <Plus />{b.label}

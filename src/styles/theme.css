@@ -66,3 +66,6 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .num::-webkit-inner-spin-button, .num::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .num { -moz-appearance: textfield; appearance: textfield; }
 .chk { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--c-safe); cursor: pointer; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin 0.9s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }

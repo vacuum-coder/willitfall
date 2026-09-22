@@ -17,6 +17,7 @@ import { RECORDS } from '../data/records';
 import { PANEL_BEDROOM } from '../data/presets';
 import type { BuildingType, FurnitureKind, Item } from '../physics/types';
 import type { Route } from './Header';
+import { SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
 
 const Scene3D = lazy(() => import('../three/Scene3D'));
 const TONE = { falls: C.danger, slides: C.slide, safe: C.safe, stands: C.text2 } as const;
@@ -131,6 +132,7 @@ function Mobile3D({ result, onView }: { result: RoomAssessment; onView: (v: '3d'
   const { state, dispatch } = useRoom();
   const { settings, room } = state;
   const width = useWidth();
+  const [no3d, setNo3d] = useState(() => !hasWebGL());
   const quake = useQuake(room, settings, result.checklist);
   const q = quake.state;
   const playback = q.phase === 'playing' || q.phase === 'done' ? q : null;
@@ -149,9 +151,11 @@ function Mobile3D({ result, onView }: { result: RoomAssessment; onView: (v: '3d'
     <>
       <section aria-label="3D-сцена комнаты" style={{ flex: 'none', background: C.surface }}>
         <div style={{ position: 'relative', height: 336 }}>
-          <Suspense fallback={<p style={{ margin: 0, padding: sp(48, 16), ...fs(14), color: C.text2 }}>Загружаем 3D…</p>}>
-            <Scene3D room={room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} preset="overview" poses={poses} floorOffset={playback ? floorAt(playback.result, playback.t) : undefined} width={width} height={336} />
+          {no3d ? <SceneUnavailable height={336} onOpenPlan={() => onView('plan')} /> : (
+          <Suspense fallback={<SceneLoading height={336} />}>
+            <Scene3D onLost={() => setNo3d(true)} room={room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} preset="overview" poses={poses} floorOffset={playback ? floorAt(playback.result, playback.t) : undefined} width={width} height={336} />
           </Suspense>
+          )}
           <div style={{ position: 'absolute', left: 16, top: 12 }}><ViewToggle view="3d" onChange={onView} /></div>
           <ul aria-label="Легенда" style={{ position: 'absolute', left: 16, bottom: 10, listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: sp(2), ...fs(12), color: C.text }}>
             <li style={{ display: 'flex', alignItems: 'center', gap: sp(6) }}><LegendFalls />упадёт</li>

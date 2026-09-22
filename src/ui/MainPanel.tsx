@@ -9,6 +9,8 @@ import { useRoom, type RoomAssessment } from '../state/RoomContext';
 import { CITY_DESIGN_INTENSITY } from '../data/records';
 import { useQuake, poseAt, floorAt, duration, type Pose } from '../three/useQuake';
 import type { CameraPreset } from '../three/Scene3D';
+import { SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
+import { useElementWidth } from './useElementWidth';
 
 const Scene3D = lazy(() => import('../three/Scene3D'));
 
@@ -22,6 +24,8 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
   const { state, dispatch } = useRoom();
   const { settings, room } = state;
   const [camera, setCamera] = useState<CameraPreset>('overview');
+  const [no3d, setNo3d] = useState(() => !hasWebGL());
+  const [sceneBox, sceneWidth] = useElementWidth<HTMLDivElement>(518);
   const quake = useQuake(room, settings, result.checklist);
   const q = quake.state;
   const pfa7 = result.peak.status === 'ready' ? result.peak.pfa7G : null;
@@ -57,8 +61,8 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
           : result.peak.status === 'error' ? `Не удалось загрузить запись: ${result.peak.message}` : 'Считаем, как качается ваш этаж…'}
       </p>
 
-      <div style={{ ...card, marginTop: sp(20), height: 640, boxSizing: 'border-box', padding: sp(16), display: 'flex', flexDirection: 'column' }}>
-        <div style={{ height: 32, flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ ...card, marginTop: sp(20), minHeight: 640, boxSizing: 'border-box', padding: sp(16), display: 'flex', flexDirection: 'column' }}>
+        <div style={{ minHeight: 32, flex: 'none', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', rowGap: sp(8), columnGap: sp(12) }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: sp(14) }}>
             <h2 style={{ margin: 0, fontFamily: FONT.display, fontWeight: 600, ...fs(18) }}>3D</h2>
             <div role="group" aria-label="Камера" style={{ display: 'flex', height: H.md, boxSizing: 'border-box', padding: sp(2), border: `1px solid ${C.border}`, borderRadius: R.md, background: C.bg }}>
@@ -70,7 +74,7 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
                     type="button"
                     aria-pressed={on}
                     onClick={() => setCamera(c.value)}
-                    style={{ height: '100%', padding: sp(0, 10), border: 0, borderRadius: R.md, background: on ? C.surface : 'transparent', boxShadow: on ? SH[1] : 'none', ...fs(13), fontWeight: on ? 700 : 500, color: on ? C.text : C.text2 }}
+                    style={{ height: '100%', padding: sp(0, 10), border: 0, borderRadius: R.md, background: on ? C.surface : 'transparent', boxShadow: on ? SH[1] : 'none', ...fs(13), fontWeight: on ? 700 : 500, color: on ? C.text : C.text2, whiteSpace: 'nowrap' }}
                   >
                     {c.label}
                   </button>
@@ -85,9 +89,13 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
           </ul>
         </div>
 
-        <div style={{ marginTop: sp(12), height: 510, flex: 'none', position: 'relative' }}>
-          <Suspense fallback={<p style={{ margin: 0, ...fs(14), color: C.text2 }}>Загружаем 3D…</p>}>
+        <div ref={sceneBox} style={{ marginTop: sp(12), height: 510, flex: 'none', position: 'relative' }}>
+          {no3d ? (
+            <SceneUnavailable height={510} onOpenPlan={() => document.querySelector<SVGElement>('svg[aria-label^="План комнаты"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' })} />
+          ) : (
+          <Suspense fallback={<SceneLoading height={510} />}>
             <Scene3D
+              onLost={() => setNo3d(true)}
               room={room}
               byId={result.byId}
               selectedId={state.selectedId}
@@ -95,10 +103,11 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
               preset={camera}
               poses={poses}
               floorOffset={floorOffset}
-              width={518}
+              width={sceneWidth || 518}
               height={510}
             />
           </Suspense>
+          )}
           {q.phase === 'computing' && (
             <p role="status" style={{ position: 'absolute', left: 0, bottom: 0, margin: 0, padding: sp(6, 10), borderRadius: R.md, background: C.surface, boxShadow: SH[2], ...fs(13), color: C.text }}>
               Считаем колебания здания и физику мебели…

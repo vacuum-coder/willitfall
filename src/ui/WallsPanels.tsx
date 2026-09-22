@@ -5,7 +5,7 @@ import { C, FONT, fs, sp, R, H, card, selectStyle } from './ds';
 import { Chevron } from './icons';
 import { num } from './format';
 import { useRoom } from '../state/RoomContext';
-import { wallFrames, isValidRoom } from '../state/placement';
+import { wallFrames, isValidRoom, shapeKind } from '../state/placement';
 import { polyArea } from '../physics/geometry';
 import { CEILING_CM } from '../data/presets';
 import type { Opening } from '../physics/types';
@@ -13,12 +13,12 @@ import type { Opening } from '../physics/types';
 const dt: CSSProperties = { padding: sp(6, 0), borderTop: `1px solid ${C.border}`, color: C.text2 };
 const dd: CSSProperties = { margin: 0, padding: sp(6, 0), borderTop: `1px solid ${C.border}`, fontWeight: 700, textAlign: 'right' };
 
-function shapeName(n: number): { name: string; template: string } {
-  if (n === 4) return { name: 'Прямоугольная', template: 'шаблон «Прямоугольная»' };
-  if (n === 6) return { name: 'Г-образная', template: 'шаблон «Г»' };
-  if (n === 8) return { name: 'П-образная', template: 'шаблон «П»' };
-  return { name: 'Свой контур', template: 'углы расставлены вручную' };
-}
+const SHAPES = {
+  rect: { name: 'Прямоугольная', template: 'шаблон «Прямоугольная»' },
+  L: { name: 'Г-образная', template: 'шаблон «Г»' },
+  U: { name: 'П-образная', template: 'шаблон «П»' },
+  custom: { name: 'Свой контур', template: 'углы расставлены вручную' },
+};
 
 export function ShapeCard() {
   const { state } = useRoom();
@@ -26,7 +26,7 @@ export function ShapeCard() {
   const valid = isValidRoom(v);
   const door = state.room.openings.find((o) => o.kind === 'door');
   const doorFits = door && frames[door.wall] && door.offset + door.width <= frames[door.wall].len + 1e-6;
-  const { name, template } = shapeName(v.length);
+  const { name, template } = SHAPES[shapeKind(v)];
   return (
     <section style={{ ...card, padding: sp(20) }} aria-labelledby="h-shape">
       <p style={{ margin: 0, ...fs(12), fontWeight: 600, color: C.text2 }}>Форма комнаты</p>

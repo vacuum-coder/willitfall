@@ -156,6 +156,14 @@ function segmentsTouch(p1: Vec, p2: Vec, q1: Vec, q2: Vec): boolean {
   return (d1 === 0 && on(q1, q2, p1)) || (d2 === 0 && on(q1, q2, p2)) || (d3 === 0 && on(p1, p2, q1)) || (d4 === 0 && on(p1, p2, q2));
 }
 
+/** Which template the outline is: every wall horizontal or vertical and 4 / 6 / 8 corners. */
+export function shapeKind(v: Vec[]): 'rect' | 'L' | 'U' | 'custom' {
+  const n = v.length;
+  const square = v.every((a, i) => { const b = v[(i + 1) % n]; return Math.abs(a.x - b.x) < 1e-6 || Math.abs(a.y - b.y) < 1e-6; });
+  if (!square) return 'custom';
+  return n === 4 ? 'rect' : n === 6 ? 'L' : n === 8 ? 'U' : 'custom';
+}
+
 /** At least 3 corners, every wall ≥ 50 cm, no wall crossing another. */
 export function isValidRoom(v: Vec[]): boolean {
   const n = v.length;

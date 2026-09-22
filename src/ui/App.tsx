@@ -27,7 +27,8 @@ function useRoute(): Route {
 }
 
 function useIsPhone(): boolean {
-  const query = '(max-width: 899px)';
+  // Below 1200 px the three desktop columns no longer fit: phones and tablets get the single-column layout.
+  const query = '(max-width: 1199px)';
   const [phone, setPhone] = useState(() => matchMedia(query).matches);
   useEffect(() => {
     const m = matchMedia(query), on = () => setPhone(m.matches);
@@ -46,7 +47,7 @@ function RoomScreen({ phone }: { phone: boolean }) {
       id="room"
       style={{
         boxSizing: 'border-box', padding: sp(24, 32, 28), display: 'grid',
-        gridTemplateColumns: '392px minmax(480px, 552px) 384px', columnGap: sp(24), justifyContent: 'center',
+        gridTemplateColumns: 'minmax(340px, 392px) minmax(420px, 552px) minmax(320px, 384px)', columnGap: sp(24), justifyContent: 'center',
       }}
     >
       <ControlsPanel result={result} />

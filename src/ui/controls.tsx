@@ -8,6 +8,8 @@ import { status } from './verdict';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
 import { CITY_DESIGN_INTENSITY } from '../data/records';
 import { intensityToAccel } from '../physics/intensity';
+import { layoutFlags } from './scaleLabels';
+import { useElementWidth, textWidth } from './useElementWidth';
 import type { BuildingType } from '../physics/types';
 
 export const BUILDING: { value: BuildingType; label: string }[] = [
@@ -94,37 +96,46 @@ export function BuildingLine({ gain }: { gain: number | null }) {
 
 const pct = (I: number) => ((I - 5) / 5) * 100;
 
-/** Slider 5–10 points with the design intensity and every item's threshold marked on it. */
+/** Slider 5–10 points with the design intensity and every item's threshold marked on it; labels never overlap. */
 export function IntensityScale({ id, compact = false, result }: { id: string; compact?: boolean; result: RoomAssessment }) {
   const { state, dispatch } = useRoom();
   const { intensity } = state.settings;
-  const flagRow = compact ? { height: 40, top: 20, flag: 20 } : { height: 46, top: 22, flag: 24 };
+  const [box, W] = useElementWidth<HTMLDivElement>(344);
+  const rowH = compact ? 20 : 22;
   const flags = result.assessments
     .filter((a) => a.criticalIntensity !== null && a.criticalIntensity >= 5 && a.criticalIntensity <= 10 && status(a) !== 'safe' && a.mode !== 'slides')
     .sort((a, b) => a.criticalIntensity! - b.criticalIntensity!)
-    .slice(0, 3)
+    .slice(0, 4)
     .map((a) => ({ a, item: state.room.items.find((i) => i.id === a.itemId)! }));
+  const label = (f: (typeof flags)[number]) => `${f.item.name} ${num(f.a.criticalIntensity!)}`;
+  const designText = 'расчётная для Алматы';
+  const layout = layoutFlags(
+    flags.map((f) => ({ id: f.a.itemId, x: (pct(f.a.criticalIntensity!) / 100) * W, width: textWidth(label(f)) + 2 })),
+    { x: (pct(CITY_DESIGN_INTENSITY) / 100) * W, width: textWidth(designText) + 8 },
+    W,
+  );
+  const height = layout.rows * rowH + (compact ? 0 : 2);
 
   return (
     <div style={{ padding: sp(0, 12), marginTop: compact ? sp(6) : sp(12) }}>
-      <div style={{ position: 'relative', height: flagRow.height }}>
-        <div style={{ position: 'absolute', right: `${100 - pct(CITY_DESIGN_INTENSITY)}%`, top: 0, height: flagRow.height, boxSizing: 'border-box', paddingRight: sp(6), borderRight: `1px dashed ${C.text}`, ...fs(12), fontWeight: 600, color: C.text, whiteSpace: 'nowrap' }}>
-          расчётная для Алматы
+      <div ref={box} style={{ position: 'relative', height }}>
+        <div style={{ position: 'absolute', right: `${100 - pct(CITY_DESIGN_INTENSITY)}%`, top: 0, height, boxSizing: 'border-box', paddingRight: sp(6), borderRight: `1px dashed ${C.text}`, ...fs(12), fontWeight: 600, color: C.text, whiteSpace: 'nowrap' }}>
+          {designText}
         </div>
-        {flags.map(({ a, item }, k) => {
-          const left = pct(a.criticalIntensity!);
-          const toLeft = k % 2 === 0 && left > 15;
+        {flags.map((f) => {
+          const p = layout.placed.find((x) => x.id === f.a.itemId)!;
+          const left = pct(f.a.criticalIntensity!);
           return (
             <div
-              key={a.itemId}
+              key={f.a.itemId}
               style={{
-                position: 'absolute', top: flagRow.top, height: flagRow.flag, boxSizing: 'border-box', ...fs(12), fontWeight: 600, color: C.text, whiteSpace: 'nowrap',
-                ...(toLeft
+                position: 'absolute', top: p.row * rowH, height: height - p.row * rowH, boxSizing: 'border-box', ...fs(12), fontWeight: 600, color: C.text, whiteSpace: 'nowrap',
+                ...(p.side === 'left'
                   ? { right: `${100 - left}%`, paddingRight: sp(6), borderRight: `1px solid ${C.danger}` }
                   : { left: `${left}%`, paddingLeft: sp(6), borderLeft: `1px solid ${C.danger}` }),
               }}
             >
-              {item.name} <span style={{ fontWeight: 700, color: C.danger }}>{num(a.criticalIntensity!)}</span>
+              {f.item.name} <span style={{ fontWeight: 700, color: C.danger }}>{num(f.a.criticalIntensity!)}</span>
             </div>
           );
         })}

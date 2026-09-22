@@ -2,9 +2,9 @@
 // a corner, a selected corner is removed with Delete. Furniture is hidden while the outline is edited.
 
 import { useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
-import { C } from './ds';
+import { C, fs, sp, R, button } from './ds';
 import { num } from './format';
-import { wallFrames, grid } from '../state/placement';
+import { wallFrames, grid, isValidRoom, MIN_WALL_CM } from '../state/placement';
 import type { Action } from '../state/roomReducer';
 import type { Vec } from '../physics/geometry';
 import type { Room } from '../physics/types';
@@ -15,6 +15,8 @@ const WALL = 12;
 export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room: Room; dispatch: Dispatch<Action>; width?: number; height?: number }) {
   const svg = useRef<SVGSVGElement>(null);
   const [active, setActive] = useState<number | null>(null);
+  // A corner position the room refused: shown in red with the reason until the user moves on or cancels.
+  const [attempt, setAttempt] = useState<Vec[] | null>(null);
   const drag = useRef<{ index: number; pointer: number } | null>(null);
   const frame = useRef(0);
   const v = room.vertices, n = v.length;
@@ -39,13 +41,20 @@ export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room:
     if (!d || d.pointer !== e.pointerId) return;
     const p = toPlan(e);
     cancelAnimationFrame(frame.current);
-    frame.current = requestAnimationFrame(() => dispatch({ type: 'MOVE_VERTEX', index: d.index, to: { x: grid(p.x), y: grid(p.y) } }));
+    frame.current = requestAnimationFrame(() => {
+      const to = { x: grid(p.x), y: grid(p.y) };
+      const candidate = v.map((q, i) => (i === d.index ? to : q));
+      if (isValidRoom(candidate)) { setAttempt(null); dispatch({ type: 'MOVE_VERTEX', index: d.index, to }); } else setAttempt(candidate);
+    });
   };
   const onKey = (e: KeyboardEvent, i: number) => {
     const step = e.shiftKey ? 1 : 5, p = v[i];
     const to = e.key === 'ArrowLeft' ? { x: p.x - step, y: p.y } : e.key === 'ArrowRight' ? { x: p.x + step, y: p.y }
       : e.key === 'ArrowUp' ? { x: p.x, y: p.y - step } : e.key === 'ArrowDown' ? { x: p.x, y: p.y + step } : null;
-    if (to) dispatch({ type: 'MOVE_VERTEX', index: i, to });
+    if (to) {
+      const candidate = v.map((q, k) => (k === i ? to : q));
+      if (isValidRoom(candidate)) { setAttempt(null); dispatch({ type: 'MOVE_VERTEX', index: i, to }); } else setAttempt(candidate);
+    }
     else if (e.key === 'Delete' || e.key === 'Backspace') { dispatch({ type: 'REMOVE_VERTEX', index: i }); setActive(null); }
     else return;
     e.preventDefault();
@@ -61,7 +70,9 @@ export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room:
     return { x: p1.x + e1.t.x * k, y: p1.y + e1.t.y * k };
   });
 
+  const problem = attempt && explain(attempt);
   return (
+    <div>
     <svg ref={svg} viewBox={viewBox} width={width} height={height} role="img" aria-label={`Контур комнаты: ${n} стен`} style={{ display: 'block', touchAction: 'none', userSelect: 'none' }} onPointerMove={onMove} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}>
       <defs>
         <clipPath id="roomClip"><path d={outline(v)} /></clipPath>
@@ -114,6 +125,19 @@ export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room:
         );
       })}
 
+      {attempt && (
+        <g pointerEvents="none">
+          <path d={outline(v)} fill="none" style={{ stroke: C.text2 }} strokeWidth="1.2" strokeDasharray="5 4" />
+          <path d={outline(attempt)} fill="none" style={{ stroke: C.danger }} strokeWidth="6" strokeLinejoin="round" opacity="0.8" />
+          {problem?.at && (
+            <g>
+              <circle cx={problem.at.x} cy={problem.at.y} r="12" style={{ fill: C.surface, stroke: C.danger }} strokeWidth="2" />
+              <path d={`M${problem.at.x - 5},${problem.at.y - 5} l10,10 M${problem.at.x + 5},${problem.at.y - 5} l-10,10`} style={{ stroke: C.danger }} strokeWidth="2" />
+            </g>
+          )}
+        </g>
+      )}
+
       {v.map((p, i) => (
         <circle
           key={`v${i}`}
@@ -131,5 +155,36 @@ export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room:
         />
       ))}
     </svg>
+    {problem && (
+      <div role="alert" style={{ marginTop: sp(12), padding: sp(12, 14), border: `1px solid ${C.danger}`, borderRadius: R.md, background: C.surface }}>
+        <p style={{ margin: 0, ...fs(14), fontWeight: 600, color: C.danger }}>⚠ {problem.title}</p>
+        <p style={{ margin: sp(4, 0, 0), ...fs(13), color: C.text2 }}>Расчёт и 3D обновятся, когда форма станет правильной. Пока остаётся прежняя форма — пунктиром.</p>
+        <button type="button" onClick={() => setAttempt(null)} style={{ ...button.secondary, marginTop: sp(10) }}>Отменить</button>
+      </div>
+    )}
+    </div>
   );
+}
+
+/** Why an outline is refused, and where to look. */
+export function explain(p: Vec[]): { title: string; at?: Vec } {
+  const n = p.length;
+  for (let i = 0; i < n; i++) {
+    const a = p[i], b = p[(i + 1) % n];
+    if (Math.hypot(b.x - a.x, b.y - a.y) < MIN_WALL_CM) return { title: `Стена ${i + 1} короче ${MIN_WALL_CM} см — раздвиньте углы`, at: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
+  }
+  for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) {
+    if (i === 0 && j === n - 1) continue;
+    const at = cross(p[i], p[(i + 1) % n], p[j], p[(j + 1) % n]);
+    if (at) return { title: 'Стены пересекаются — сдвиньте угол', at };
+  }
+  return { title: 'Такая форма не получается — сдвиньте угол' };
+}
+
+function cross(a: Vec, b: Vec, c: Vec, d: Vec): Vec | null {
+  const den = (b.x - a.x) * (d.y - c.y) - (b.y - a.y) * (d.x - c.x);
+  if (Math.abs(den) < 1e-9) return null;
+  const t = ((c.x - a.x) * (d.y - c.y) - (c.y - a.y) * (d.x - c.x)) / den;
+  const u = ((c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x)) / den;
+  return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? { x: a.x + t * (b.x - a.x), y: a.y + t * (b.y - a.y) } : null;
 }

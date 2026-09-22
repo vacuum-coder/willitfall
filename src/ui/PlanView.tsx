@@ -232,6 +232,13 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
 
       {others.concat(bed).map((i) => <Label key={`l-${i.id}`} item={i} />)}
 
+      {room.items.length === 0 && (
+        <g pointerEvents="none">
+          <circle cx={(x0 + x1) / 2} cy={(y0 + y1) / 2 - 20} r="16" fill="none" style={{ stroke: C.text2 }} strokeWidth="1.2" strokeDasharray="3 3" />
+          <path d={`M${(x0 + x1) / 2 - 8},${(y0 + y1) / 2 - 20} h16 M${(x0 + x1) / 2},${(y0 + y1) / 2 - 28} v16`} style={{ stroke: C.text2 }} strokeWidth="1.4" />
+          <text x={(x0 + x1) / 2} y={(y0 + y1) / 2 + 20} textAnchor="middle" {...TEXT} fontSize={labelSize * 0.8} fontWeight="500" style={{ fill: C.text2 }}>Комната пуста</text>
+        </g>
+      )}
       <Dimensions x0={x0} x1={x1} y0={y0} y1={y1} scaleBar={fit === 'card'} />
     </svg>
     </LabelSize.Provider>

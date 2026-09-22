@@ -55,7 +55,7 @@ export function PhysicsCheck() {
   };
 
   return (
-    <main style={{ boxSizing: 'border-box', padding: sp(24, 32, 48), display: 'grid', gridTemplateColumns: 'minmax(min(100%, 340px), 390px) minmax(0, 1fr)', columnGap: sp(24), rowGap: sp(24), maxWidth: 1440, margin: '0 auto', width: '100%' }}>
+    <main style={{ boxSizing: 'border-box', padding: sp(24, 32, 48), display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 390px), 1fr))', columnGap: sp(24), rowGap: sp(24), maxWidth: 1440, margin: '0 auto', width: '100%' }}>
       <div>
         <h1 style={{ margin: 0, fontFamily: FONT.display, fontWeight: 500, ...fs(32), letterSpacing: LS.display }}>Формула против опыта</h1>
         <section style={{ ...card, marginTop: sp(20), padding: sp(20) }} aria-labelledby="h-tilt">

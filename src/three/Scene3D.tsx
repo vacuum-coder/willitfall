@@ -3,7 +3,7 @@
 
 import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber';
 import { OrbitControls, OrthographicCamera, PerspectiveCamera, Html, Line, Edges } from '@react-three/drei';
-import { useEffect, useMemo, useRef, useState, type Dispatch } from 'react';
+import { useEffect, useMemo, useRef, type Dispatch } from 'react';
 import { BoxGeometry, CanvasTexture, DoubleSide, MeshBasicMaterial, Plane, RepeatWrapping, Shape, Vector3 } from 'three';
 import { token, tokenAlpha, FACES, type Faces } from './sceneColors';
 import { CEILING_CM } from '../data/presets';
@@ -158,6 +158,8 @@ interface SceneProps {
   floorOffset?: { x: number; z: number };
   width: number;
   height: number;
+  /** Called when the browser drops the WebGL context. */
+  onLost?: () => void;
 }
 
 function Furniture({ item, a, dangerIndex, selected, pose, onPointerDown }: {
@@ -321,7 +323,7 @@ function useFloorDrag(dispatch: Dispatch<Action>) {
   };
 }
 
-function Contents({ room, byId, selectedId, dispatch, preset, poses, floorOffset }: Omit<SceneProps, 'width' | 'height'>) {
+function Contents({ room, byId, selectedId, dispatch, preset, poses, floorOffset }: Omit<SceneProps, 'width' | 'height' | 'onLost'>) {
   liftRoom = room;
   const startDrag = useFloorDrag(dispatch);
   const dangerIndex = new Map<string, number>();
@@ -355,8 +357,6 @@ function Contents({ room, byId, selectedId, dispatch, preset, poses, floorOffset
 }
 
 export default function Scene3D(props: SceneProps) {
-  const [lost, setLost] = useState(false);
-  if (lost) return <p style={{ margin: 0, ...fs(14), color: C.text2 }}>3D недоступно в этом браузере. План и расчёт работают без него.</p>;
   return (
     <Canvas
       orthographic
@@ -364,7 +364,7 @@ export default function Scene3D(props: SceneProps) {
       dpr={[1, 2]}
       style={{ width: props.width, height: props.height, background: 'transparent' }}
       gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
-      onCreated={({ gl }) => gl.domElement.addEventListener('webglcontextlost', () => setLost(true))}
+      onCreated={({ gl }) => gl.domElement.addEventListener('webglcontextlost', () => props.onLost?.())}
       onPointerMissed={() => props.dispatch({ type: 'SELECT_ITEM', id: null })}
     >
       <Contents {...props} />
