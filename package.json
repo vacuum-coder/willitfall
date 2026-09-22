@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint:ds": "node design-system/calm-night/lint.cjs src",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "deploy": "node scripts/deploy.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
