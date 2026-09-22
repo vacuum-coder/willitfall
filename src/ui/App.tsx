@@ -8,6 +8,7 @@ import { Summary } from './Summary';
 import { C, sp } from './ds';
 import { MobileHeader, MobileRoom } from './MobileRoom';
 import { HowItWorks } from './HowItWorks';
+import { PhysicsCheck } from './PhysicsCheck';
 
 function useRoute(): Route {
   const read = (): Route => {
@@ -64,6 +65,7 @@ export function App() {
         {phone ? <MobileHeader route={route} /> : <Header route={route} />}
         {route === 'room' && <RoomScreen phone={phone} />}
         {route === 'method' && <HowItWorks />}
+        {route === 'physics' && <PhysicsCheck />}
       </div>
     </RoomProvider>
   );
