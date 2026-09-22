@@ -17,6 +17,18 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 );
 
+// A part of the app (3D) from the previous deploy is gone after a new one: reload once to get the fresh page.
+window.addEventListener('vite:preloadError', (e) => {
+  try {
+    if (sessionStorage.getItem('wif-reloaded')) return;
+    sessionStorage.setItem('wif-reloaded', '1');
+  } catch {
+    return;
+  }
+  e.preventDefault();
+  location.reload();
+});
+
 // Installable and offline after the first visit (production build only).
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', async () => {

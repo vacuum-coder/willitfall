@@ -1,5 +1,5 @@
 // Plain ES5 on purpose: runs even in browsers too old for the app itself.
-// If the app has not drawn anything after the page loaded, shows a message instead of a blank screen.
+// If the app has not drawn anything after the page loaded, reloads once, then shows a message instead of a blank screen.
 (function () {
   var firstError = '';
   window.addEventListener('error', function (e) {
@@ -8,6 +8,10 @@
   function check() {
     var root = document.getElementById('root');
     if (!root || root.children.length) return;
+    // Usually a page left over from the previous deploy asking for files that are gone: reload once for the fresh one.
+    try {
+      if (!sessionStorage.getItem('wif-reloaded')) { sessionStorage.setItem('wif-reloaded', '1'); location.reload(); return; }
+    } catch (e) { /* storage blocked: show the message */ }
     var ua = navigator.userAgent;
     root.innerHTML =
       '<div style="max-width:420px;margin:48px auto;padding:0 16px;font-family:system-ui,sans-serif;color:#2B2622;line-height:1.5">' +
