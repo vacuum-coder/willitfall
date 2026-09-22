@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import polygonClipping from 'polygon-clipping';
 import { roomReducer, initialState, type AppState, type Action } from './roomReducer';
+import { doorAt } from './placement';
 import { PANEL_BEDROOM } from '../data/presets';
 import { itemPolygon, polyIntersects, polyArea, type Vec } from '../physics/geometry';
 
@@ -251,5 +252,18 @@ describe('room shape and door', () => {
   it('loading a preset resets the selection', () => {
     const s = run(start(), { type: 'SELECT_ITEM', id: 'pax' }, { type: 'LOAD_PRESET', room: PANEL_BEDROOM });
     expect(s.selectedId).toBeNull();
+  });
+});
+
+describe('dragging the door', () => {
+  it('snaps to the nearest wall, centred under the pointer, on a 5 cm grid', () => {
+    // Pointer near the right wall (x = 300) at y = 152: door 80 wide centred there → offset 110 from (300, 0).
+    expect(doorAt(PANEL_BEDROOM.vertices, { x: 290, y: 152 }, 80)).toEqual({ wall: 1, offset: 110 });
+    // Near the bottom wall, which runs from (300, 420) to (0, 420).
+    expect(doorAt(PANEL_BEDROOM.vertices, { x: 60, y: 430 }, 80)).toEqual({ wall: 2, offset: 200 });
+  });
+
+  it('stays inside the wall at its ends', () => {
+    expect(doorAt(PANEL_BEDROOM.vertices, { x: 5, y: 2 }, 80)).toEqual({ wall: 0, offset: 0 });
   });
 });

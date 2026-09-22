@@ -4,7 +4,8 @@
 import { useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import { C, fs, sp, R, button } from './ds';
 import { num } from './format';
-import { wallFrames, grid, isValidRoom, MIN_WALL_CM } from '../state/placement';
+import { wallFrames, grid, isValidRoom, doorAt, MIN_WALL_CM } from '../state/placement';
+import { doorZone } from '../physics/geometry';
 import type { Action } from '../state/roomReducer';
 import type { Vec } from '../physics/geometry';
 import type { Room } from '../physics/types';
@@ -18,6 +19,7 @@ export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room:
   // A corner position the room refused: shown in red with the reason until the user moves on or cancels.
   const [attempt, setAttempt] = useState<Vec[] | null>(null);
   const drag = useRef<{ index: number; pointer: number } | null>(null);
+  const doorDrag = useRef<number | null>(null);
   const frame = useRef(0);
   const v = room.vertices, n = v.length;
   const frames = wallFrames(v);
@@ -37,6 +39,12 @@ export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room:
     setActive(index);
   };
   const onMove = (e: ReactPointerEvent) => {
+    if (doorDrag.current === e.pointerId) {
+      const door = room.openings.find((o) => o.kind === 'door');
+      const at = door && doorAt(v, toPlan(e), door.width);
+      if (door && at) dispatch({ type: 'SET_DOOR', ...at, width: door.width, swing: door.swing });
+      return;
+    }
     const d = drag.current;
     if (!d || d.pointer !== e.pointerId) return;
     const p = toPlan(e);
@@ -73,7 +81,7 @@ export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room:
   const problem = attempt && explain(attempt);
   return (
     <div>
-    <svg ref={svg} viewBox={viewBox} width={width} height={height} role="img" aria-label={`Контур комнаты: ${n} стен`} style={{ display: 'block', touchAction: 'none', userSelect: 'none' }} onPointerMove={onMove} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}>
+    <svg ref={svg} viewBox={viewBox} width={width} height={height} role="img" aria-label={`Контур комнаты: ${n} стен`} style={{ display: 'block', touchAction: 'none', userSelect: 'none' }} onPointerMove={onMove} onPointerUp={() => { drag.current = null; doorDrag.current = null; }} onPointerCancel={() => { drag.current = null; doorDrag.current = null; }}>
       <defs>
         <clipPath id="roomClip"><path d={outline(v)} /></clipPath>
       </defs>
@@ -97,7 +105,13 @@ export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room:
         const tip = { x: hinge.x + dir.x * o.width, y: hinge.y + dir.y * o.width };
         const c = (tip.x - hinge.x) * (jamb.y - hinge.y) - (tip.y - hinge.y) * (jamb.x - hinge.x);
         return (
-          <g key={k}>
+          <g
+            key={k}
+            style={{ cursor: 'grab' }}
+            onPointerDown={(e) => { e.stopPropagation(); (e.currentTarget as Element).setPointerCapture(e.pointerId); doorDrag.current = e.pointerId; }}
+          >
+            <title>Перетащите дверь вдоль стены</title>
+            <path d={`${quad} ${outline(doorZone(v, o))}`} style={{ fill: C.surface, fillOpacity: 0 }} />
             <path d={quad} style={{ fill: C.surface }} />
             <path d={`M${tip.x},${tip.y} A${o.width},${o.width} 0 0 ${c > 0 ? 1 : 0} ${jamb.x},${jamb.y}`} fill="none" style={{ stroke: C.text }} strokeWidth="0.9" strokeDasharray="3 3" />
             <line x1={hinge.x} y1={hinge.y} x2={tip.x} y2={tip.y} style={{ stroke: C.text }} strokeWidth="2" />

@@ -6,7 +6,7 @@ import { C } from './ds';
 import { status, type Status } from './verdict';
 import { genitive, num } from './format';
 import { doorZone, type Side, type Vec } from '../physics/geometry';
-import { wallFrames } from '../state/placement';
+import { wallFrames, doorAt } from '../state/placement';
 import type { Action } from '../state/roomReducer';
 import type { Item, ItemAssessment, Room } from '../physics/types';
 
@@ -65,6 +65,7 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
   const svg = useRef<SVGSVGElement>(null);
   const drag = useRef<{ id: string; kind: 'move' | 'rotate'; start: Vec; item: Item; pointer: number } | null>(null);
   const frame = useRef(0);
+  const doorDrag = useRef<number | null>(null);
 
   const xs = room.vertices.map((v) => v.x), ys = room.vertices.map((v) => v.y);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
@@ -87,6 +88,12 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
     dispatch({ type: 'SELECT_ITEM', id: item.id });
   };
   const onMove = (e: ReactPointerEvent) => {
+    if (doorDrag.current === e.pointerId) {
+      const door = room.openings.find((o) => o.kind === 'door');
+      const at = door && doorAt(room.vertices, toPlan(e), door.width);
+      if (door && at) dispatch({ type: 'SET_DOOR', ...at, width: door.width, swing: door.swing });
+      return;
+    }
     const d = drag.current;
     if (!d || e.pointerId !== d.pointer) return;
     const p = toPlan(e), shift = e.shiftKey;
@@ -103,6 +110,7 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
   };
   const onUp = (e: ReactPointerEvent) => {
     if (drag.current?.pointer === e.pointerId) drag.current = null;
+    if (doorDrag.current === e.pointerId) doorDrag.current = null;
   };
   const onKey = (e: KeyboardEvent, item: Item) => {
     const step = e.shiftKey ? 1 : 5;
@@ -192,8 +200,15 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
         const sweep = v1.x * v2.y - v1.y * v2.x > 0 ? 1 : 0;
         const mid = { x: (p0.x + p1.x) / 2 + f.inward.x * 11, y: (p0.y + p1.y) / 2 + f.inward.y * 11 };
         return (
-          <g key={`door${k}`} pointerEvents="none">
-            <path d={path(doorZone(room.vertices, o))} fill="none" style={{ stroke: C.safe }} strokeWidth="1.2" strokeDasharray="4 3" />
+          <g
+            key={`door${k}`}
+            role="button"
+            aria-label="Дверь: перетащите вдоль стены"
+            style={{ cursor: 'grab' }}
+            onPointerDown={(e) => { e.stopPropagation(); (e.currentTarget as Element).setPointerCapture(e.pointerId); doorDrag.current = e.pointerId; }}
+          >
+            <title>Перетащите дверь вдоль стены</title>
+            <path d={path(doorZone(room.vertices, o))} style={{ fill: C.surface, fillOpacity: 0, stroke: C.safe }} strokeWidth="1.2" strokeDasharray="4 3" />
             <path d={`M${tip.x},${tip.y} A${o.width},${o.width} 0 0 ${sweep} ${jamb.x},${jamb.y}`} fill="none" style={{ stroke: C.text }} strokeWidth="0.9" strokeDasharray="3 3" />
             <line x1={hinge.x} y1={hinge.y} x2={tip.x} y2={tip.y} style={{ stroke: C.text }} strokeWidth="2.4" />
             <text x={mid.x} y={mid.y} textAnchor="middle" {...TEXT} fontSize={labelSize} fontWeight="700" style={{ fill: C.safe, stroke: C.surface2 }} strokeWidth="4" strokeLinejoin="round" paintOrder="stroke">выход</text>

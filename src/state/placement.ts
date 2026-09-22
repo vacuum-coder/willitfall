@@ -175,3 +175,18 @@ export function isValidRoom(v: Vec[]): boolean {
   }
   return true;
 }
+
+/** Where a door of `width` goes when dragged to `p`: the nearest wall long enough, centred on the pointer, 5 cm grid. */
+export function doorAt(vertices: Vec[], p: Vec, width: number): { wall: number; offset: number } | null {
+  let best: { wall: number; offset: number; dist: number } | null = null;
+  const frames = wallFrames(vertices);
+  for (let wall = 0; wall < frames.length; wall++) {
+    const f = frames[wall];
+    if (f.len < width) continue;
+    const s = dot(sub(p, f.a), f.t);
+    const along = clamp(s, 0, f.len);
+    const dist = Math.hypot(f.a.x + f.t.x * along - p.x, f.a.y + f.t.y * along - p.y);
+    if (!best || dist < best.dist) best = { wall, offset: clamp(grid(s - width / 2), 0, f.len - width), dist };
+  }
+  return best && { wall: best.wall, offset: best.offset };
+}
