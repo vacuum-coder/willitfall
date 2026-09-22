@@ -10,7 +10,7 @@
     "test": "vitest run",
     "lint:ds": "node design-system/calm-night/lint.cjs src",
     "e2e": "playwright test",
-    "deploy": "node scripts/deploy.mjs"
+    "deploy": "npm run build && wrangler deploy"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
@@ -26,7 +26,8 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "wrangler": "^4.136.3"
   },
   "dependencies": {
     "@dimforge/rapier3d-compat": "0.19.2",

@@ -1,0 +1,14 @@
+// Cloudflare: the site is plain static files from dist/ (headers in public/_headers). Deploy: npm run deploy
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "willitfall",
+  "compatibility_date": "2026-09-21",
+  // Keep willitfall.quickperch.workers.dev as a spare link next to the subdomain.
+  "workers_dev": true,
+  // The subdomain only; Cloudflare adds its own DNS record and never touches the rest of quickperch.com.
+  "routes": [{ "pattern": "willitfall.quickperch.com", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
