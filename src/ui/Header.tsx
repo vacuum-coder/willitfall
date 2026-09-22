@@ -15,10 +15,10 @@ export function Header({ route }: { route: Route }) {
   const { state, dispatch } = useRoom();
   return (
     <header style={{ height: 64, flex: 'none', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: sp(48), padding: sp(0, 32), borderBottom: `1px solid ${C.border}` }}>
-      <a href="#room" aria-label="[Название] — проверка спальни на землетрясение" style={{ display: 'flex', alignItems: 'center', gap: sp(12), color: C.text }}>
+      <a href="#room" aria-label="Will It Fall — проверка спальни на землетрясение" style={{ display: 'flex', alignItems: 'center', gap: sp(12), color: C.text }}>
         <Logo />
         <span style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontFamily: FONT.display, fontWeight: 600, ...fs(18) }}>[Название]</span>
+          <span style={{ fontFamily: FONT.display, fontWeight: 600, ...fs(18) }}>Will It Fall</span>
           <span style={{ ...fs(13), color: C.text2 }}>проверка спальни на землетрясение</span>
         </span>
       </a>

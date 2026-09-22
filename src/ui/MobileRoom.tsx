@@ -63,7 +63,7 @@ export function MobileHeader({ route }: { route: Route }) {
       <header style={{ height: 56, flex: 'none', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: sp(10), padding: sp(0, 6, 0, 16), borderBottom: `1px solid ${C.border}`, background: C.bg }}>
         <Logo />
         <a href="#room" style={{ display: 'flex', flexDirection: 'column', color: C.text }}>
-          <span style={{ fontFamily: FONT.display, fontWeight: 600, ...fs(18) }}>[Название]</span>
+          <span style={{ fontFamily: FONT.display, fontWeight: 600, ...fs(18) }}>Will It Fall</span>
           <span style={{ ...fs(12), color: C.text2 }}>проверка спальни на землетрясение</span>
         </a>
         <button type="button" aria-label="Меню" aria-expanded={open} onClick={() => setOpen((v) => !v)} style={{ marginLeft: 'auto', width: 44, height: 44, padding: 0, border: 0, borderRadius: R.md, background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -216,7 +216,7 @@ function Mobile3D({ result, onView }: { result: RoomAssessment; onView: (v: '3d'
         </div>
       </section>
 
-      <section aria-label="Сила толчка и этаж" style={{ flex: 'none', height: 154, boxSizing: 'border-box', padding: sp(10, 16, 6) }}>
+      <section aria-label="Сила толчка и этаж" style={{ flex: 'none', minHeight: 154, boxSizing: 'border-box', padding: sp(10, 16, 12) }}>
         <div style={{ height: 48, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label htmlFor="m-shake" style={{ ...fs(12), fontWeight: 600, color: C.text2 }}>Сила толчка</label>

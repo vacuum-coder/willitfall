@@ -4,7 +4,7 @@
 import { execSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 
-const PROJECT = process.env.PAGES_PROJECT || 'furniture-quake';
+const PROJECT = process.env.PAGES_PROJECT || 'willitfall';
 const env = { ...process.env };
 if (existsSync('.env.local')) {
   for (const line of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
