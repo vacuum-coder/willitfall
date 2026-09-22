@@ -4,7 +4,7 @@ import { createContext, useContext, useRef, type PointerEvent as ReactPointerEve
 import type { Dispatch } from 'react';
 import { C } from './ds';
 import { status, type Status } from './verdict';
-import { num } from './format';
+import { genitive, num } from './format';
 import { doorZone, type Side, type Vec } from '../physics/geometry';
 import { wallFrames } from '../state/placement';
 import type { Action } from '../state/roomReducer';
@@ -22,10 +22,6 @@ const toWorld = (i: Item, s: number, t: number): Vec => {
   return { x: i.x + s * Math.cos(a) - t * Math.sin(a), y: i.y + s * Math.sin(a) + t * Math.cos(a) };
 };
 
-const GENITIVE: Record<string, string> = {
-  wardrobe: 'шкафа', bookshelf: 'стеллажа', dresser: 'комода', mirror: 'зеркала', fridge: 'холодильника',
-  wallUnit: 'стенки', nightstand: 'тумбы', tv: 'телевизора', wallShelf: 'полки', picture: 'картины', vase: 'вазы', bed: 'кровати',
-};
 
 const FILL: Record<Status, { fill: string; stroke: string }> = {
   falls: { fill: C.dangerTint, stroke: C.danger },
@@ -61,9 +57,11 @@ interface Props {
   /** 'card': room with dimensions and scale bar (desktop); 'fill': the room fills a phone screen. */
   fit?: 'card' | 'fill';
   labelSize?: number;
+  /** Zoom onto these plan points (with a margin) instead of the whole room; read-only illustration. */
+  focus?: Vec[];
 }
 
-export function PlanView({ room, byId, selectedId, dispatch, width = 240, height = 324, fit = 'card', labelSize = 20 }: Props) {
+export function PlanView({ room, byId, selectedId, dispatch, width = 240, height = 324, fit = 'card', labelSize = 20, focus }: Props) {
   const svg = useRef<SVGSVGElement>(null);
   const drag = useRef<{ id: string; kind: 'move' | 'rotate'; start: Vec; item: Item; pointer: number } | null>(null);
   const frame = useRef(0);
@@ -71,9 +69,10 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
   const xs = room.vertices.map((v) => v.x), ys = room.vertices.map((v) => v.y);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
   const fillH = y1 - y0 + 80, fillW = (fillH * width) / height;
-  const viewBox = fit === 'card'
-    ? `${x0 - 60} ${y0 - 50} ${x1 - x0 + 100} ${y1 - y0 + 120}`
-    : `${(x0 + x1) / 2 - 18 - fillW / 2} ${y0 - 55} ${fillW} ${fillH}`;
+  const viewBox = focus?.length ? focusBox(focus, width / height)
+    : fit === 'card'
+      ? `${x0 - 60} ${y0 - 50} ${x1 - x0 + 100} ${y1 - y0 + 120}`
+      : `${(x0 + x1) / 2 - 18 - fillW / 2} ${y0 - 55} ${fillW} ${fillH}`;
 
   const toPlan = (e: { clientX: number; clientY: number }): Vec => {
     const s = svg.current!, m = s.getScreenCTM()!.inverse();
@@ -250,6 +249,15 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
   }
 }
 
+/** viewBox around the points with a 30 cm margin, stretched to the element's aspect ratio. */
+function focusBox(p: Vec[], aspect: number): string {
+  const xs = p.map((v) => v.x), ys = p.map((v) => v.y);
+  let x0 = Math.min(...xs) - 30, x1 = Math.max(...xs) + 30, y0 = Math.min(...ys) - 30, y1 = Math.max(...ys) + 30;
+  const w = x1 - x0, h = y1 - y0;
+  if (w / h < aspect) { const d = (h * aspect - w) / 2; x0 -= d; x1 += d; } else { const d = (w / aspect - h) / 2; y0 -= d; y1 += d; }
+  return `${x0} ${y0} ${x1 - x0} ${y1 - y0}`;
+}
+
 function planLabel(room: Room, byId: Map<string, ItemAssessment>): string {
   const xs = room.vertices.map((v) => v.x), ys = room.vertices.map((v) => v.y);
   const parts = room.items.filter((i) => i.kind !== 'bed').map((i) => {
@@ -365,7 +373,7 @@ function FallDimension({ item, side, zone }: { item: Item; side: Side; zone?: Ve
   const reach = Math.max(...zone.map((v) => (v.x - face.x) * out.x + (v.y - face.y) * out.y));
   const p0 = { x: face.x + out.x * 4, y: face.y + out.y * 4 }, p1 = { x: face.x + out.x * (reach - 4), y: face.y + out.y * (reach - 4) };
   const mid = { x: (p0.x + p1.x) / 2 - along.x * 9, y: (p0.y + p1.y) / 2 - along.y * 9 };
-  const text = `${num(reach / 100)} м — ${Math.abs(reach - item.height) < 1 ? `высота ${GENITIVE[item.kind] ?? 'предмета'}` : 'дальность падения'}`;
+  const text = `${num(reach / 100)} м — ${Math.abs(reach - item.height) < 1 ? `высота ${genitive(item.kind)}` : 'дальность падения'}`;
   return (
     <g pointerEvents="none">
       <line x1={p0.x} y1={p0.y} x2={p1.x} y2={p1.y} style={{ stroke: C.text }} strokeWidth="1" markerStart="url(#pArrInk)" markerEnd="url(#pArrInk)" />

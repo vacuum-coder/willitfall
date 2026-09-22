@@ -27,3 +27,10 @@ export function countPhrase(n: number, what: 'falls' | 'slides' | 'anchored'): s
   if (what === 'slides') return `${n} ${n === 1 ? 'сдвинется' : 'сдвинутся'}`;
   return `${n} ${n === 1 ? 'закреплён' : 'закреплены'}`;
 }
+
+const GENITIVE: Record<string, string> = {
+  wardrobe: 'шкафа', bookshelf: 'стеллажа', dresser: 'комода', mirror: 'зеркала', fridge: 'холодильника',
+  wallUnit: 'стенки', nightstand: 'тумбы', tv: 'телевизора', wallShelf: 'полки', picture: 'картины', vase: 'вазы', bed: 'кровати',
+};
+/** «высота шкафа», «для зеркала» */
+export const genitive = (kind: string): string => GENITIVE[kind] ?? 'предмета';

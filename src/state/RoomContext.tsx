@@ -30,16 +30,15 @@ export function useRoom(): Ctx {
   return ctx;
 }
 
-type Peak = { status: 'loading' } | { status: 'ready'; pfa7G: number } | { status: 'error'; message: string };
+export type Peak = { status: 'loading' } | { status: 'ready'; pfa7G: number } | { status: 'error'; message: string };
 
-const peakKey = (s: Settings) => `${s.recordId}|${s.buildingType}|${s.totalFloors}|${s.floor}`;
+const peakKey = (s: Settings, floor: number) => `${s.recordId}|${s.buildingType}|${s.totalFloors}|${floor}`;
 
-/** Peak floor acceleration at 7 points for the current floor, building and record (computed in a worker, cached). */
-export function useFloorPeak(settings: Settings): Peak {
+/** Peak floor acceleration at 7 points for the given floors of the current building and record (worker, cached). */
+export function useFloorPeaks(settings: Settings, floors: number[]): Map<number, Peak> {
   const [worker, setWorker] = useState<Worker | null>(null);
   const results = useRef(new Map<string, Peak>());
   const sent = useRef(new Set<string>());
-  const key = peakKey(settings);
   const [, rerender] = useState(0);
 
   useEffect(() => {
@@ -55,17 +54,27 @@ export function useFloorPeak(settings: Settings): Peak {
     return () => w.terminate();
   }, []);
 
+  const wanted = floors.join(',');
   useEffect(() => {
-    if (!worker || results.current.has(key) || sent.current.has(key)) return;
-    sent.current.add(key);
-    const req: FloorPeakRequest = {
-      key, recordId: settings.recordId, storeys: settings.totalFloors,
-      T1: periodFor(settings.buildingType, settings.totalFloors), floor: settings.floor, base: import.meta.env.BASE_URL,
-    };
-    worker.postMessage(req);
-  }, [key, settings, worker]);
+    if (!worker) return;
+    for (const floor of wanted.split(',').map(Number)) {
+      const key = peakKey(settings, floor);
+      if (results.current.has(key) || sent.current.has(key)) continue;
+      sent.current.add(key);
+      const req: FloorPeakRequest = {
+        key, recordId: settings.recordId, storeys: settings.totalFloors,
+        T1: periodFor(settings.buildingType, settings.totalFloors), floor, base: import.meta.env.BASE_URL,
+      };
+      worker.postMessage(req);
+    }
+  }, [wanted, settings, worker]);
 
-  return results.current.get(key) ?? { status: 'loading' };
+  return new Map(floors.map((f) => [f, results.current.get(peakKey(settings, f)) ?? { status: 'loading' as const }]));
+}
+
+/** Peak floor acceleration at 7 points for the current floor. */
+export function useFloorPeak(settings: Settings): Peak {
+  return useFloorPeaks(settings, [settings.floor]).get(settings.floor)!;
 }
 
 export interface RoomAssessment {
