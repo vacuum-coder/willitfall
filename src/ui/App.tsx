@@ -9,6 +9,8 @@ import { C, sp } from './ds';
 import { MobileHeader, MobileRoom } from './MobileRoom';
 import { HowItWorks } from './HowItWorks';
 import { PhysicsCheck } from './PhysicsCheck';
+import { ShapeCard, DoorCard } from './WallsPanels';
+import { useRoom } from '../state/RoomContext';
 
 function useRoute(): Route {
   const read = (): Route => {
@@ -37,6 +39,7 @@ function useIsPhone(): boolean {
 
 function RoomScreen({ phone }: { phone: boolean }) {
   const result = useAssessment();
+  const { state } = useRoom();
   if (phone) return <MobileRoom result={result} />;
   return (
     <main
@@ -49,8 +52,17 @@ function RoomScreen({ phone }: { phone: boolean }) {
       <ControlsPanel result={result} />
       <MainPanel result={result} />
       <aside aria-label="Выбранный предмет и итог" style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <ItemCard result={result} />
-        <Summary result={result} />
+        {state.walls ? (
+          <>
+            <ShapeCard />
+            <DoorCard />
+          </>
+        ) : (
+          <>
+            <ItemCard result={result} />
+            <Summary result={result} />
+          </>
+        )}
       </aside>
     </main>
   );

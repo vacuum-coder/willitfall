@@ -6,7 +6,7 @@ import type { AppState } from './roomReducer';
 export const STORAGE_KEY = 'furniture-quake:room';
 export const SCHEMA_VERSION = 1;
 
-interface Saved { version: number; room: Room; settings: Settings; nextId: number }
+interface Saved { version: number; room: Room; settings: Settings; nextId: number; walls?: AppState['walls'] }
 
 const isVec = (v: unknown) => !!v && typeof (v as { x: unknown }).x === 'number' && typeof (v as { y: unknown }).y === 'number';
 
@@ -23,12 +23,12 @@ function isSaved(x: unknown): x is Saved {
 }
 
 /** Saved room and settings, or null when there is nothing usable (then the app starts from the preset). */
-export function loadState(store: Storage | undefined = globalThis.localStorage): Pick<AppState, 'room' | 'settings' | 'nextId'> | null {
+export function loadState(store: Storage | undefined = globalThis.localStorage): Pick<AppState, 'room' | 'settings' | 'nextId' | 'walls'> | null {
   try {
     const raw = store?.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed: unknown = JSON.parse(raw);
-    return isSaved(parsed) ? { room: parsed.room, settings: parsed.settings, nextId: parsed.nextId } : null;
+    return isSaved(parsed) ? { room: parsed.room, settings: parsed.settings, nextId: parsed.nextId, walls: parsed.walls ?? null } : null;
   } catch {
     return null;
   }
@@ -36,7 +36,7 @@ export function loadState(store: Storage | undefined = globalThis.localStorage):
 
 export function saveState(s: AppState, store: Storage | undefined = globalThis.localStorage): void {
   try {
-    const saved: Saved = { version: SCHEMA_VERSION, room: s.room, settings: s.settings, nextId: s.nextId };
+    const saved: Saved = { version: SCHEMA_VERSION, room: s.room, settings: s.settings, nextId: s.nextId, walls: s.walls };
     store?.setItem(STORAGE_KEY, JSON.stringify(saved));
   } catch {
     // Private mode or a full quota: the app keeps working, the plan just is not remembered.

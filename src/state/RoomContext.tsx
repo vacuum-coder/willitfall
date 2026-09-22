@@ -14,7 +14,7 @@ const RoomCtx = createContext<Ctx | null>(null);
 
 function init(): AppState {
   const saved = loadState();
-  return saved ? { ...initialState(saved.room, saved.settings), nextId: saved.nextId } : initialState(PANEL_BEDROOM);
+  return saved ? { ...initialState(saved.room, saved.settings), nextId: saved.nextId, walls: saved.walls } : initialState(PANEL_BEDROOM);
 }
 
 export function RoomProvider({ children }: { children: ReactNode }) {

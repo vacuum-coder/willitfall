@@ -39,7 +39,7 @@ export interface Opening {
   wall: number;
   offset: number;
   width: number;
-  swing?: 'in-left' | 'in-right';
+  swing?: 'in-left' | 'in-right' | 'out-left' | 'out-right';
 }
 
 export interface Room {

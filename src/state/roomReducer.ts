@@ -17,6 +17,8 @@ export interface AppState {
   /** One-line message for the user after an edit that could not be done fully. */
   notice: string | null;
   nextId: number;
+  /** Walls mode: the furniture is put aside while the outline is edited, with the outline it started from. */
+  walls: { items: Item[]; vertices: Vec[]; openings: Opening[] } | null;
 }
 
 export type RoomTemplate = 'rect' | 'L' | 'U';
@@ -46,7 +48,10 @@ export type Action =
   | { type: 'TOGGLE_ANCHOR'; id: string }
   | { type: 'DELETE_ITEM'; id: string }
   | { type: 'SELECT_ITEM'; id: string | null }
-  | { type: 'CLEAR_NOTICE' };
+  | { type: 'CLEAR_NOTICE' }
+  | { type: 'BEGIN_WALLS' }
+  | { type: 'END_WALLS' }
+  | { type: 'RESET_SHAPE' };
 
 export const MIN_SIZE_CM = 10;
 export const MAX_HEIGHT_CM = 300;
@@ -57,7 +62,7 @@ export const WALL_KINDS: FurnitureKind[] = ['wallShelf', 'picture'];
 export const DEFAULT_MOUNT_HEIGHT_CM = 150;
 
 export const initialState = (room: Room, settings: Settings = DEFAULT_SETTINGS): AppState =>
-  ({ room: structuredClone(room), settings, selectedId: null, notice: null, nextId: 1 });
+  ({ room: structuredClone(room), settings, selectedId: null, notice: null, nextId: 1, walls: null });
 
 const round1 = (v: number) => Math.round(v * 10) / 10;
 const withItems = (s: AppState, items: Item[]): AppState => ({ ...s, room: { ...s.room, items } });
@@ -151,14 +156,19 @@ function reshape(s: AppState, vertices: Vec[], mapWall: (old: number) => number[
 
   const onWall = (wall: number, offset: number, width: number): { wall: number; offset: number } | null => {
     const p = { x: oldF[wall].a.x + oldF[wall].t.x * offset, y: oldF[wall].a.y + oldF[wall].t.y * offset };
-    let best: { wall: number; offset: number; overlap: number } | null = null;
+    const q = { x: p.x + oldF[wall].t.x * width, y: p.y + oldF[wall].t.y * width };
+    let best: { wall: number; offset: number; overlap: number; dist: number } | null = null;
     for (const nw of mapWall(wall)) {
       const f = newF[nw];
       if (!f || f.len < width) continue;
       const raw = (p.x - f.a.x) * f.t.x + (p.y - f.a.y) * f.t.y;
       const off = clamp(raw, 0, f.len - width);
       const overlap = Math.min(raw + width, f.len) - Math.max(raw, 0);
-      if (!best || overlap > best.overlap) best = { wall: nw, offset: Math.round(off * 1e6) / 1e6, overlap };
+      // Nearest wall first (several candidates when the outline changed completely), then the best overlap.
+      const dist = Math.max(distToWall(p, f), distToWall(q, f));
+      if (!best || dist < best.dist - 1e-6 || (Math.abs(dist - best.dist) <= 1e-6 && overlap > best.overlap)) {
+        best = { wall: nw, offset: Math.round(off * 1e6) / 1e6, overlap, dist };
+      }
     }
     return best && { wall: best.wall, offset: best.offset };
   };
@@ -213,6 +223,11 @@ function reshape(s: AppState, vertices: Vec[], mapWall: (old: number) => number[
   return { ...s, room, selectedId, notice: lost.length ? `Не поместились: ${lost.map((i) => i.name).join(', ')}` : null };
 }
 
+function distToWall(p: Vec, f: WallFrame): number {
+  const t = clamp((p.x - f.a.x) * f.t.x + (p.y - f.a.y) * f.t.y, 0, f.len);
+  return Math.hypot(f.a.x + f.t.x * t - p.x, f.a.y + f.t.y * t - p.y);
+}
+
 function template(kind: RoomTemplate, v: Vec[]): Vec[] {
   const xs = v.map((p) => p.x), ys = v.map((p) => p.y);
   const x0 = Math.min(...xs), y0 = Math.min(...ys), W = Math.max(...xs) - x0, H = Math.max(...ys) - y0;
@@ -257,6 +272,23 @@ export function roomReducer(s: AppState, a: Action): AppState {
       return { ...s, room: structuredClone(a.room), selectedId: null, notice: null };
     case 'CLEAR_NOTICE':
       return { ...s, notice: null };
+    case 'BEGIN_WALLS':
+      if (s.walls) return s;
+      return {
+        ...s, selectedId: null, notice: null,
+        walls: { items: s.room.items, vertices: s.room.vertices, openings: s.room.openings },
+        room: { ...s.room, items: [] },
+      };
+    case 'RESET_SHAPE':
+      return s.walls ? { ...s, room: { ...s.room, vertices: s.walls.vertices, openings: s.walls.openings } } : s;
+    case 'END_WALLS': {
+      if (!s.walls) return s;
+      // Put the furniture back as if the outline had changed from the old one to the new one in a single step.
+      const before: AppState = { ...s, walls: null, room: { ...s.room, vertices: s.walls.vertices, openings: [], items: s.walls.items } };
+      const all = s.room.vertices.map((_, i) => i);
+      const back = reshape(before, s.room.vertices, () => all, false);
+      return { ...back, walls: null, room: { ...back.room, openings: s.room.openings } };
+    }
     case 'SELECT_ITEM':
       return { ...s, selectedId: a.id };
     case 'SET_INTENSITY':
@@ -305,7 +337,9 @@ export function roomReducer(s: AppState, a: Action): AppState {
     }
     case 'APPLY_ROOM_TEMPLATE': {
       const v = template(a.template, s.room.vertices);
-      return reshape(s, v, (w) => [Math.min(w, v.length - 1)], false);
+      // A new shape has new walls: doors, windows and wall items move to the nearest one.
+      const all = v.map((_, i) => i);
+      return reshape(s, v, () => all, false);
     }
   }
 

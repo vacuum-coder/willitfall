@@ -184,8 +184,10 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
 
       {room.openings.filter((o) => o.kind === 'door').map((o, k) => {
         const { f, p0, p1 } = opening(o.wall, o.offset, o.width);
-        const hinge = o.swing === 'in-left' ? p0 : p1, jamb = o.swing === 'in-left' ? p1 : p0;
-        const tip = { x: hinge.x + f.inward.x * o.width, y: hinge.y + f.inward.y * o.width };
+        const left = o.swing?.endsWith('left') ?? false, inward = !o.swing?.startsWith('out');
+        const hinge = left ? p0 : p1, jamb = left ? p1 : p0;
+        const dir = inward ? f.inward : { x: -f.inward.x, y: -f.inward.y };
+        const tip = { x: hinge.x + dir.x * o.width, y: hinge.y + dir.y * o.width };
         const v1 = { x: tip.x - hinge.x, y: tip.y - hinge.y }, v2 = { x: jamb.x - hinge.x, y: jamb.y - hinge.y };
         const sweep = v1.x * v2.y - v1.y * v2.x > 0 ? 1 : 0;
         const mid = { x: (p0.x + p1.x) / 2 + f.inward.x * 11, y: (p0.y + p1.y) / 2 + f.inward.y * 11 };

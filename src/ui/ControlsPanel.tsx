@@ -5,6 +5,7 @@ import { C, FONT, fs, sp, R, H, LS, card, stepNumber, selectStyle } from './ds';
 import { Chevron, Move, Plus, ZoneSwatch, PassageSwatch } from './icons';
 import { FloorStepper, BuildingLine, IntensityScale, floorNumbers } from './controls';
 import { PlanView } from './PlanView';
+import { WallsPlan } from './WallsPlan';
 import { CustomItemForm } from './CustomItemForm';
 import { num, onFloor, points } from './format';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
@@ -36,10 +37,19 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
 
   return (
     <section aria-label="Параметры: комната, этаж, сила толчка" style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: sp(10), height: 28 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: sp(10), height: 32 }}>
         <span style={stepNumber}>1</span>
         <label htmlFor="room-select" style={sectionTitle}>Комната</label>
-        <span style={hint}>готовая планировка или своя</span>
+        <div role="group" aria-label="Что правим" style={{ marginLeft: 'auto', display: 'flex', height: H.md, boxSizing: 'border-box', border: `1px solid ${C.borderStrong}`, borderRadius: R.md, overflow: 'hidden' }}>
+          {([['furniture', 'Мебель'], ['walls', 'Стены']] as const).map(([mode, text]) => {
+            const on = (mode === 'walls') === !!state.walls;
+            return (
+              <button key={mode} type="button" aria-pressed={on} onClick={() => dispatch({ type: mode === 'walls' ? 'BEGIN_WALLS' : 'END_WALLS' })} style={{ border: 0, padding: sp(0, 12), background: on ? C.text : C.surface, color: on ? C.onAccent : C.text, ...fs(13), fontWeight: on ? 700 : 500 }}>
+                {text}
+              </button>
+            );
+          })}
+        </div>
       </div>
       <div style={{ position: 'relative', marginTop: sp(10) }}>
         <select
@@ -47,16 +57,37 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
           value={isPreset ? 'preset' : 'own'}
           onChange={(e) => {
             if (e.target.value === 'preset') dispatch({ type: 'LOAD_PRESET', room: PANEL_BEDROOM });
-            else location.hash = '#walls';
+            else dispatch({ type: 'BEGIN_WALLS' });
           }}
           style={{ ...selectStyle, width: '100%', padding: sp(0, 36, 0, 14) }}
         >
-          <option value="preset">{PANEL_BEDROOM.name}</option>
+          <option value="preset" disabled={!!state.walls}>{PANEL_BEDROOM.name}</option>
           <option value="own">Своя планировка</option>
         </select>
         <Chevron right={14} />
       </div>
 
+      {state.walls ? (
+        <div style={{ ...card, marginTop: sp(12), padding: sp(12) }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: sp(8) }}>
+            <h2 style={{ margin: 0, fontFamily: FONT.display, fontWeight: 600, ...fs(22) }}>План</h2>
+            <span style={{ ...fs(12), color: C.text2, marginLeft: 'auto' }}>Шаблон</span>
+            <div role="group" aria-label="Шаблон комнаты" style={{ display: 'flex', height: H.md, boxSizing: 'border-box', border: `1px solid ${C.borderStrong}`, borderRadius: R.md, overflow: 'hidden' }}>
+              {([['rect', 'Прямоугольная', 4], ['L', 'Г', 6], ['U', 'П', 8]] as const).map(([t, text, count]) => {
+                const on = room.vertices.length === count;
+                return (
+                  <button key={t} type="button" aria-pressed={on} onClick={() => dispatch({ type: 'APPLY_ROOM_TEMPLATE', template: t })} style={{ border: 0, padding: sp(0, 12), background: on ? C.text : C.surface, color: on ? C.onAccent : C.text, ...fs(13), fontWeight: on ? 700 : 500 }}>
+                    {text}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div style={{ marginTop: sp(8), display: 'flex', justifyContent: 'center' }}>
+            <WallsPlan room={room} dispatch={dispatch} width={340} height={340} />
+          </div>
+        </div>
+      ) : (
       <div style={{ ...card, marginTop: sp(12), padding: sp(12) }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', height: 24 }}>
           <h2 style={{ margin: 0, fontFamily: FONT.display, fontWeight: 600, ...fs(16) }}>План</h2>
@@ -91,6 +122,7 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
         </p>
         {custom && <CustomItemForm kind={custom} onClose={() => setCustom(null)} />}
       </div>
+      )}
 
       <div style={{ marginTop: sp(16), paddingTop: sp(14), borderTop: `1px solid ${C.border}` }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 32 }}>

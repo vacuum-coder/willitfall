@@ -36,6 +36,7 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
   }, [playback]);
   const floorOffset = playback ? floorAt(playback.result, playback.t) : undefined;
 
+  const walls = !!state.walls;
   const hazards = room.items.filter((i) => i.kind !== 'bed' && i.mount.kind !== 'wall');
   const simFell = playback?.phase === 'done' ? playback.result.outcomes.filter((o) => o.result === 'fell' && hazards.some((i) => i.id === o.id)).length : null;
   const formulaFalls = result.assessments.filter((a) => status(a) === 'falls' && hazards.some((i) => i.id === a.itemId)).length;
@@ -47,10 +48,11 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
         {floorAccel !== null && ` · ускорение пола ${num(floorAccel, 2)} g`}
       </p>
       <h1 id="h-main" style={{ margin: sp(8, 0, 0), fontFamily: FONT.display, fontWeight: 500, ...fs(32), letterSpacing: LS.display, color: C.text, whiteSpace: 'nowrap' }}>
-        Что упадёт, пока вы спите
+        {walls ? 'Форма комнаты' : 'Что упадёт, пока вы спите'}
       </h1>
       <p style={{ margin: sp(10, 0, 0), maxWidth: 520, minHeight: 48, fontFamily: FONT.display, fontStyle: 'italic', fontWeight: 500, ...fs(18), color: C.text2 }}>
-        {result.peak.status === 'ready'
+        {walls ? 'Тяните углы на плане — стены в 3D перестраиваются сразу. Мебель вернётся на место, когда нажмёте «Готово».'
+          : result.peak.status === 'ready'
           ? headline(room.items, result.assessments, settings.intensity === CITY_DESIGN_INTENSITY)
           : result.peak.status === 'error' ? `Не удалось загрузить запись: ${result.peak.message}` : 'Считаем, как качается ваш этаж…'}
       </p>
@@ -109,6 +111,13 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
           )}
         </div>
 
+        {walls ? (
+          <div style={{ marginTop: sp(12), height: 40, flex: 'none', display: 'flex', alignItems: 'center', gap: sp(8) }}>
+            <button type="button" onClick={() => dispatch({ type: 'END_WALLS' })} style={{ ...button.primary, display: 'flex', alignItems: 'center', gap: sp(8) }}>✓ Готово — к мебели</button>
+            <button type="button" onClick={() => dispatch({ type: 'RESET_SHAPE' })} style={button.secondary}>Сбросить форму</button>
+            <p style={{ margin: 0, marginLeft: 'auto', ...fs(12), color: C.text2, textAlign: 'right' }}>Мебель скрыта,<br />пока вы правите стены</p>
+          </div>
+        ) : (
         <div style={{ marginTop: sp(12), height: 40, flex: 'none', display: 'flex', alignItems: 'center', gap: sp(8) }}>
           <button type="button" onClick={quake.shake} disabled={q.phase === 'computing' || pfa7 === null} style={{ ...button.primary, display: 'flex', alignItems: 'center', gap: sp(8) }}>
             <Shake />Тряхнуть · {points(settings.intensity)}
@@ -129,6 +138,7 @@ export function MainPanel({ result }: { result: RoomAssessment }) {
               : <>Решает формула,<br />показывает физический движок</>}
           </p>
         </div>
+        )}
       </div>
     </section>
   );

@@ -207,6 +207,47 @@ describe('room shape and door', () => {
     else expect(s.notice).toBeNull();
   });
 
+  it('walls mode hides the furniture and lets the outline move freely', () => {
+    let s = run(start(), { type: 'BEGIN_WALLS' });
+    expect(s.room.items).toHaveLength(0);
+    expect(s.walls?.items).toHaveLength(PANEL_BEDROOM.items.length);
+    // Pulling the right wall in to 200 cm would not fit the wardrobe in normal mode; here it just moves.
+    s = run(s, { type: 'MOVE_VERTEX', index: 1, to: { x: 200, y: 0 } }, { type: 'MOVE_VERTEX', index: 2, to: { x: 200, y: 420 } });
+    expect(s.room.vertices[1]).toEqual({ x: 200, y: 0 });
+  });
+
+  it('«Готово» brings the furniture back inside the new outline', () => {
+    const s = run(start(),
+      { type: 'BEGIN_WALLS' },
+      { type: 'MOVE_VERTEX', index: 1, to: { x: 260, y: 0 } }, { type: 'MOVE_VERTEX', index: 2, to: { x: 260, y: 420 } },
+      { type: 'END_WALLS' });
+    expect(s.walls).toBeNull();
+    expect(s.room.vertices[1]).toEqual({ x: 260, y: 0 });
+    for (const i of s.room.items) if (i.mount.kind === 'floor') expect(inside(s, i.id)).toBe(true);
+    const lost = PANEL_BEDROOM.items.filter((i) => !s.room.items.some((j) => j.id === i.id));
+    if (lost.length) expect(s.notice).toContain('Не поместились');
+    // The wardrobe stood against the right wall: it is still against the (moved) right wall.
+    expect(item(s, 'pax')).toMatchObject({ x: 260 - 29, angle: 90 });
+  });
+
+  it('«Сбросить форму» returns the outline it started from', () => {
+    const s = run(start(), { type: 'BEGIN_WALLS' }, { type: 'APPLY_ROOM_TEMPLATE', template: 'L' }, { type: 'RESET_SHAPE' });
+    expect(s.room.vertices).toEqual(PANEL_BEDROOM.vertices);
+    expect(s.walls).not.toBeNull();
+  });
+
+  it('door can open outwards', () => {
+    const s = run(start(), { type: 'SET_DOOR', wall: 2, offset: 20, width: 80, swing: 'out-left' });
+    expect(s.room.openings.find((o) => o.kind === 'door')?.swing).toBe('out-left');
+  });
+
+  it('a template moves the door to the nearest new wall, not to a wall with the same number', () => {
+    const s = run(start(), { type: 'APPLY_ROOM_TEMPLATE', template: 'L' });
+    // L: (0,0) (300,0) (300,210) (150,210) (150,420) (0,420) — the door was in the bottom wall, y = 420.
+    const door = s.room.openings.find((o) => o.kind === 'door')!;
+    expect(door.wall).toBe(4);
+  });
+
   it('loading a preset resets the selection', () => {
     const s = run(start(), { type: 'SELECT_ITEM', id: 'pax' }, { type: 'LOAD_PRESET', room: PANEL_BEDROOM });
     expect(s.selectedId).toBeNull();

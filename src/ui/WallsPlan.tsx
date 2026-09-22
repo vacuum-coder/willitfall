@@ -1,0 +1,135 @@
+// Walls mode plan (artboard C-Walls-Desktop): drag the round corner handles, «+» in the middle of a wall adds
+// a corner, a selected corner is removed with Delete. Furniture is hidden while the outline is edited.
+
+import { useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
+import { C } from './ds';
+import { num } from './format';
+import { wallFrames, grid } from '../state/placement';
+import type { Action } from '../state/roomReducer';
+import type { Vec } from '../physics/geometry';
+import type { Room } from '../physics/types';
+
+const TEXT = { fontFamily: 'Manrope, sans-serif' } as const;
+const WALL = 12;
+
+export function WallsPlan({ room, dispatch, width = 330, height = 330 }: { room: Room; dispatch: Dispatch<Action>; width?: number; height?: number }) {
+  const svg = useRef<SVGSVGElement>(null);
+  const [active, setActive] = useState<number | null>(null);
+  const drag = useRef<{ index: number; pointer: number } | null>(null);
+  const frame = useRef(0);
+  const v = room.vertices, n = v.length;
+  const frames = wallFrames(v);
+  const xs = v.map((p) => p.x), ys = v.map((p) => p.y);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const side = Math.max(x1 - x0, y1 - y0) + 140;
+  const viewBox = `${(x0 + x1) / 2 - side / 2} ${(y0 + y1) / 2 - side / 2} ${side} ${side}`;
+
+  const toPlan = (e: { clientX: number; clientY: number }): Vec => {
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.current!.getScreenCTM()!.inverse());
+    return { x: p.x, y: p.y };
+  };
+  const onDown = (e: ReactPointerEvent, index: number) => {
+    e.stopPropagation();
+    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    drag.current = { index, pointer: e.pointerId };
+    setActive(index);
+  };
+  const onMove = (e: ReactPointerEvent) => {
+    const d = drag.current;
+    if (!d || d.pointer !== e.pointerId) return;
+    const p = toPlan(e);
+    cancelAnimationFrame(frame.current);
+    frame.current = requestAnimationFrame(() => dispatch({ type: 'MOVE_VERTEX', index: d.index, to: { x: grid(p.x), y: grid(p.y) } }));
+  };
+  const onKey = (e: KeyboardEvent, i: number) => {
+    const step = e.shiftKey ? 1 : 5, p = v[i];
+    const to = e.key === 'ArrowLeft' ? { x: p.x - step, y: p.y } : e.key === 'ArrowRight' ? { x: p.x + step, y: p.y }
+      : e.key === 'ArrowUp' ? { x: p.x, y: p.y - step } : e.key === 'ArrowDown' ? { x: p.x, y: p.y + step } : null;
+    if (to) dispatch({ type: 'MOVE_VERTEX', index: i, to });
+    else if (e.key === 'Delete' || e.key === 'Backspace') { dispatch({ type: 'REMOVE_VERTEX', index: i }); setActive(null); }
+    else return;
+    e.preventDefault();
+  };
+
+  const outline = (p: Vec[]) => `M${p.map((q) => `${q.x},${q.y}`).join(' L')} Z`;
+  const outer = v.map((_, i) => {
+    const e1 = frames[(i - 1 + n) % n], e2 = frames[i];
+    const p1 = { x: e1.a.x - e1.inward.x * WALL, y: e1.a.y - e1.inward.y * WALL }, p2 = { x: e2.a.x - e2.inward.x * WALL, y: e2.a.y - e2.inward.y * WALL };
+    const den = e1.t.x * e2.t.y - e1.t.y * e2.t.x;
+    if (Math.abs(den) < 1e-9) return p2;
+    const k = ((p2.x - p1.x) * e2.t.y - (p2.y - p1.y) * e2.t.x) / den;
+    return { x: p1.x + e1.t.x * k, y: p1.y + e1.t.y * k };
+  });
+
+  return (
+    <svg ref={svg} viewBox={viewBox} width={width} height={height} role="img" aria-label={`Контур комнаты: ${n} стен`} style={{ display: 'block', touchAction: 'none', userSelect: 'none' }} onPointerMove={onMove} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}>
+      <defs>
+        <clipPath id="roomClip"><path d={outline(v)} /></clipPath>
+      </defs>
+      <path d={outline(v)} style={{ fill: C.surface2 }} />
+      <g clipPath="url(#roomClip)">
+        {Array.from({ length: Math.ceil((x1 - x0) / 30) }, (_, k) => <line key={`gx${k}`} x1={x0 + k * 30} y1={y0} x2={x0 + k * 30} y2={y1} style={{ stroke: C.rule }} strokeWidth="0.6" />)}
+        {Array.from({ length: Math.ceil((y1 - y0) / 30) }, (_, k) => <line key={`gy${k}`} x1={x0} y1={y0 + k * 30} x2={x1} y2={y0 + k * 30} style={{ stroke: C.rule }} strokeWidth="0.6" />)}
+      </g>
+      <path d={`${outline(outer)} ${outline([...v].reverse())}`} fillRule="evenodd" style={{ fill: C.poche }} />
+
+      {room.openings.map((o, k) => {
+        const f = frames[o.wall];
+        if (!f) return null;
+        const p0 = { x: f.a.x + f.t.x * o.offset, y: f.a.y + f.t.y * o.offset }, p1 = { x: p0.x + f.t.x * o.width, y: p0.y + f.t.y * o.width };
+        const out = (p: Vec, d: number) => ({ x: p.x - f.inward.x * d, y: p.y - f.inward.y * d });
+        const quad = outline([p0, p1, out(p1, WALL), out(p0, WALL)]);
+        if (o.kind === 'window') return <path key={k} d={quad} style={{ fill: C.surface, stroke: C.text }} strokeWidth="0.8" />;
+        const inward = !o.swing || o.swing.startsWith('in');
+        const hinge = o.swing?.endsWith('left') ? p0 : p1, jamb = o.swing?.endsWith('left') ? p1 : p0;
+        const dir = inward ? f.inward : { x: -f.inward.x, y: -f.inward.y };
+        const tip = { x: hinge.x + dir.x * o.width, y: hinge.y + dir.y * o.width };
+        const c = (tip.x - hinge.x) * (jamb.y - hinge.y) - (tip.y - hinge.y) * (jamb.x - hinge.x);
+        return (
+          <g key={k}>
+            <path d={quad} style={{ fill: C.surface }} />
+            <path d={`M${tip.x},${tip.y} A${o.width},${o.width} 0 0 ${c > 0 ? 1 : 0} ${jamb.x},${jamb.y}`} fill="none" style={{ stroke: C.text }} strokeWidth="0.9" strokeDasharray="3 3" />
+            <line x1={hinge.x} y1={hinge.y} x2={tip.x} y2={tip.y} style={{ stroke: C.text }} strokeWidth="2" />
+          </g>
+        );
+      })}
+
+      {frames.map((f, i) => {
+        const mid = { x: (f.a.x + f.b.x) / 2, y: (f.a.y + f.b.y) / 2 };
+        const lab = { x: mid.x - f.inward.x * 34, y: mid.y - f.inward.y * 34 };
+        let ang = (Math.atan2(f.t.y, f.t.x) * 180) / Math.PI;
+        ang = ((((ang + 90) % 180) + 180) % 180) - 90;
+        return (
+          <g key={`w${i}`}>
+            <text x={lab.x} y={lab.y + 6} transform={`rotate(${ang} ${lab.x} ${lab.y})`} textAnchor="middle" {...TEXT} fontSize="17" fontWeight="600" style={{ fill: C.text }}>
+              {i + 1} · {num(f.len / 100)} м
+            </text>
+            {f.len >= 100 && (
+              <g role="button" tabIndex={0} aria-label={`Добавить угол на стене ${i + 1}`} style={{ cursor: 'copy' }} onClick={() => dispatch({ type: 'ADD_VERTEX', wall: i })} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch({ type: 'ADD_VERTEX', wall: i })}>
+                <circle cx={mid.x} cy={mid.y} r="9" style={{ fill: C.surface, stroke: C.text }} strokeWidth="1.2" />
+                <path d={`M${mid.x - 5},${mid.y} h10 M${mid.x},${mid.y - 5} v10`} style={{ stroke: C.text }} strokeWidth="1.4" />
+              </g>
+            )}
+          </g>
+        );
+      })}
+
+      {v.map((p, i) => (
+        <circle
+          key={`v${i}`}
+          cx={p.x}
+          cy={p.y}
+          r={active === i ? 13 : 11}
+          role="button"
+          tabIndex={0}
+          aria-label={`Угол ${i + 1}: ${Math.round(p.x)}, ${Math.round(p.y)} см. Стрелки двигают, Delete удаляет`}
+          style={{ fill: active === i ? C.text : C.surface, stroke: C.text, cursor: 'grab', outline: 'none' }}
+          strokeWidth="2"
+          onPointerDown={(e) => onDown(e, i)}
+          onFocus={() => setActive(i)}
+          onKeyDown={(e) => onKey(e, i)}
+        />
+      ))}
+    </svg>
+  );
+}
