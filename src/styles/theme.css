@@ -1,0 +1,68 @@
+/* Tailwind theme mapped onto the design tokens. Values live only in tokens.css;
+   `inline` makes utilities reference the token variables directly (no self-referencing --font-*). */
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-border: var(--c-border);
+  --color-border-strong: var(--c-border-strong);
+  --color-rule: var(--c-rule);
+  --color-text: var(--c-text);
+  --color-text-2: var(--c-text-2);
+  --color-poche: var(--c-poche);
+  --color-on-accent: var(--c-on-accent);
+  --color-danger: var(--c-danger);
+  --color-danger-hover: var(--c-danger-hover);
+  --color-danger-pressed: var(--c-danger-pressed);
+  --color-danger-tint: var(--c-danger-tint);
+  --color-safe: var(--c-safe);
+  --color-safe-tint: var(--c-safe-tint);
+  --color-slide: var(--c-slide);
+  --color-slide-tint: var(--c-slide-tint);
+  --font-display: var(--font-display);
+  --font-ui: var(--font-ui);
+  --radius-xs: var(--r-xs);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --shadow-1: var(--sh-1);
+  --shadow-2: var(--sh-2);
+  --shadow-3: var(--sh-3);
+}
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-14);
+  line-height: var(--lh-14);
+}
+
+/* Global element rules from the artboards (C-Desktop <style>), values from tokens. */
+a { color: var(--c-text); text-decoration: none; }
+a:hover { color: var(--c-danger); }
+button, select, input { font-family: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, [role="button"]:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+.rng { -webkit-appearance: none; appearance: none; background: transparent; margin: 0; padding: 0; cursor: pointer; }
+.rng::-webkit-slider-runnable-track { height: 18px; background: transparent; border: 0; }
+.rng::-moz-range-track { height: 18px; background: transparent; border: 0; }
+.rng::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; box-sizing: border-box; width: 18px; height: 18px; margin: 0;
+  border-radius: var(--r-full); background: var(--c-surface); border: 2px solid var(--c-text); box-shadow: var(--sh-2);
+}
+.rng::-moz-range-thumb {
+  box-sizing: border-box; width: 18px; height: 18px; border-radius: var(--r-full); background: var(--c-surface);
+  border: 2px solid var(--c-text); box-shadow: var(--sh-2);
+}
+.num::-webkit-inner-spin-button, .num::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.num { -moz-appearance: textfield; appearance: textfield; }
+.chk { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--c-safe); cursor: pointer; }

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Как посчитано · мобильный</title>
+</head>
+<body>
+<div class="x-dc">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,500;0,600;1,500&amp;family=Manrope:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#F6F1EA;color:#2B2622}
+a{color:#2B2622;text-decoration:none}a:hover{color:#B84A30}
+button,input{font-family:inherit}
+button{cursor:pointer}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #2B2622;outline-offset:2px}
+.btn2:hover{background:#FBF8F3}
+.scroll{scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+
+<div id="top" style="width:390px;height:844px;display:flex;flex-direction:column;background:#F6F1EA;color:#2B2622;overflow:hidden;font-family:'Manrope',system-ui,sans-serif">
+
+  <header style="height:56px;flex:none;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:0 6px 0 16px;border-bottom:1px solid #E6DED2">
+    <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true" focusable="false">
+      <path d="M19 10.5A6.5 6.5 0 1 1 12.5 4a5 5 0 0 0 6.5 6.5z" stroke="#2B2622" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M2.5 22.5h5l1.8-3 2.4 5 3-7 2.4 5 1.4-2h7" stroke="#B84A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <a href="#top" style="display:flex;flex-direction:column;color:#2B2622">
+      <span style="font-family:'Literata',serif;font-weight:600;font-size:18px;line-height:24px;letter-spacing:-0.01em">[Название]</span>
+      <span style="font-size:12px;line-height:16px;color:#6B6159">проверка спальни на землетрясение</span>
+    </a>
+    <button type="button" aria-label="Меню" style="margin-left:auto;width:44px;height:44px;padding:0;border:0;border-radius:6px;background:transparent;display:flex;align-items:center;justify-content:center">
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 6h14M3 10h14M3 14h14" stroke="#2B2622" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <nav aria-label="Разделы" style="height:44px;flex:none;box-sizing:border-box;display:flex;gap:24px;padding:0 16px;border-bottom:1px solid #E6DED2">
+    <a href="#room" style="display:flex;align-items:center;height:43px;box-sizing:border-box;padding-top:2px;border-bottom:2px solid transparent;font-size:14px;line-height:20px;font-weight:500;color:#6B6159;white-space:nowrap">Комната</a>
+    <a href="#method" aria-current="page" style="display:flex;align-items:center;height:43px;box-sizing:border-box;padding-top:2px;border-bottom:2px solid #B84A30;font-size:14px;line-height:20px;font-weight:700;color:#2B2622;white-space:nowrap">Как посчитано</a>
+    <a href="#physics" style="display:flex;align-items:center;height:43px;box-sizing:border-box;padding-top:2px;border-bottom:2px solid transparent;font-size:14px;line-height:20px;font-weight:500;color:#6B6159;white-space:nowrap">Проверка физики</a>
+  </nav>
+
+  <main id="method" class="scroll" style="flex:1;min-height:0;overflow-y:auto;box-sizing:border-box;padding:20px 16px 32px">
+    <p style="margin:0;font-size:13px;line-height:18px;font-weight:500;color:#6B6159">Алматы · 8-й этаж из 9 · 9,0 балла · ускорение пола 1,02 g</p>
+    <h1 style="margin:8px 0 0;font-family:'Literata',serif;font-weight:500;font-size:26px;line-height:32px;letter-spacing:-0.01em;color:#2B2622">Как мы посчитали,<br>что упадёт</h1>
+    <p style="margin:8px 0 0;font-family:'Literata',serif;font-style:italic;font-weight:500;font-size:16px;line-height:24px;color:#6B6159">Три простые идеи: вес против толчка, этаж усиливает качку, шкаф падает на свою высоту.</p>
+
+    <section id="s1" aria-labelledby="h-s1" style="margin-top:16px;padding-top:14px;border-top:1px solid #E6DED2">
+      <h2 id="h-s1" style="margin:0;display:flex;align-items:baseline;gap:10px;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px;color:#2B2622"><span aria-hidden="true" style="font-style:italic">1</span>Почему шкаф падает</h2>
+      <p style="margin:8px 0 0;font-size:14px;line-height:20px;color:#2B2622">Пол дёргается вбок, а шкаф по инерции остаётся на месте — будто его толкнули в середину. Вес тянет его обратно. Толчок слабее — шкаф качнётся и встанет. Сильнее — встанет на ребро и упадёт.</p>
+      <figure style="margin:16px 0 0;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(43,38,34,0.04)">
+        <svg viewBox="30 0 324 216" width="324" height="216" role="img" aria-label="Шкаф сбоку, глубина 55 см, высота 220 см. Слева он стоит: толчок давит в центр масс вбок, вес тянет вниз. Справа шкаф наклонён на 14,0 градуса: центр масс над передним ребром, дальше он падает сам." style="display:block;max-width:100%">
+          <defs>
+            <marker id="arrInk" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#2B2622"/></marker>
+          </defs>
+          <g stroke="#6B6159" stroke-width="0.9">
+            <line x1="72" y1="28" x2="72" y2="16"/>
+            <line x1="110.5" y1="28" x2="110.5" y2="16"/>
+            <line x1="72" y1="22" x2="110.5" y2="22"/>
+            <line x1="69" y1="25" x2="75" y2="19"/>
+            <line x1="107.5" y1="25" x2="113.5" y2="19"/>
+            <line x1="68" y1="32" x2="54" y2="32"/>
+            <line x1="58" y1="32" x2="58" y2="186"/>
+            <line x1="55" y1="35" x2="61" y2="29"/>
+          </g>
+          <rect x="12" y="186" width="371" height="6" fill="#3A332D"/>
+          <line x1="55" y1="189" x2="61" y2="183" stroke="#6B6159" stroke-width="0.9"/>
+          <g font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#6B6159">
+            <text x="91.25" y="12" text-anchor="middle">глубина 55</text>
+            <text x="50" y="109" text-anchor="middle" transform="rotate(-90 50 109)">высота 220</text>
+          </g>
+
+          <rect x="72" y="32" width="38.5" height="154" fill="#F4DCD3" stroke="#B84A30" stroke-width="1.4"/>
+          <line x1="91.25" y1="116" x2="91.25" y2="150" stroke="#2B2622" stroke-width="1.4" marker-end="url(#arrInk)"/>
+          <line x1="98" y1="109" x2="150" y2="109" stroke="#2B2622" stroke-width="1.4" marker-end="url(#arrInk)"/>
+          <circle cx="91.25" cy="109" r="5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.2"/>
+          <path d="M91.25,109 V104 A5,5 0 0 1 96.25,109 Z M91.25,109 V114 A5,5 0 0 1 86.25,109 Z" fill="#2B2622"/>
+
+          <polygon points="262,186 299.35,36.6 262,27.27 224.65,176.66" fill="#F4DCD3" stroke="#B84A30" stroke-width="1.4" stroke-linejoin="round"/>
+          <line x1="262" y1="186" x2="262" y2="14" stroke="#B84A30" stroke-width="1" stroke-dasharray="4 3"/>
+          <path d="M262,146 A40,40 0 0 1 271.7,147.19" fill="none" stroke="#B84A30" stroke-width="1.2"/>
+          <circle cx="262" cy="106.63" r="5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.2"/>
+          <path d="M262,106.63 V101.63 A5,5 0 0 1 267,106.63 Z M262,106.63 V111.63 A5,5 0 0 1 257,106.63 Z" fill="#2B2622"/>
+          <circle cx="262" cy="186" r="3.5" fill="#B84A30" stroke="#FFFFFF" stroke-width="1.2"/>
+
+          <g font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#2B2622">
+            <text x="91.25" y="168" text-anchor="middle">вес</text>
+            <text x="116" y="101">толчок</text>
+            <text x="272" y="181">ребро</text>
+            <text x="279" y="146" font-weight="700" fill="#B84A30">14,0°</text>
+          </g>
+          <g font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#6B6159">
+            <text x="91.25" y="210" text-anchor="middle">толчок слабее — стоит</text>
+            <text x="262" y="210" text-anchor="middle">сильнее — встаёт на ребро</text>
+          </g>
+        </svg>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid #E6DED2">
+          <p style="margin:0;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Порог опрокидывания</p>
+          <p style="margin:4px 0 0;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px;color:#2B2622">
+            <span class="sr">порог = g × глубина / высота</span>
+            <span aria-hidden="true" style="display:flex;align-items:center;gap:8px;white-space:nowrap">порог = g ×<span style="display:inline-flex;flex-direction:column;align-items:center"><span style="padding:0 4px;border-bottom:1px solid #2B2622">глубина</span><span style="padding:0 4px">высота</span></span></span>
+          </p>
+          <p style="margin:4px 0 0;font-size:12px;line-height:16px;color:#6B6159">g — ускорение свободного падения</p>
+          <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div>
+              <p style="margin:0;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Ваш шкаф: 55 / 220</p>
+              <p style="margin:4px 0 0;font-size:13px;line-height:18px;color:#2B2622">угол <strong style="font-weight:700">14,0°</strong></p>
+            </div>
+            <p style="margin:0;font-family:'Literata',serif;font-weight:600;font-size:26px;line-height:32px;color:#B84A30;white-space:nowrap">0,25 g</p>
+          </div>
+        </div>
+      </figure>
+    </section>
+
+    <section id="s2" aria-labelledby="h-s2" style="margin-top:16px;padding-top:14px;border-top:1px solid #E6DED2">
+      <h2 id="h-s2" style="margin:0;display:flex;align-items:baseline;gap:10px;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px;color:#2B2622"><span aria-hidden="true" style="font-style:italic">2</span>Почему на 8-м этаже опаснее</h2>
+      <p style="margin:8px 0 0;font-size:14px;line-height:20px;color:#2B2622">Толчок приходит в фундамент, а дом раскачивается, как высокая ветка: чем выше этаж, тем сильнее качает пол.</p>
+      <figure style="margin:16px 0 0;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(43,38,34,0.04)">
+        <svg viewBox="32 0 324 160" width="324" height="160" role="img" aria-label="Разрез дома в 9 этажей. На 1-м этаже пол качает как землю, в 1 раз, на 8-м — в 2,56 раза, наверху ещё сильнее." style="display:block;max-width:100%">
+          <defs>
+            <marker id="arrMuted" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#6B6159"/></marker>
+            <marker id="arrRed" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#B84A30"/></marker>
+          </defs>
+          <rect x="70" y="39" width="116" height="12" fill="#F4DCD3"/>
+          <g fill="#3A332D">
+            <rect x="12" y="150" width="371" height="6"/>
+            <rect x="66" y="22" width="4" height="128"/>
+            <rect x="186" y="22" width="4" height="128"/>
+            <rect x="66" y="22" width="124" height="3"/>
+            <rect x="70" y="37" width="116" height="2"/>
+            <rect x="70" y="51" width="116" height="2"/>
+            <rect x="70" y="65" width="116" height="2"/>
+            <rect x="70" y="79" width="116" height="2"/>
+            <rect x="70" y="93" width="116" height="2"/>
+            <rect x="70" y="107" width="116" height="2"/>
+            <rect x="70" y="121" width="116" height="2"/>
+            <rect x="70" y="135" width="116" height="2"/>
+          </g>
+          <line x1="202" y1="24" x2="202" y2="150" stroke="#6B6159" stroke-width="0.8"/>
+          <line x1="238" y1="143" x2="302" y2="31" stroke="#6B6159" stroke-width="0.8" stroke-dasharray="3 3"/>
+          <g stroke="#6B6159" stroke-width="1.2" marker-end="url(#arrMuted)">
+            <line x1="202" y1="143" x2="236" y2="143"/>
+            <line x1="202" y1="31" x2="300" y2="31"/>
+          </g>
+          <line x1="202" y1="45" x2="292" y2="45" stroke="#B84A30" stroke-width="1.8" marker-end="url(#arrRed)"/>
+          <g font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#6B6159" text-anchor="end">
+            <text x="58" y="147">1</text>
+            <text x="58" y="35">9</text>
+            <text x="58" y="49" font-weight="700" fill="#B84A30">8</text>
+          </g>
+          <g font-family="Manrope, sans-serif" font-size="12" font-weight="700">
+            <text x="246" y="147" fill="#2B2622">×1</text>
+            <text x="302" y="49" fill="#B84A30">×2,56</text>
+          </g>
+        </svg>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid #E6DED2">
+          <p style="margin:0;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Во сколько раз сильнее качает</p>
+          <p style="margin:4px 0 0;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px;color:#2B2622">
+            <span class="sr">множитель = 1 + 2 × (n − 1) / N</span>
+            <span aria-hidden="true" style="display:flex;align-items:center;gap:8px;white-space:nowrap">множитель = 1 +<span style="display:inline-flex;flex-direction:column;align-items:center"><span style="padding:0 4px;border-bottom:1px solid #2B2622">2 × (n − 1)</span><span style="padding:0 4px">N</span></span></span>
+          </p>
+          <p style="margin:4px 0 0;font-size:12px;line-height:16px;color:#6B6159">n — ваш этаж, N — этажей в доме</p>
+          <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div>
+              <p style="margin:0;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">8-й этаж из 9</p>
+              <p style="margin:4px 0 0;font-size:13px;line-height:18px;color:#2B2622">на 1-м — <strong style="font-weight:700">×1</strong></p>
+            </div>
+            <p style="margin:0;font-family:'Literata',serif;font-weight:600;font-size:26px;line-height:32px;color:#B84A30;white-space:nowrap">×2,56</p>
+          </div>
+        </div>
+      </figure>
+    </section>
+
+    <section id="s3" aria-labelledby="h-s3" style="margin-top:16px;padding-top:14px;border-top:1px solid #E6DED2">
+      <h2 id="h-s3" style="margin:0;display:flex;align-items:baseline;gap:10px;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px;color:#2B2622"><span aria-hidden="true" style="font-style:italic">3</span>Баллы и ускорение</h2>
+      <p style="margin:8px 0 0;font-size:14px;line-height:20px;color:#2B2622">Баллы — это сила толчка на земле. По шкале СНиП II-7-81* каждый следующий балл вдвое сильнее предыдущего:</p>
+      <table style="width:100%;margin-top:12px;border-collapse:collapse;font-size:14px;line-height:20px;color:#2B2622">
+        <caption class="sr">Баллы и ускорение по шкале СНиП II-7-81*</caption>
+        <thead>
+          <tr>
+            <th scope="col" style="padding:0 0 6px;text-align:left;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Баллы</th>
+            <th scope="col" style="padding:0 0 6px;text-align:right;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Ускорение грунта</th>
+            <th scope="col" style="padding:0 0 6px;text-align:right;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Пол на 8-м этаже</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" style="padding:6px 0;border-top:1px solid #E6DED2;text-align:left;font-weight:700">7</th>
+            <td style="padding:6px 0;border-top:1px solid #E6DED2;text-align:right">0,1 g</td>
+            <td style="padding:6px 0;border-top:1px solid #E6DED2;text-align:right">0,26 g</td>
+          </tr>
+          <tr>
+            <th scope="row" style="padding:6px 0;border-top:1px solid #E6DED2;text-align:left;font-weight:700">8</th>
+            <td style="padding:6px 0;border-top:1px solid #E6DED2;text-align:right">0,2 g</td>
+            <td style="padding:6px 0;border-top:1px solid #E6DED2;text-align:right">0,51 g</td>
+          </tr>
+          <tr>
+            <th scope="row" style="padding:6px 0;border-top:1px solid #E6DED2;border-bottom:1px solid #E6DED2;text-align:left;font-weight:700">9<span style="display:block;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">расчётная для Алматы</span></th>
+            <td style="padding:6px 0;border-top:1px solid #E6DED2;border-bottom:1px solid #E6DED2;text-align:right;vertical-align:top">0,4 g</td>
+            <td style="padding:6px 0;border-top:1px solid #E6DED2;border-bottom:1px solid #E6DED2;text-align:right;vertical-align:top;font-weight:700;color:#B84A30">1,02 g</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin:12px 0 0;font-size:14px;line-height:20px;color:#2B2622">Шкафу хватит <strong style="font-weight:700">0,25 g</strong> на полу: на 8-м этаже это <strong style="font-weight:700;color:#B84A30">≈7,0 балла</strong>, на 1-м — 8,3.</p>
+    </section>
+
+    <section id="s4" aria-labelledby="h-s4" style="margin-top:16px;padding-top:14px;border-top:1px solid #E6DED2">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <h2 id="h-s4" style="margin:0;display:flex;align-items:baseline;gap:10px;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px;color:#2B2622"><span aria-hidden="true" style="font-style:italic">4</span>Куда он упадёт</h2>
+        <span style="margin-left:auto;align-self:center;display:inline-flex;align-items:center;gap:4px;height:24px;box-sizing:border-box;padding:0 8px;border:1px solid #B84A30;border-radius:4px;background:#FFFFFF;font-size:12px;line-height:16px;font-weight:600;color:#B84A30;white-space:nowrap"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M8.5 1.5L2 8M2 3.5V8h4.5" fill="none" stroke="#B84A30" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>На подушку</span>
+      </div>
+      <p style="margin:8px 0 0;font-size:14px;line-height:20px;color:#2B2622">Шкаф падает, поворачиваясь вокруг переднего ребра, и ложится верхом на расстоянии своей высоты. Опасная зона — полоса длиной в высоту предмета: для шкафа 2,2 м.</p>
+      <figure style="margin:16px 0 0;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(43,38,34,0.04)">
+        <svg viewBox="-12 -12 324 150" width="324" height="150" role="img" aria-label="Фрагмент плана спальни, вид сверху. Перед шкафом заштрихована зона падения длиной 2,2 метра — во всю высоту шкафа. Зона накрывает подушку на кровати." style="display:block;max-width:100%">
+          <defs>
+            <pattern id="hatchPlan" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#B84A30" stroke-width="1.3" stroke-opacity="0.5"/></pattern>
+            <marker id="dimArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1,1.5 L9,5 L1,8.5" fill="none" stroke="#2B2622" stroke-width="1.3"/></marker>
+          </defs>
+          <rect x="0" y="0" width="300" height="138" fill="#FBF8F3"/>
+          <rect x="20" y="0" width="160" height="200" rx="3" fill="#F6F1EA" stroke="#2B2622" stroke-width="1.2"/>
+          <path d="M20,70 H180 V197 A3,3 0 0 1 177,200 H23 A3,3 0 0 1 20,197 Z" fill="#E3EAE4" stroke="#4F6E5D" stroke-width="1"/>
+          <rect x="30" y="8" width="140" height="42" rx="8" fill="#FFFFFF" stroke="#2B2622" stroke-width="1"/>
+          <rect x="25" y="0" width="220" height="120" fill="rgba(184,74,48,0.12)"/>
+          <rect x="25" y="0" width="220" height="120" fill="url(#hatchPlan)" stroke="#B84A30" stroke-width="1.2" stroke-dasharray="6 4"/>
+          <rect x="245" y="0" width="55" height="120" fill="#F4DCD3" stroke="#B84A30" stroke-width="1.6"/>
+          <line x1="245" y1="0" x2="245" y2="120" stroke="#B84A30" stroke-width="3"/>
+          <circle cx="100" cy="29" r="9" fill="none" stroke="#FFFFFF" stroke-width="3.4"/>
+          <circle cx="100" cy="29" r="9" fill="none" stroke="#B84A30" stroke-width="1.6"/>
+          <circle cx="100" cy="29" r="3" fill="#B84A30"/>
+          <g fill="#3A332D">
+            <rect x="-12" y="-12" width="62" height="12"/>
+            <rect x="150" y="-12" width="162" height="12"/>
+            <rect x="-12" y="0" width="12" height="138"/>
+            <rect x="300" y="0" width="12" height="138"/>
+          </g>
+          <rect x="50" y="-12" width="100" height="12" fill="#FFFFFF" stroke="#2B2622" stroke-width="0.8"/>
+          <line x1="50" y1="-6" x2="150" y2="-6" stroke="#2B2622" stroke-width="0.8"/>
+          <line x1="241" y1="104" x2="29" y2="104" stroke="#2B2622" stroke-width="1" marker-start="url(#dimArr)" marker-end="url(#dimArr)"/>
+          <g font-family="Manrope, sans-serif" font-size="12" font-weight="700" fill="#2B2622">
+            <text x="135" y="95" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" paint-order="stroke">2,2 м — высота шкафа</text>
+            <text x="276" y="60" text-anchor="middle" transform="rotate(-90 276 60)">Шкаф</text>
+            <text x="245" y="134" text-anchor="middle" font-weight="600" fill="#B84A30">ребро</text>
+          </g>
+        </svg>
+      </figure>
+    </section>
+
+    <section id="s5" aria-labelledby="h-s5" style="margin-top:16px;padding-top:14px;border-top:1px solid #E6DED2">
+      <h2 id="h-s5" style="margin:0;display:flex;align-items:baseline;gap:10px;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px;color:#2B2622"><span aria-hidden="true" style="font-style:italic">5</span>Честно о допущениях</h2>
+      <p style="margin:8px 0 0;font-size:14px;line-height:20px;color:#2B2622">Это скрининг: он показывает, что закрепить в первую очередь. Это не инженерное обследование дома.</p>
+      <ul style="list-style:none;margin:8px 0 0;padding:0;font-size:14px;line-height:20px;color:#2B2622">
+        <li style="display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-top:1px solid #E6DED2">
+          <span aria-hidden="true" style="flex:none;width:8px;height:8px;margin-top:6px;border-radius:999px;background:#6B6159"></span>
+          <span><strong style="font-weight:700">Запас в осторожную сторону.</strong> Толчок считаем долгим, зону падения — во всю высоту.</span>
+        </li>
+        <li style="display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-top:1px solid #E6DED2;border-bottom:1px solid #E6DED2">
+          <span aria-hidden="true" style="flex:none;width:8px;height:8px;margin-top:6px;border-radius:999px;background:#6B6159"></span>
+          <span><strong style="font-weight:700">Чего модель не видит:</strong> резонанс дома, ковёр, вещи на полках.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="s6" aria-labelledby="h-s6" style="margin-top:16px;padding-top:14px;border-top:1px solid #E6DED2">
+      <h2 id="h-s6" style="margin:0;display:flex;align-items:baseline;gap:10px;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px;color:#2B2622"><span aria-hidden="true" style="font-style:italic">6</span>Как мы проверили</h2>
+      <p style="margin:8px 0 0;font-size:14px;line-height:20px;color:#2B2622">Формулы сверены с физическим движком: он роняет те же предметы при тех же толчках.</p>
+      <a class="btn2" href="#physics" style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;box-sizing:border-box;padding:0 16px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;color:#2B2622;white-space:nowrap">Открыть «Проверка физики»<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </section>
+  </main>
+</div>
+</div>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844} }'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

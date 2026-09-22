@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Состояния · десктоп</title>
+</head>
+<body>
+<div class="x-dc">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,500;0,600;1,500&amp;family=Manrope:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#F6F1EA;color:#2B2622}
+a{color:#2B2622;text-decoration:none}a:hover{color:#B84A30}
+button,select,input{font-family:inherit}
+button{cursor:pointer}
+button:disabled,select:disabled,input:disabled{cursor:not-allowed}
+.btn-p{transition:background-color 120ms cubic-bezier(0.2,0.7,0.2,1)}
+.btn-p:hover{background:#A4452D}
+.btn-p:active{background:#8E3A25}
+.btn-s{transition:background-color 120ms cubic-bezier(0.2,0.7,0.2,1)}
+.btn-s:hover{background:#FBF8F3}
+.btn-p:disabled:hover{background:#B84A30}
+.btn-s:disabled:hover{background:#FFFFFF}
+.seg:hover{background:#FBF8F3}
+.rng{-webkit-appearance:none;appearance:none;background:transparent;margin:0;padding:0;cursor:pointer}
+.rng:disabled{cursor:not-allowed}
+.rng::-webkit-slider-runnable-track{height:28px;background:transparent;border:0}
+.rng::-moz-range-track{height:28px;background:transparent;border:0}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;box-sizing:border-box;width:18px;height:18px;margin-top:calc((28px - 18px) / 2);border-radius:50%;background:#FFFFFF;border:2px solid #2B2622;box-shadow:0 1px 3px rgba(43,38,34,0.18)}
+.rng::-moz-range-thumb{box-sizing:border-box;width:18px;height:18px;border-radius:50%;background:#FFFFFF;border:2px solid #2B2622;box-shadow:0 1px 3px rgba(43,38,34,0.18)}
+.num::-webkit-inner-spin-button,.num::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.num{-moz-appearance:textfield;appearance:textfield}
+.chk{width:18px;height:18px;margin:1px 0 0;accent-color:#4F6E5D;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #2B2622;outline-offset:2px}
+</style>
+
+<div style="width:1440px;height:900px;position:relative;box-sizing:border-box;padding:16px 48px;display:grid;grid-template-columns:660px 660px;grid-template-rows:424px 424px;column-gap:24px;row-gap:20px;background:#F6F1EA;color:#2B2622;overflow:hidden;font-family:'Manrope',system-ui,sans-serif" id="top">
+  <h1 class="sr">Состояния экрана «Комната»: пусто, нет 3D, загрузка, ошибка формы</h1>
+  <section aria-labelledby="st-empty" style="display:flex;flex-direction:column;min-width:0">
+    <div style="height:24px;display:flex;align-items:baseline;justify-content:space-between">
+      <h2 id="st-empty" style="margin:0;font-size:18px;line-height:24px;font-weight:700;color:#2B2622">Пустая комната</h2>
+      <span style="font-size:12px;line-height:16px;font-weight:600;color:#6B6159">План · левая колонка</span>
+    </div>
+    <div style="margin-top:8px;height:392px;box-sizing:border-box;padding:16px;border:1px solid #D9CFC1;border-radius:12px;background:#F6F1EA;overflow:hidden">
+      <div style="height:358px;box-sizing:border-box;display:flex;gap:24px;padding:12px;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;box-shadow:0 1px 2px rgba(43,38,34,0.04)">
+            <svg viewBox="-60 -50 400 540" width="244" height="329" role="img" aria-label="План пустой спальни 300 на 420 см: окно в верхней стене, дверь внизу справа, мебели пока нет." style="display:block;flex:none">
+              <rect x="0" y="0" width="300" height="420" fill="#FBF8F3"/>
+              <circle cx="150" cy="176" r="26" fill="none" stroke="#D9CFC1" stroke-width="2" stroke-dasharray="5 4"/>
+              <path d="M150,162 V190 M136,176 H164" stroke="#6B6159" stroke-width="2.4" stroke-linecap="round"/>
+              <text x="150" y="238" text-anchor="middle" font-family="Manrope, sans-serif" font-size="20" font-weight="600" fill="#6B6159">Комната пуста</text>
+              <path d="M200,340 A80,80 0 0 1 280,420" fill="none" stroke="#2B2622" stroke-width="0.9" stroke-dasharray="3 3"/>
+              <line x1="200" y1="420" x2="200" y2="340" stroke="#2B2622" stroke-width="2.4"/>
+              <g fill="#3A332D">
+                <rect x="-12" y="-12" width="62" height="12"/>
+                <rect x="150" y="-12" width="162" height="12"/>
+                <rect x="-12" y="0" width="12" height="432"/>
+                <rect x="300" y="0" width="12" height="432"/>
+                <rect x="-12" y="420" width="212" height="12"/>
+                <rect x="280" y="420" width="32" height="12"/>
+              </g>
+              <rect x="50" y="-12" width="100" height="12" fill="#FFFFFF" stroke="#2B2622" stroke-width="0.8"/>
+              <line x1="50" y1="-6" x2="150" y2="-6" stroke="#2B2622" stroke-width="0.8"/>
+              <g stroke="#6B6159" stroke-width="0.9">
+                <line x1="0" y1="-16" x2="0" y2="-34"/>
+                <line x1="300" y1="-16" x2="300" y2="-34"/>
+                <line x1="0" y1="-28" x2="300" y2="-28"/>
+                <line x1="-5" y1="-23" x2="5" y2="-33"/>
+                <line x1="295" y1="-23" x2="305" y2="-33"/>
+                <line x1="-16" y1="0" x2="-34" y2="0"/>
+                <line x1="-16" y1="420" x2="-34" y2="420"/>
+                <line x1="-28" y1="0" x2="-28" y2="420"/>
+                <line x1="-33" y1="5" x2="-23" y2="-5"/>
+                <line x1="-33" y1="425" x2="-23" y2="415"/>
+              </g>
+              <text x="150" y="-34" text-anchor="middle" font-family="Manrope, sans-serif" font-size="20" font-weight="600" fill="#6B6159">300</text>
+              <text x="-35" y="210" transform="rotate(-90 -35 210)" text-anchor="middle" font-family="Manrope, sans-serif" font-size="20" font-weight="600" fill="#6B6159">420</text>
+              <rect x="0" y="450" width="50" height="6" fill="#2B2622"/>
+              <rect x="50" y="450" width="50" height="6" fill="#FFFFFF" stroke="#2B2622" stroke-width="1"/>
+              <text x="0" y="482" text-anchor="middle" font-family="Manrope, sans-serif" font-size="20" fill="#6B6159">0</text>
+              <text x="100" y="482" text-anchor="middle" font-family="Manrope, sans-serif" font-size="20" fill="#6B6159">1 м</text>
+            </svg>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;padding-top:4px">
+            <div style="display:flex;align-items:baseline;gap:8px;height:24px">
+              <h3 style="margin:0;font-family:'Literata',serif;font-weight:600;font-size:16px;line-height:24px">План</h3>
+              <span style="font-size:12px;line-height:16px;color:#6B6159">вид сверху · размеры в см</span>
+            </div>
+            <div style="margin-top:16px;display:flex;align-items:flex-start;gap:12px">
+              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" style="flex:none;margin-top:2px"><path d="M3 3h14v14H3z" fill="none" stroke="#6B6159" stroke-width="1.5" stroke-dasharray="3 2"/><path d="M10 6.5v7M6.5 10h7" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <p style="margin:0;font-size:16px;line-height:24px;font-weight:600;color:#2B2622">Добавьте шкаф или стеллаж — начнём с самого высокого</p>
+            </div>
+            <div role="group" aria-label="Добавить предмет" style="margin-top:16px;padding-left:32px">
+              <span style="display:block;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Добавить:</span>
+              <div style="margin-top:6px;display:flex;gap:8px">
+                <button type="button" class="btn-p" style="height:40px;padding:0 16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:6px;background:#B84A30;color:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;white-space:nowrap"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/></svg>Шкаф</button>
+                <button type="button" class="btn-s" style="height:40px;padding:0 14px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;color:#2B2622;font-size:14px;line-height:20px;font-weight:600;white-space:nowrap"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg>Стеллаж</button>
+              </div>
+              <div style="margin-top:8px;display:flex;gap:6px">
+                <button type="button" class="btn-s" style="display:flex;align-items:center;gap:4px;height:32px;padding:0 8px;border:1px solid #E6DED2;border-radius:6px;background:#FBF8F3;font-size:13px;line-height:18px;font-weight:600;color:#2B2622;text-align:left;white-space:nowrap"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M5 1v8M1 5h8" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg>Комод</button>
+                <button type="button" class="btn-s" style="display:flex;align-items:center;gap:4px;height:32px;padding:0 8px;border:1px solid #E6DED2;border-radius:6px;background:#FBF8F3;font-size:13px;line-height:18px;font-weight:600;color:#2B2622;text-align:left;white-space:nowrap"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M5 1v8M1 5h8" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg>Зеркало</button>
+                <button type="button" class="btn-s" style="display:flex;align-items:center;gap:4px;height:32px;padding:0 8px;border:1px solid #E6DED2;border-radius:6px;background:#FBF8F3;font-size:13px;line-height:18px;font-weight:600;color:#2B2622;text-align:left;white-space:nowrap"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M5 1v8M1 5h8" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg>Холодильник</button>
+              </div>
+            </div>
+            <p style="margin:auto 0 0;display:flex;align-items:center;gap:8px;font-size:13px;line-height:18px;color:#6B6159"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1.5v13M1.5 8h13M8 1.5L6 3.5M8 1.5l2 2M8 14.5l-2-2M8 14.5l2-2M1.5 8l2-2M1.5 8l2 2M14.5 8l-2-2M14.5 8l-2 2" fill="none" stroke="#6B6159" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Перетащите предмет — у стены он прилипает сам</p>
+          </div>
+        </div>
+    </div>
+  </section>
+  <section aria-labelledby="st-no3d" style="display:flex;flex-direction:column;min-width:0">
+    <div style="height:24px;display:flex;align-items:baseline;justify-content:space-between">
+      <h2 id="st-no3d" style="margin:0;font-size:18px;line-height:24px;font-weight:700;color:#2B2622">3D не загрузилось</h2>
+      <span style="font-size:12px;line-height:16px;font-weight:600;color:#6B6159">3D · центральная колонка</span>
+    </div>
+    <div style="margin-top:8px;height:392px;box-sizing:border-box;padding:16px;border:1px solid #D9CFC1;border-radius:12px;background:#F6F1EA;overflow:hidden">
+      <div style="height:358px;box-sizing:border-box;display:flex;flex-direction:column;padding:16px;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;box-shadow:0 1px 2px rgba(43,38,34,0.04)">
+        <div style="height:32px;display:flex;align-items:center;gap:14px">
+          <h3 style="margin:0;font-family:'Literata',serif;font-weight:600;font-size:18px;line-height:24px">3D</h3>
+          <div role="group" aria-label="Камера" style="display:flex;height:32px;box-sizing:border-box;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;overflow:hidden;opacity:0.4">
+              <button type="button" aria-pressed="true" disabled="disabled" style="height:30px;padding:0 12px;border:0;background:#2B2622;font-size:13px;line-height:18px;font-weight:600;color:#FFFFFF">Обзор</button>
+              <button type="button" class="seg" aria-pressed="false" disabled="disabled" style="height:30px;padding:0 12px;border:0;background:transparent;font-size:13px;line-height:18px;font-weight:500;color:#6B6159">Сверху</button>
+              <button type="button" class="seg" aria-pressed="false" disabled="disabled" style="height:30px;padding:0 12px;border:0;background:transparent;font-size:13px;line-height:18px;font-weight:500;color:#6B6159">С подушки</button>
+            </div>
+        </div>
+        <div role="status" style="margin-top:16px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;background:#FBF8F3;border:1px dashed #D9CFC1;border-radius:6px">
+          <span aria-hidden="true" style="width:40px;height:40px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border:1px solid #D9CFC1;border-radius:999px;background:#FFFFFF"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z M3.5 6.25L10 10l6.5-3.75 M10 10v7.5" fill="none" stroke="#6B6159" stroke-width="1.5" stroke-linejoin="round"/><path d="M2.5 2.5l15 15" stroke="#B84A30" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+          <p style="margin:12px 0 0;font-size:16px;line-height:24px;font-weight:600;color:#2B2622">Ваш браузер не показывает 3D.</p>
+          <p style="margin:4px 0 0;font-size:14px;line-height:20px;color:#6B6159">План и расчёт работают как обычно</p>
+          <button type="button" class="btn-p" style="margin-top:16px;height:40px;padding:0 16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:6px;background:#B84A30;color:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;white-space:nowrap"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 2.5h11v11h-11z M2.5 7.5h5 M7.5 2.5v5 M10 13.5v-3.5h3.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round"/></svg>Открыть план</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section aria-labelledby="st-load" style="display:flex;flex-direction:column;min-width:0">
+    <div style="height:24px;display:flex;align-items:baseline;justify-content:space-between">
+      <h2 id="st-load" style="margin:0;font-size:18px;line-height:24px;font-weight:700;color:#2B2622">Загрузка 3D</h2>
+      <span style="font-size:12px;line-height:16px;font-weight:600;color:#6B6159">3D · центральная колонка</span>
+    </div>
+    <div style="margin-top:8px;height:392px;box-sizing:border-box;padding:16px;border:1px solid #D9CFC1;border-radius:12px;background:#F6F1EA;overflow:hidden">
+      <div style="height:358px;box-sizing:border-box;display:flex;flex-direction:column;padding:16px;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;box-shadow:0 1px 2px rgba(43,38,34,0.04)">
+        <div style="height:32px;display:flex;align-items:center;gap:14px">
+          <h3 style="margin:0;font-family:'Literata',serif;font-weight:600;font-size:18px;line-height:24px">3D</h3>
+          <div role="group" aria-label="Камера" style="display:flex;height:32px;box-sizing:border-box;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;overflow:hidden;opacity:0.4">
+              <button type="button" aria-pressed="true" disabled="disabled" style="height:30px;padding:0 12px;border:0;background:#2B2622;font-size:13px;line-height:18px;font-weight:600;color:#FFFFFF">Обзор</button>
+              <button type="button" class="seg" aria-pressed="false" disabled="disabled" style="height:30px;padding:0 12px;border:0;background:transparent;font-size:13px;line-height:18px;font-weight:500;color:#6B6159">Сверху</button>
+              <button type="button" class="seg" aria-pressed="false" disabled="disabled" style="height:30px;padding:0 12px;border:0;background:transparent;font-size:13px;line-height:18px;font-weight:500;color:#6B6159">С подушки</button>
+            </div>
+        </div>
+        <div aria-busy="true" style="margin-top:16px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <svg viewBox="8 12 418 418" width="220" height="220" role="img" aria-label="Скелетон 3D-сцены: контуры стен, пола и мебели без деталей" style="display:block">
+<polygon points="250,196 17.2,330.4 17.2,157.6 250,23.2" fill="#E7DFD3"/>
+<polygon points="250,196 416.3,292 416.3,119.2 250,23.2" fill="#F1EBE2"/>
+<polygon points="250,196 416.3,292 183.5,426.4 17.2,330.4" fill="#E9DFCF"/>
+<polyline points="17.2,330.4 250,196 416.3,292" fill="none" stroke="#D2C4AE" stroke-width="1.5"/>
+<polygon points="349.8,253.6 346.4,255.5 346.4,194.7 349.8,192.8" fill="#DDD1BE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="257.8,204.3 346.4,255.5 346.4,194.7 257.8,143.5" fill="#D2C4AE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="261.1,141.6 349.8,192.8 346.4,194.7 257.8,143.5" fill="#F1EBE2" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="346.4,255.5 238.9,317.6 238.9,284.3 346.4,222.2" fill="#DDD1BE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="150.2,266.4 238.9,317.6 238.9,284.3 150.2,233.1" fill="#D2C4AE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="257.8,171 346.4,222.2 238.9,284.3 150.2,233.1" fill="#F1EBE2" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="153,271.2 122.5,288.8 122.5,180 153,162.4" fill="#DDD1BE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="107,279.8 122.5,288.8 122.5,180 107,171" fill="#D2C4AE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="137.5,153.4 153,162.4 122.5,180 107,171" fill="#F1EBE2" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="125.3,296.8 69.9,328.8 69.9,271.2 125.3,239.2" fill="#DDD1BE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="44.9,314.4 69.9,328.8 69.9,271.2 44.9,256.8" fill="#D2C4AE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="100.4,224.8 125.3,239.2 69.9,271.2 44.9,256.8" fill="#F1EBE2" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="416.3,292 349.8,330.4 349.8,189.6 416.3,151.2" fill="#DDD1BE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="319.3,312.8 349.8,330.4 349.8,189.6 319.3,172" fill="#D2C4AE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="385.8,133.6 416.3,151.2 349.8,189.6 319.3,172" fill="#F1EBE2" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="250,388 205.7,413.6 205.7,285.6 250,260" fill="#DDD1BE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="189,404 205.7,413.6 205.7,285.6 189,276" fill="#D2C4AE" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="233.4,250.4 250,260 205.7,285.6 189,276" fill="#F1EBE2" stroke="#D2C4AE" stroke-width="0.8" stroke-linejoin="round"/>
+              </svg>
+          <p role="status" style="margin:12px 0 0;display:flex;align-items:center;gap:8px;font-size:13px;line-height:18px;font-weight:500;color:#6B6159"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6" fill="none" stroke="#E6DED2" stroke-width="1.5"/><path d="M8 2a6 6 0 0 1 6 6" fill="none" stroke="#6B6159" stroke-width="1.5" stroke-linecap="round"/></svg>Готовим 3D…</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section aria-labelledby="st-shape" style="display:flex;flex-direction:column;min-width:0">
+    <div style="height:24px;display:flex;align-items:baseline;justify-content:space-between">
+      <h2 id="st-shape" style="margin:0;font-size:18px;line-height:24px;font-weight:700;color:#2B2622">Ошибка формы комнаты</h2>
+      <span style="font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Своя планировка · левая колонка</span>
+    </div>
+    <div style="margin-top:8px;height:392px;box-sizing:border-box;padding:16px;border:1px solid #D9CFC1;border-radius:12px;background:#F6F1EA;overflow:hidden">
+      <div style="height:358px;box-sizing:border-box;display:flex;gap:24px;padding:12px;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;box-shadow:0 1px 2px rgba(43,38,34,0.04)">
+            <svg viewBox="-60 -50 400 540" width="244" height="329" role="img" aria-label="Своя планировка с ошибкой: левый нижний угол перетащен за правую стену, новая стена пересекает правую стену. Место пересечения выделено красным." style="display:block;flex:none">
+              <defs>
+                <pattern id="hatchErr" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#B84A30" stroke-width="1.3" stroke-opacity="0.5"/></pattern>
+                <marker id="arrGhost" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#6B6159"/></marker>
+              </defs>
+              <polygon points="0,0 300,0 300,291" fill="#FBF8F3"/>
+              <polygon points="300,291 300,420 328,318" fill="#B84A30" fill-opacity="0.07"/>
+              <polygon points="300,291 300,420 328,318" fill="url(#hatchErr)"/>
+              <polyline points="300,420 0,420 0,0" fill="none" stroke="#6B6159" stroke-width="1.2" stroke-dasharray="6 5"/>
+              <rect x="-6" y="414" width="12" height="12" fill="none" stroke="#6B6159" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <line x1="14" y1="415" x2="306" y2="323" stroke="#6B6159" stroke-width="1.2" stroke-dasharray="3 5" marker-end="url(#arrGhost)"/>
+              <g fill="none" stroke="#3A332D" stroke-width="12" stroke-linecap="square" stroke-linejoin="miter">
+                <polyline points="0,0 300,0 300,420 328,318"/>
+                <line x1="328" y1="318" x2="0" y2="0"/>
+              </g>
+              <rect x="50" y="-6" width="100" height="12" fill="#FFFFFF" stroke="#2B2622" stroke-width="0.8"/>
+              <line x1="50" y1="0" x2="150" y2="0" stroke="#2B2622" stroke-width="0.8"/>
+              <g stroke="#B84A30" stroke-width="12" stroke-linecap="butt">
+                <line x1="300" y1="231" x2="300" y2="351"/>
+                <line x1="328" y1="318" x2="257" y2="249"/>
+              </g>
+              <circle cx="300" cy="291" r="16" fill="#FFFFFF" stroke="#B84A30" stroke-width="3"/>
+              <path d="M294,285 l12,12 M306,285 l-12,12" stroke="#B84A30" stroke-width="3" stroke-linecap="round"/>
+              <text x="276" y="298" text-anchor="end" font-family="Manrope, sans-serif" font-size="20" font-weight="700" fill="#B84A30" stroke="#FBF8F3" stroke-width="5" stroke-linejoin="round" paint-order="stroke">пересечение</text>
+              <g fill="#FFFFFF" stroke="#2B2622" stroke-width="1.4">
+                <rect x="-6" y="-6" width="12" height="12"/>
+                <rect x="294" y="-6" width="12" height="12"/>
+                <rect x="294" y="414" width="12" height="12"/>
+              </g>
+              <rect x="320" y="310" width="16" height="16" fill="#B84A30" stroke="#2B2622" stroke-width="1.4"/>
+              <rect x="0" y="450" width="50" height="6" fill="#2B2622"/>
+              <rect x="50" y="450" width="50" height="6" fill="#FFFFFF" stroke="#2B2622" stroke-width="1"/>
+              <text x="0" y="482" text-anchor="middle" font-family="Manrope, sans-serif" font-size="20" fill="#6B6159">0</text>
+              <text x="100" y="482" text-anchor="middle" font-family="Manrope, sans-serif" font-size="20" fill="#6B6159">1 м</text>
+            </svg>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;padding-top:4px">
+            <div style="display:flex;align-items:baseline;gap:8px;height:24px">
+              <h3 style="margin:0;font-family:'Literata',serif;font-weight:600;font-size:16px;line-height:24px">План</h3>
+              <span style="font-size:12px;line-height:16px;color:#6B6159">своя планировка · вид сверху</span>
+            </div>
+            <div role="alert" style="margin-top:16px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid #B84A30;border-radius:6px;background:#FFFFFF">
+              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" style="flex:none"><path d="M10 2.5l8 14.5H2z" fill="none" stroke="#B84A30" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4.5M10 14.8v0.1" stroke="#B84A30" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <div>
+                <p style="margin:0;font-size:14px;line-height:20px;font-weight:600;color:#B84A30">Стены пересекаются — сдвиньте угол</p>
+                <p style="margin:4px 0 0;font-size:13px;line-height:18px;color:#6B6159">Расчёт и 3D обновятся, когда стены перестанут пересекаться.</p>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px">
+              <button type="button" class="btn-s" style="height:40px;padding:0 14px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;color:#2B2622;font-size:14px;line-height:20px;font-weight:600;white-space:nowrap"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5L2.5 6.5l3 3M2.5 6.5H10a3.5 3.5 0 0 1 0 7H7" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Отменить</button>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid #E6DED2;font-size:12px;line-height:16px;color:#6B6159">
+              <span style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="1" y="1" width="10" height="10" fill="#B84A30" stroke="#2B2622" stroke-width="1"/></svg>угол, который нужно сдвинуть</span>
+              <span style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><circle cx="6" cy="6" r="4.5" fill="#FFFFFF" stroke="#B84A30" stroke-width="1.5"/></svg>место пересечения</span>
+              <span style="display:flex;align-items:center;gap:6px"><svg width="14" height="8" viewBox="0 0 14 8" aria-hidden="true" focusable="false"><path d="M1 4h12" stroke="#6B6159" stroke-width="1.2" stroke-dasharray="3 2"/></svg>где стены были до перетаскивания</span>
+            </div>
+          </div>
+        </div>
+    </div>
+  </section>
+</div>
+</div>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900} }'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

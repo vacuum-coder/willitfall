@@ -1,0 +1,98 @@
+/* Дизайн-система «Спокойная ночь» (вариант В) — ЕДИНСТВЕННЫЙ источник значений.
+   Любой цвет, размер, отступ, скругление или тень в макетах и в коде берётся только отсюда.
+   Проверка: node lint.js <папки или файлы>. Новое значение появляется только здесь и в MASTER.md. */
+
+:root {
+  /* ——— Цвета интерфейса ——— */
+  --c-bg: #F6F1EA;              /* фон страницы, кремовый */
+  --c-surface: #FFFFFF;         /* панели, карточки */
+  --c-surface-2: #FBF8F3;       /* вторичная подложка, наведение на строку */
+  --c-border: #E6DED2;          /* рамки панелей и разделители */
+  --c-border-strong: #D9CFC1;   /* рамки полей ввода и вторичных кнопок */
+  --c-rule: #DDD1BE;            /* линии плана, сетка, штриховка */
+  --c-text: #2B2622;            /* основной текст, контуры, кольцо фокуса */
+  --c-text-2: #6B6159;          /* вторичный текст (контраст 6.0:1 на белом) */
+  --c-poche: #3A332D;           /* заливка разреза стен */
+  --c-on-accent: #FFFFFF;       /* текст на цветных кнопках */
+
+  --c-danger: #B84A30;          /* упадёт, главная кнопка (белый текст 5.2:1) */
+  --c-danger-hover: #A4452D;
+  --c-danger-pressed: #8E3A25;
+  --c-danger-tint: #F4DCD3;     /* подложка меток «упадёт» */
+  --c-danger-zone: rgba(184, 74, 48, 0.12); /* заливка зоны падения */
+
+  --c-safe: #4F6E5D;            /* закреплено / безопасно (5.6:1) */
+  --c-safe-tint: #E3EAE4;
+  --c-slide: #8A5F17;           /* сдвинется (5.6:1) */
+  --c-slide-tint: #F5EAD3;
+
+  /* ——— Шрифты ——— */
+  --font-display: 'Literata', serif;                 /* заголовки и крупные числа: 500, 600, курсив 500 */
+  --font-ui: 'Manrope', system-ui, sans-serif;       /* интерфейс: 400, 500, 600, 700 */
+
+  /* шкала: размер / межстрочный */
+  --fs-12: 12px; --lh-12: 16px;   /* подписи, метки */
+  --fs-13: 13px; --lh-13: 18px;   /* мелкий текст */
+  --fs-14: 14px; --lh-14: 20px;   /* основной текст, контролы */
+  --fs-16: 16px; --lh-16: 24px;   /* крупный текст, главные кнопки на телефоне */
+  --fs-18: 18px; --lh-18: 24px;   /* заголовки карточек */
+  --fs-22: 22px; --lh-22: 28px;   /* заголовки панелей (Literata) */
+  --fs-26: 26px; --lh-26: 32px;   /* заголовок экрана на телефоне, число в карточке */
+  --fs-32: 32px; --lh-32: 40px;   /* заголовок экрана на десктопе */
+  --fs-44: 44px; --lh-44: 48px;   /* крупное число (сила толчка, порог) */
+  --ls-display: -0.01em;
+  --ls-number: -0.02em;
+
+  /* ——— Отступы (gap, padding, margin) ——— */
+  --s-2: 2px; --s-4: 4px; --s-6: 6px; --s-8: 8px; --s-10: 10px; --s-12: 12px; --s-14: 14px;
+  --s-16: 16px; --s-20: 20px; --s-24: 24px; --s-28: 28px; --s-32: 32px; --s-36: 36px; --s-48: 48px;
+
+  /* ——— Скругления ——— */
+  --r-xs: 2px;     /* дорожка ползунка, засечки */
+  --r-sm: 4px;     /* метки, чекбоксы */
+  --r-md: 6px;     /* кнопки, поля, переключатели */
+  --r-lg: 12px;    /* панели, карточки, нижний лист */
+  --r-full: 999px; /* точки легенды, круглые ручки */
+
+  /* ——— Высоты контролов ——— */
+  --h-xs: 24px;  /* метки-«таблетки» */
+  --h-sm: 28px;  /* компактные чипы */
+  --h-md: 32px;  /* переключатели, степпер, кнопки-иконки */
+  --h-lg: 40px;  /* кнопки, поля, select */
+  --h-xl: 44px;  /* главная кнопка на телефоне, минимальная зона касания */
+
+  /* ——— Тени ——— */
+  --sh-1: 0 1px 2px rgba(43, 38, 34, 0.04);   /* панели */
+  --sh-2: 0 1px 3px rgba(43, 38, 34, 0.18);   /* ручка ползунка, поднятые ручки */
+  --sh-3: 0 12px 32px rgba(43, 38, 34, 0.14); /* меню, поповеры, нижний лист */
+
+  /* ——— Фокус и движение ——— */
+  --focus-ring: 2px solid #2B2622;
+  --focus-offset: 2px;
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ——— 3D-сцена: только для изометрии (SVG в макете, материалы three.js в продукте) ———
+   У коробок три видимые грани: top — крышка, x — грань к +X, y — грань к +Y. */
+:root {
+  --scene-ink: #2B2622;
+  --scene-floor: #E9DFCF; --scene-floor-line: #DDD1BE; --scene-floor-ao: #D2C4AE;
+  --scene-wall-left: #E7DFD3; --scene-wall-back: #F1EBE2; --scene-window: #E3EAE4; --scene-poche: #3A332D;
+  --scene-bedhead-top: #DCCDB6; --scene-bedhead-x: #CBB99E; --scene-bedhead-y: #D3C3AA;
+  --scene-bed-top: #E6DAC7; --scene-bed-x: #D2C3AC; --scene-bed-y: #DCCEB9;
+  --scene-mattress-top: #FCFAF6; --scene-mattress-x: #ECE5D9; --scene-mattress-y: #F3EEE5;
+  --scene-blanket-top: #8FA898; --scene-blanket-x: #7B9585; --scene-blanket-y: #859F8F;
+  --scene-pillow-top: #FFFFFF; --scene-pillow-x: #ECE6DA; --scene-pillow-y: #F4EFE6;
+  --scene-mirror-top: #E2DACD; --scene-mirror-x: #DCE6DF; --scene-mirror-y: #D3C9B8;
+  --scene-dresser-top: #EEDDB8; --scene-dresser-x: #DDC391; --scene-dresser-y: #E6D0A4;
+  --scene-danger-top: #D47559; --scene-danger-side: #BC5236; --scene-danger-back: #A4452D; --scene-danger-seam: #8E3A25;
+  --scene-danger2-top: #F2CDBE; --scene-danger2-x: #E3A48D; --scene-danger2-y: #D9937B;
+  --scene-shadow: rgba(58, 51, 45, 0.13);
+  --scene-ghost: rgba(184, 74, 48, 0.07);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur: 0ms; }
+}

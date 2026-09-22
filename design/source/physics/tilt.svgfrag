@@ -1,0 +1,53 @@
+<svg width="348" height="158" viewBox="0 0 348 158" role="img" aria-label="Опыт с наклоном: доска поднята на 14 градусов и лежит на стопке книг; у нижнего края упор, к нему прижат брусок в пропорции шкафа, 1 к 4; на доске телефон с уровнем. Вертикаль через центр тяжести бруска проходит через ребро упора — брусок начинает опрокидываться." style="display:block">
+<defs><filter id="softT" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+<polygon points="114.9,48.8 227.5,113.8 171.2,146.3 58.6,81.3" fill="#E9DFCF" />
+<polyline points="128.4,56.6 72.2,89.1" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="142,64.4 85.7,96.9" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="155.5,72.2 99.2,104.7" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="169,80 112.7,112.5" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="182.5,87.8 126.2,120.3" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="196,95.6 139.7,128.1" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="209.5,103.4 153.2,135.9" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="223,111.2 166.7,143.7" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polygon points="119.4,59.1 205,108.5 166.3,134.5 79.8,84.6" fill="rgba(58,51,45,0.13)" filter="url(#softT)"/>
+<polygon points="127.5,71.7 104.1,85.2 104.1,65.4 127.5,51.9" fill="#D2C3AC" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="89.7,76.9 104.1,85.2 104.1,65.4 89.7,57.1" fill="#DCCEB9" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="113.1,43.6 127.5,51.9 104.1,65.4 89.7,57.1" fill="#E6DAC7" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polyline points="127.5,65.1 104.1,78.6 89.7,70.3" fill="none" stroke="#2B2622" stroke-width="0.5"/>
+<polyline points="127.5,58.5 104.1,72 89.7,63.7" fill="none" stroke="#2B2622" stroke-width="0.5"/>
+<polygon points="205,106 164.5,129.4 165,127.2 205.5,103.8" fill="#DDC391" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="164.5,129.4 81.5,57.5 82,55.3 165,127.2" fill="#E6D0A4" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="205.5,103.8 122.5,31.9 82,55.3 165,127.2" fill="#EEDDB8" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="149,87.3 139,93 139.4,91.5 149.3,85.7" fill="#3A332D" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="139,93 121.6,77.9 122,76.3 139.4,91.5" fill="#3A332D" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="149.3,85.7 131.9,70.6 122,76.3 139.4,91.5" fill="#3A332D" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="146.9,85.3 132,72.4 124.4,76.8 139.2,89.7" fill="#E3EAE4" stroke="#2B2622" stroke-width="0.5" stroke-linejoin="round"/>
+<polyline points="140.9,85.6 130.4,76.5" fill="none" stroke="#4F6E5D" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="138.3" cy="83.3" r="2.4" fill="#4F6E5D"/>
+<polygon points="190.3,108.8 175,117.6 185.9,73.5 201.2,64.7" fill="#A4452D" stroke="#2B2622" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="175,117.6 164.1,108.2 175,64 185.9,73.5" fill="#BC5236" stroke="#2B2622" stroke-width="0.8" stroke-linejoin="round"/>
+<polygon points="201.2,64.7 190.3,55.2 175,64 185.9,73.5" fill="#D47559" stroke="#2B2622" stroke-width="0.8" stroke-linejoin="round"/>
+<polyline points="174.3,113.9 184,75" fill="none" stroke="#8E3A25" stroke-width="0.6"/>
+<polygon points="205.5,103.8 165,127.2 165.9,123.7 206.4,100.3" fill="#CBB99E" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="165,127.2 162.4,124.9 163.3,121.4 165.9,123.7" fill="#D3C3AA" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="206.4,100.3 203.8,98 163.3,121.4 165.9,123.7" fill="#DCCDB6" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<line x1="175" y1="90.8" x2="175" y2="117.6" stroke="#FFFFFF" stroke-width="2.6"/>
+<line x1="175" y1="90.8" x2="175" y2="117.6" stroke="#2B2622" stroke-width="1.2" stroke-dasharray="3 3"/>
+<circle cx="175" cy="90.8" r="4.5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.2"/><path d="M170.5,90.8 h9 M175,86.3 v9" stroke="#2B2622" stroke-width="1"/>
+<circle cx="175" cy="117.6" r="2.6" fill="#B84A30" stroke="#FFFFFF" stroke-width="1.2"/>
+<polyline points="167.2,130.8 105.9,95.4" fill="none" stroke="#2B2622" stroke-width="0.9" stroke-dasharray="4 3"/>
+<polyline points="119.4,103.4 119.4,102.5 119.5,101.6 119.5,100.7 119.5,99.8 119.6,99 119.7,98.1 119.8,97.3 119.9,96.4 120,95.6 120.1,94.8 120.3,94 120.4,93.2 120.6,92.4 120.8,91.6 120.8,91.6" fill="none" stroke="#B84A30" stroke-width="1.6"/>
+<g font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#2B2622">
+<polyline points="130.7,83.9 160,22 8,22" fill="none" stroke="#2B2622" stroke-width="0.8"/>
+<circle cx="130.7" cy="83.9" r="2.6" fill="#2B2622" stroke="#FFFFFF" stroke-width="1.2"/>
+<text x="8" y="16">уровень в телефоне</text>
+<polyline points="175,90.8 240,70 340,70" fill="none" stroke="#2B2622" stroke-width="0.8"/>
+<text x="340" y="48" text-anchor="end">центр тяжести</text>
+<text x="340" y="64" text-anchor="end">над ребром</text>
+<polyline points="165.5,125.4 196,154 340,154" fill="none" stroke="#2B2622" stroke-width="0.8"/>
+<circle cx="165.5" cy="125.4" r="2.6" fill="#2B2622" stroke="#FFFFFF" stroke-width="1.2"/>
+<text x="340" y="149" text-anchor="end">упор у нижнего края</text>
+<polyline points="119.8,97.2 100,134 8,134" fill="none" stroke="#B84A30" stroke-width="0.8"/>
+<text x="8" y="128">θ = <tspan fill="#B84A30">14,0°</tspan></text>
+</g>
+</svg>

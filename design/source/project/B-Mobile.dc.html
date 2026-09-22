@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Спальня — мобильный</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&amp;family=Unbounded:wght@600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:'Onest',sans-serif;background:#141517;color:#F2F0EA}
+a{color:#F2F0EA;text-decoration:none}a:hover{color:#F2C200}
+button,select,input,output{font-family:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid #F2C200;outline-offset:2px}
+.num{font-family:'Unbounded',sans-serif}
+.b-main{background:#F2C200;color:#141517;border:0;border-radius:2px}
+.b-main:hover{background:#FFD42E}
+.b-sec{background:transparent;color:#F2F0EA;border:1px solid #4A4E55;border-radius:2px}
+.b-sec:hover{border-color:#A7A9AD}
+.seg{background:transparent;color:#A7A9AD;border:0;border-radius:1px}
+.seg:hover{color:#F2F0EA}
+.force{-webkit-appearance:none;appearance:none;display:block;width:100%;height:28px;margin:0;background:transparent;position:relative;z-index:2;cursor:pointer}
+.force::-webkit-slider-runnable-track{height:28px;background:transparent;border:0}
+.force::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:28px;background:#F2C200;border:2px solid #141517;border-radius:2px;box-sizing:border-box}
+.force::-moz-range-track{height:28px;background:transparent;border:0}
+.force::-moz-range-thumb{width:20px;height:28px;background:#F2C200;border:2px solid #141517;border-radius:2px;box-sizing:border-box}
+.force:focus-visible{outline:2px solid #F2C200;outline-offset:4px}
+</style>
+</helmet>
+<div id="top" style="width:390px;height:844px;display:flex;flex-direction:column;gap:1px;background:#33363B;overflow:hidden;font-family:'Onest',sans-serif;color:#F2F0EA">
+
+  <header style="height:56px;flex:none;display:flex;align-items:center;gap:10px;padding:0 6px 0 16px;background:#141517;box-sizing:border-box">
+    <svg width="28" height="25" viewBox="0 0 32 29" aria-hidden="true" style="flex:none">
+      <path d="M16 1 L31 28 H1 Z" fill="#F2C200" stroke="#F2C200" stroke-width="1" stroke-linejoin="round"></path>
+      <path d="M16 4.6 L27.6 25.5 H4.4 Z" fill="#141517"></path>
+      <path d="M16 8.6 L24.1 23.2 H7.9 Z" fill="#F2C200"></path>
+      <rect x="15.5" y="13.5" width="3" height="8" fill="#141517" transform="rotate(-25 18.5 21.5)"></rect>
+      <path d="M10.5 22 H21.5" stroke="#141517" stroke-width="1.4"></path>
+    </svg>
+    <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+      <h1 class="num" style="margin:0;font-size:15px;font-weight:700;line-height:1">[Название]</h1>
+      <span style="font-size:12px;line-height:1;color:#A7A9AD;white-space:nowrap">проверка спальни на землетрясение</span>
+    </div>
+    <button type="button" aria-label="Открыть меню" style="margin-left:auto;width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;background:transparent;border:0">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F2F0EA" stroke-width="2" stroke-linecap="square"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+    </button>
+  </header>
+
+  <div style="height:40px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 16px;background:#1C1E21;box-sizing:border-box">
+    <div role="group" aria-label="Вид" style="display:flex;padding:2px;border:1px solid #33363B;border-radius:2px">
+      <button type="button" class="seg" aria-pressed="true" style="height:28px;padding:0 14px;font-size:13px;font-weight:600;background:#F2F0EA;color:#141517">3D</button>
+      <button type="button" class="seg" aria-pressed="false" style="height:28px;padding:0 14px;font-size:13px;font-weight:500">План</button>
+    </div>
+    <span style="font-size:12px;color:#A7A9AD;white-space:nowrap">Спальня в панельке, 3,0 × 4,2 м</span>
+  </div>
+
+  <section aria-label="3D-сцена" style="flex:none;background:#1C1E21">
+    <div style="position:relative;width:390px;height:300px">
+      <svg width="390" height="300" viewBox="-30 12 540 416" role="img" aria-label="Изометрия спальни. Шкаф наклонён на 32 градуса и падает на подушку, пунктиром — конечное положение и траектория. Стеллаж у двери упадёт при 6,2 балла. Комод сдвинется. Зеркало закреплено." font-family="Onest, sans-serif" style="display:block">
+        <defs>
+          <pattern id="hatch3d" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#E5482A" stroke-width="1.4" stroke-opacity="0.85"></line></pattern>
+          <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+          <marker id="arrRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#E5482A"></path></marker>
+          <marker id="arrAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#F2C200"></path></marker>
+        </defs>
+<polygon points="250,196 17.2,330.4 17.2,157.6 250,23.2" fill="#232529"></polygon>
+<polygon points="250,196 416.3,292 416.3,119.2 250,23.2" fill="#26282C"></polygon>
+<polygon points="277.7,148 333.1,180 333.1,103.2 277.7,71.2" fill="#2F3B43" stroke="#4A4E55" stroke-width="1"></polygon>
+<polyline points="305.4,164 305.4,87.2" fill="none" stroke="#4A4E55" stroke-width="0.8"></polyline>
+<polygon points="250,23.2 416.3,119.2 422.9,115.4 250,15.5" fill="#0B0C0D"></polygon>
+<polygon points="250,23.2 250,15.5 10.6,153.8 17.2,157.6" fill="#0B0C0D"></polygon>
+<polygon points="250,196 416.3,292 183.5,426.4 17.2,330.4" fill="#2A2C30"></polygon>
+<polyline points="266.6,205.6 33.8,340" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="283.3,215.2 50.5,349.6" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="299.9,224.8 67.1,359.2" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="316.5,234.4 83.7,368.8" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="333.1,244 100.4,378.4" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="349.8,253.6 117,388" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="366.4,263.2 133.6,397.6" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="383,272.8 150.2,407.2" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="399.6,282.4 166.9,416.8" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="416.3,292 183.5,426.4" fill="none" stroke="#33363B" stroke-width="0.7"></polyline>
+<polyline points="17.2,330.4 250,196 416.3,292" fill="none" stroke="#101113" stroke-width="2"></polyline>
+<polygon points="263.9,203.8 385.8,274.2 319.3,312.6 197.3,242.2" fill="rgba(229,72,42,0.14)"></polygon>
+<polygon points="263.9,203.8 385.8,274.2 319.3,312.6 197.3,242.2" fill="url(#hatch3d)" stroke="#E5482A" stroke-width="1.2" stroke-dasharray="5 3"></polygon>
+<polygon points="122.5,314.2 233.4,378.2 189,403.8 78.2,339.8" fill="rgba(229,72,42,0.1)"></polygon>
+<polygon points="122.5,314.2 233.4,378.2 189,403.8 78.2,339.8" fill="url(#hatch3d)" stroke="#E5482A" stroke-width="1.2" stroke-dasharray="5 3"></polygon>
+<polygon points="177.9,365.3 222.3,390.9 172.4,419.7 128.1,394.1" fill="none" stroke="#A7A9AD" stroke-width="1.2" stroke-dasharray="3 3"></polygon>
+<polygon points="316.5,234.1 416.3,291.7 349.8,330.1 255.5,278.9" fill="rgba(0,0,0,0.5)" filter="url(#soft)"></polygon>
+<polygon points="349.8,253.6 346.4,255.5 346.4,194.7 349.8,192.8" fill="#464A50" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="257.8,204.3 346.4,255.5 346.4,194.7 257.8,143.5" fill="#50545A" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="261.1,141.6 349.8,192.8 346.4,194.7 257.8,143.5" fill="#5A5F66" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="346.4,255.5 238.9,317.6 238.9,297.1 346.4,235" fill="#4F535A" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="150.2,266.4 238.9,317.6 238.9,297.1 150.2,245.9" fill="#5C6168" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="257.8,183.8 346.4,235 238.9,297.1 150.2,245.9" fill="#6A6F76" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="343.1,234.4 238.9,294.6 238.9,281.8 343.1,221.6" fill="#7C8188" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="154.7,245.9 238.9,294.6 238.9,281.8 154.7,233.1" fill="#8A8F96" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="258.9,173 343.1,221.6 238.9,281.8 154.7,233.1" fill="#9EA3AA" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="307.6,242.1 238.9,281.8 238.9,279.2 307.6,239.5" fill="#2F4250" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="154.7,233.1 238.9,281.8 238.9,279.2 154.7,230.6" fill="#36495A" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="223.4,190.9 307.6,239.5 238.9,279.2 154.7,230.6" fill="#3E5566" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="333.1,218.4 312.1,230.6 312.1,222.9 333.1,210.7" fill="#A3A7AC" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="243.3,190.9 312.1,230.6 312.1,222.9 243.3,183.2" fill="#B5B9BE" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="264.4,171 333.1,210.7 312.1,222.9 243.3,183.2" fill="#C9CCD0" stroke="#0B0C0D" stroke-width="0.8" stroke-linejoin="round"></polygon>
+<polygon points="259.4,164.3 343.1,212.6 281,248.5 197.3,200.2" fill="none" stroke="#E5482A" stroke-width="1.6" stroke-dasharray="6 3"></polygon>
+<circle cx="288.2" cy="195.7" r="9" fill="none" stroke="#E5482A" stroke-width="2"></circle><circle cx="288.2" cy="195.7" r="3" fill="#E5482A"></circle>
+<polygon points="153,271.2 122.5,288.8 122.5,180 153,162.4" fill="#4E6470" stroke="#5BB0D6" stroke-width="1" stroke-linejoin="round"></polygon>
+<polygon points="107,279.8 122.5,288.8 122.5,180 107,171" fill="#2F3236" stroke="#5BB0D6" stroke-width="1" stroke-linejoin="round"></polygon>
+<polygon points="137.5,153.4 153,162.4 122.5,180 107,171" fill="#3A3D42" stroke="#5BB0D6" stroke-width="1" stroke-linejoin="round"></polygon>
+<path d="M116.4,156.6 v10 h10" fill="none" stroke="#5BB0D6" stroke-width="2.4" stroke-linecap="round"></path>
+<polygon points="125.3,296.8 69.9,328.8 69.9,271.2 125.3,239.2" fill="#35383D" stroke="#F2C200" stroke-width="1" stroke-linejoin="round"></polygon>
+<polygon points="44.9,314.4 69.9,328.8 69.9,271.2 44.9,256.8" fill="#3D4046" stroke="#F2C200" stroke-width="1" stroke-linejoin="round"></polygon>
+<polygon points="100.4,224.8 125.3,239.2 69.9,271.2 44.9,256.8" fill="#45484E" stroke="#F2C200" stroke-width="1" stroke-linejoin="round"></polygon>
+<polyline points="124.2,278.2 71,309" fill="none" stroke="#F2C200" stroke-width="0.8"></polyline>
+<polyline points="124.2,259 71,289.8" fill="none" stroke="#F2C200" stroke-width="0.8"></polyline>
+<line x1="103.1" y1="315.7" x2="125.3" y2="328.5" stroke="#F2C200" stroke-width="2" marker-end="url(#arrAmber)"></line>
+<polygon points="411.6,270.7 345.1,309.1 280.5,152.4 347,114" fill="#A8321C" stroke="#0B0C0D" stroke-width="1" stroke-linejoin="round"></polygon>
+<polygon points="319.3,312.8 345.1,309.1 280.5,152.4 254.7,156.1" fill="#C73E24" stroke="#0B0C0D" stroke-width="1" stroke-linejoin="round"></polygon>
+<polygon points="321.2,117.7 347,114 280.5,152.4 254.7,156.1" fill="#E5482A" stroke="#0B0C0D" stroke-width="1" stroke-linejoin="round"></polygon>
+<polyline points="319.3,306.8 259.4,161.4" fill="none" stroke="#7E2614" stroke-width="0.8"></polyline>
+<polygon points="250,388 205.7,413.6 205.7,285.6 250,260" fill="#DC6A51" stroke="#0B0C0D" stroke-width="1" stroke-linejoin="round"></polygon>
+<polygon points="189,404 205.7,413.6 205.7,285.6 189,276" fill="#C95842" stroke="#0B0C0D" stroke-width="1" stroke-linejoin="round"></polygon>
+<polygon points="233.4,250.4 250,260 205.7,285.6 189,276" fill="#F4907A" stroke="#0B0C0D" stroke-width="1" stroke-linejoin="round"></polygon>
+<polyline points="189,372 205.7,381.6" fill="none" stroke="#0B0C0D" stroke-width="0.7"></polyline>
+<polyline points="189,340 205.7,349.6" fill="none" stroke="#0B0C0D" stroke-width="0.7"></polyline>
+<polyline points="189,308 205.7,317.6" fill="none" stroke="#0B0C0D" stroke-width="0.7"></polyline>
+<polygon points="385.8,274.4 319.3,312.8 202.3,205.5 268.8,167.1" fill="none" stroke="#E5482A" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.8"></polygon>
+<polygon points="319.3,312.8 327.9,284 210.9,176.7 202.3,205.5" fill="rgba(229,72,42,0.08)" stroke="#E5482A" stroke-width="1.2" stroke-dasharray="4 4"></polygon>
+<polyline points="352.5,152.8 344,148.2 335.6,144.4 327.2,141.2 318.9,138.8 310.8,137.2 302.9,136.3 295.3,136.2 287.9,136.9 280.9,138.3 274.2,140.5 267.8,143.4 261.9,147.1 256.5,151.4 251.4,156.5 246.9,162.2 242.9,168.6 239.5,175.6 236.6,183.1 235.6,186.3" fill="none" stroke="#E5482A" stroke-width="1.6" stroke-dasharray="2 4" marker-end="url(#arrRed)"></polyline>
+        <g font-size="17" font-weight="600">
+          <polyline points="300.6,135.1 300.6,31 314,31" fill="none" stroke="#F2F0EA" stroke-width="1.1"></polyline>
+          <circle cx="300.6" cy="135.1" r="3.2" fill="#F2F0EA"></circle>
+          <text x="318" y="37" fill="#F2F0EA">Шкаф · <tspan font-family="Unbounded, sans-serif" fill="#FF7A5C">7,0</tspan></text>
+
+          <polyline points="219.5,268 268,330 314,330" fill="none" stroke="#F2F0EA" stroke-width="1.1"></polyline>
+          <circle cx="219.5" cy="268" r="3.2" fill="#F2F0EA"></circle>
+          <text x="318" y="336" fill="#F2F0EA">Стеллаж · <tspan font-family="Unbounded, sans-serif" fill="#FF7A5C">6,2</tspan></text>
+
+          <polyline points="84.8,247.8 84.8,402" fill="none" stroke="#F2F0EA" stroke-width="1.1"></polyline>
+          <circle cx="84.8" cy="247.8" r="3.2" fill="#F2F0EA"></circle>
+          <text x="-26" y="419" fill="#F2F0EA">Комод · <tspan fill="#F2C200">сдвинется</tspan></text>
+        </g>
+      </svg>
+      <ul aria-label="Легенда" style="position:absolute;left:14px;top:10px;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;font-size:12px;line-height:16px">
+        <li style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><defs><pattern id="mlg1" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="4" stroke="#E5482A" stroke-width="1.4"></line></pattern></defs><rect x="0.5" y="0.5" width="11" height="11" fill="url(#mlg1)" stroke="#E5482A" stroke-width="1"></rect></svg>упадёт</li>
+        <li style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" fill="#3D4046" stroke="#F2C200" stroke-width="1.6"></rect></svg>сдвинется</li>
+        <li style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" fill="#4E6470" stroke="#5BB0D6" stroke-width="1.6"></rect></svg>закреплён</li>
+      </ul>
+    </div>
+    <div style="display:flex;gap:8px;padding:0 16px 8px">
+      <button type="button" class="b-main" style="flex:1;height:44px;display:flex;align-items:stretch;padding:0;overflow:hidden;font-size:15px;font-weight:600">
+        <svg width="12" height="44" viewBox="0 0 12 44" aria-hidden="true" style="display:block;flex:none"><defs><pattern id="mhz1" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect x="0" y="0" width="5" height="10" fill="#141517"></rect></pattern></defs><rect width="12" height="44" fill="#F2C200"></rect><rect width="12" height="44" fill="url(#mhz1)"></rect></svg>
+        <span style="display:flex;align-items:center;gap:8px;padding:0 12px">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#141517" stroke-width="2" stroke-linejoin="miter"><path d="M1 12h4l2.5-6 3.5 12 3-9 2 5 1.5-2H23"></path></svg>
+          <span>Тряхнуть · <span class="num" style="font-size:14px">9,0</span> балла</span>
+        </span>
+      </button>
+      <button type="button" class="b-sec" style="height:44px;display:flex;align-items:center;gap:6px;padding:0 12px;font-size:14px;font-weight:500">
+        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F2F0EA" stroke-width="2"><path d="M4.5 13a7.5 7.5 0 1 0 2.2-6.3"></path><path d="M4 3v5h5"></path></svg>
+        Сбросить
+      </button>
+    </div>
+  </section>
+
+  <section aria-label="Сила толчка" style="flex:none;background:#1C1E21;padding:12px 16px 10px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between">
+      <div>
+        <label for="force-m" style="display:block;font-size:12px;line-height:16px;color:#A7A9AD">Сила толчка</label>
+        <div style="display:flex;align-items:baseline;gap:6px;margin-top:2px">
+          <span class="num" style="font-size:28px;font-weight:700;line-height:1;letter-spacing:-0.02em">9,0</span>
+          <span style="font-size:14px;font-weight:600">балла</span>
+        </div>
+      </div>
+      <div role="group" aria-label="Этаж">
+        <div style="font-size:12px;line-height:16px;color:#A7A9AD">Этаж</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
+          <button type="button" class="b-sec" aria-label="Этаж ниже" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;padding:0"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F2F0EA" stroke-width="2.8"><path d="M4 12h16"></path></svg></button>
+          <output class="num" aria-label="Этаж 8 из 9" style="min-width:22px;text-align:center;font-size:17px;font-weight:600">8</output>
+          <button type="button" class="b-sec" aria-label="Этаж выше" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;padding:0"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F2F0EA" stroke-width="2.8"><path d="M12 4v16M4 12h16"></path></svg></button>
+          <span style="font-size:12px;color:#A7A9AD;margin-left:4px;white-space:nowrap">из 9 · <span class="num" style="color:#F2F0EA">×2,56</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:relative;height:36px;margin:8px 10px 0">
+      <div style="position:absolute;left:80%;top:0;bottom:-12px;width:0">
+        <span style="position:absolute;left:-0.5px;top:3px;bottom:0;border-left:1px dashed #F2F0EA"></span>
+        <span style="position:absolute;right:6px;top:0;white-space:nowrap;font-size:12px;line-height:16px;color:#F2F0EA">расчётная для Алматы</span>
+      </div>
+      <div style="position:absolute;left:39.4%;top:20px;bottom:-12px;width:0">
+        <span style="position:absolute;left:-0.75px;top:0;bottom:0;border-left:1.5px solid #E5482A"></span>
+        <span style="position:absolute;left:0;top:0;width:0;height:0;border-left:7px solid #E5482A;border-top:4px solid transparent;border-bottom:4px solid transparent"></span>
+        <span style="position:absolute;left:10px;top:-4px;white-space:nowrap;font-size:12px;line-height:16px;color:#F2F0EA">Шкаф <span class="num" style="color:#FF7A5C">7,0</span></span>
+      </div>
+      <div style="position:absolute;left:24.6%;top:20px;bottom:-12px;width:0">
+        <span style="position:absolute;left:-0.75px;top:0;bottom:0;border-left:1.5px solid #E5482A"></span>
+        <span style="position:absolute;right:0;top:0;width:0;height:0;border-right:7px solid #E5482A;border-top:4px solid transparent;border-bottom:4px solid transparent"></span>
+        <span style="position:absolute;right:10px;top:-4px;white-space:nowrap;font-size:12px;line-height:16px;color:#F2F0EA">Стеллаж <span class="num" style="color:#FF7A5C">6,2</span></span>
+      </div>
+    </div>
+    <div style="position:relative;height:28px">
+      <div style="position:absolute;left:10px;right:10px;top:12px;height:4px;background:#4A4E55"></div>
+      <div style="position:absolute;left:10px;top:12px;height:4px;width:calc((100% - 20px) * 0.8);background:#F2F0EA"></div>
+      <input class="force" id="force-m" type="range" min="5" max="10" step="0.1" value="9" aria-valuetext="9,0 балла">
+    </div>
+    <div style="position:relative;height:24px;margin:4px 10px 0">
+      <div aria-hidden="true" style="position:absolute;left:24.6%;width:75.4%;top:0;height:4px">
+        <svg width="100%" height="4" style="display:block"><defs><pattern id="mhz2" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect x="0" y="0" width="4" height="8" fill="#141517"></rect></pattern></defs><rect width="100%" height="4" fill="#F2C200"></rect><rect width="100%" height="4" fill="url(#mhz2)"></rect></svg>
+      </div>
+      <span class="num" style="position:absolute;left:0%;top:8px;transform:translateX(-50%);font-size:12px;line-height:16px;color:#A7A9AD">5</span>
+      <span class="num" style="position:absolute;left:20%;top:8px;transform:translateX(-50%);font-size:12px;line-height:16px;color:#A7A9AD">6</span>
+      <span class="num" style="position:absolute;left:40%;top:8px;transform:translateX(-50%);font-size:12px;line-height:16px;color:#A7A9AD">7</span>
+      <span class="num" style="position:absolute;left:60%;top:8px;transform:translateX(-50%);font-size:12px;line-height:16px;color:#A7A9AD">8</span>
+      <span class="num" style="position:absolute;left:80%;top:8px;transform:translateX(-50%);font-size:12px;line-height:16px;color:#F2F0EA">9</span>
+      <span class="num" style="position:absolute;left:100%;top:8px;transform:translateX(-50%);font-size:12px;line-height:16px;color:#A7A9AD">10</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="m-item" style="flex:none;background:#1C1E21;padding:12px 16px 14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <h2 id="m-item" class="num" style="margin:0;font-size:18px;font-weight:700;line-height:1">Шкаф</h2>
+        <span style="font-size:12px;color:#A7A9AD;white-space:nowrap">120 × 55 × 220 см</span>
+      </div>
+      <span style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border:1.5px solid #E5482A;border-radius:2px;color:#FF7A5C;font-size:12px;font-weight:600;white-space:nowrap">
+        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#FF7A5C" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3 22 20H2Z"></path><path d="M12 9.5v5M12 16.8v.4"></path></svg>
+        На подушку
+      </span>
+    </div>
+    <div style="display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center;margin-top:8px">
+      <div style="display:flex;align-items:baseline;gap:2px;color:#E5482A">
+        <span style="font-size:24px;font-weight:500;line-height:1">≈</span>
+        <span class="num" style="font-size:36px;font-weight:700;line-height:1;letter-spacing:-0.02em">7,0</span>
+      </div>
+      <div>
+        <p style="margin:0;font-size:13px;line-height:17px">балла — упадёт при такой силе толчка на 8-м этаже</p>
+        <p style="margin:2px 0 0;font-size:12px;line-height:16px;color:#A7A9AD">на 1-м этаже — при <span class="num" style="color:#F2F0EA">8,3</span></p>
+      </div>
+    </div>
+    <button type="button" class="b-main" style="margin-top:12px;width:100%;height:48px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 16px;font-size:16px;font-weight:600">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#141517" stroke-width="2.2" stroke-linecap="square"><path d="M5 3v16h16"></path><path d="M5 8h4M16 19v-4"></path></svg>
+      Закрепить к стене
+    </button>
+  </section>
+
+  <a href="#itog" aria-label="Итог при 9 баллах: 2 упадут, 1 сдвинется, 1 закреплён. Открыть чек-лист" style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 16px;background:#141517;color:#F2F0EA">
+    <span style="font-size:14px;line-height:20px;white-space:nowrap"><span class="num" style="font-weight:700;color:#FF7A5C">2</span> упадут · <span class="num" style="font-weight:700;color:#F2C200">1</span> сдвинется · <span class="num" style="font-weight:700;color:#5BB0D6">1</span> закреплён</span>
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F2F0EA" stroke-width="2.2" stroke-linecap="square"><path d="M9 6l6 6-6 6"></path></svg>
+  </a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844} }'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

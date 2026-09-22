@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Стены · десктоп</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,500;0,600;1,500&amp;family=Manrope:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#F6F1EA;color:#2B2622}
+a{color:#2B2622;text-decoration:none}a:hover{color:#B84A30}
+button,select,input{font-family:inherit}
+button{cursor:pointer}
+.rng{-webkit-appearance:none;appearance:none;background:transparent;margin:0;padding:0;cursor:pointer}
+.rng::-webkit-slider-runnable-track{height:18px;background:transparent;border:0}
+.rng::-moz-range-track{height:18px;background:transparent;border:0}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;box-sizing:border-box;margin-top:0;border-radius:50%;background:#FFFFFF;border:2px solid #2B2622;box-shadow:0 1px 3px rgba(43, 38, 34, 0.18)}
+.rng::-moz-range-thumb{width:18px;height:18px;box-sizing:border-box;border-radius:50%;background:#FFFFFF;border:2px solid #2B2622;box-shadow:0 1px 3px rgba(43, 38, 34, 0.18)}
+.num::-webkit-inner-spin-button,.num::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.num{-moz-appearance:textfield;appearance:textfield}
+.hd{position:absolute;width:18px;height:18px;box-sizing:border-box;padding:0;border:2px solid #2B2622;border-radius:999px;background:#FFFFFF;box-shadow:0 1px 3px rgba(43, 38, 34, 0.18);cursor:grab}
+.pl{position:absolute;width:16px;height:16px;box-sizing:border-box;padding:0;border:1px solid #6B6159;border-radius:999px;background:#FFFFFF;display:flex;align-items:center;justify-content:center}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #2B2622;outline-offset:2px}
+</style>
+</helmet>
+<div id="top" style="width:1440px;height:900px;display:flex;flex-direction:column;background:#F6F1EA;color:#2B2622;overflow:hidden;font-family:'Manrope',system-ui,sans-serif">
+
+  <header style="height:64px;flex:none;box-sizing:border-box;display:flex;align-items:center;gap:48px;padding:0 32px;border-bottom:1px solid #E6DED2">
+    <a href="#top" aria-label="[Название] — проверка спальни на землетрясение" style="display:flex;align-items:center;gap:12px;color:#2B2622">
+      <svg width="30" height="30" viewBox="0 0 28 28" fill="none" aria-hidden="true" focusable="false">
+        <path d="M19 10.5A6.5 6.5 0 1 1 12.5 4a5 5 0 0 0 6.5 6.5z" stroke="#2B2622" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M2.5 22.5h5l1.8-3 2.4 5 3-7 2.4 5 1.4-2h7" stroke="#B84A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="display:flex;flex-direction:column">
+        <span style="font-family:'Literata',serif;font-weight:600;font-size:18px;line-height:24px">[Название]</span>
+        <span style="font-size:13px;line-height:18px;color:#6B6159">проверка спальни на землетрясение</span>
+      </span>
+    </a>
+    <nav aria-label="Разделы" style="display:flex;align-self:stretch;gap:32px">
+      <a href="#room" aria-current="page" style="display:flex;align-items:center;box-sizing:border-box;padding-top:2px;border-bottom:2px solid #B84A30;font-size:14px;line-height:20px;font-weight:700;color:#2B2622">Комната</a>
+      <a href="#method" style="display:flex;align-items:center;box-sizing:border-box;padding-top:2px;border-bottom:2px solid transparent;font-size:14px;line-height:20px;font-weight:500;color:#6B6159">Как посчитано</a>
+      <a href="#physics" style="display:flex;align-items:center;box-sizing:border-box;padding-top:2px;border-bottom:2px solid transparent;font-size:14px;line-height:20px;font-weight:500;color:#6B6159">Проверка физики</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <label for="city" style="font-size:13px;line-height:18px;color:#6B6159">Город</label>
+      <div style="position:relative">
+        <select id="city" style="-webkit-appearance:none;appearance:none;height:40px;box-sizing:border-box;padding:0 36px 0 12px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;color:#2B2622">
+          <option selected="selected">Алматы</option>
+        </select>
+        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false" style="position:absolute;right:14px;top:14px;pointer-events:none"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <main id="room" style="height:836px;flex:none;box-sizing:border-box;padding:24px 32px 28px;display:grid;grid-template-columns:392px 552px 384px;column-gap:24px">
+
+    <section aria-label="Параметры: комната, этаж, сила толчка" style="display:flex;flex-direction:column;min-width:0">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;height:32px">
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span style="font-family:'Literata',serif;font-style:italic;font-weight:500;font-size:22px;line-height:28px;color:#2B2622">1</span>
+          <label for="room-select" style="font-size:16px;line-height:24px;font-weight:700">Комната</label>
+        </div>
+        <div role="group" aria-label="Что править на плане" style="display:flex">
+          <button type="button" aria-pressed="false" style="height:32px;padding:0 12px;border:1px solid #D9CFC1;border-radius:6px 0 0 6px;background:#FFFFFF;font-size:13px;line-height:18px;font-weight:600;color:#6B6159">Мебель</button>
+          <button type="button" aria-pressed="true" style="position:relative;height:32px;margin-left:-1px;padding:0 12px;border:1px solid #2B2622;border-radius:0 6px 6px 0;background:#2B2622;font-size:13px;line-height:18px;font-weight:600;color:#FFFFFF">Стены</button>
+        </div>
+      </div>
+      <div style="position:relative;margin-top:8px">
+        <select id="room-select" style="-webkit-appearance:none;appearance:none;width:100%;height:40px;box-sizing:border-box;padding:0 36px 0 14px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;color:#2B2622">
+          <option selected="selected">Спальня в панельке, 3,0 × 4,2 м</option>
+          <option>Своя планировка</option>
+        </select>
+        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false" style="position:absolute;right:14px;top:14px;pointer-events:none"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <div style="margin-top:12px;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;padding:12px;box-shadow:0 1px 2px rgba(43, 38, 34, 0.04)">
+        <div style="display:flex;align-items:center;justify-content:space-between;height:32px">
+          <h2 style="margin:0;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px">План</h2>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="tpl-label" style="font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Шаблон</span>
+            <div role="group" aria-labelledby="tpl-label" style="display:flex">
+              <button type="button" aria-pressed="false" style="height:32px;padding:0 12px;border:1px solid #D9CFC1;border-radius:6px 0 0 6px;background:#FFFFFF;font-size:13px;line-height:18px;font-weight:600;color:#6B6159">Прямоугольная</button>
+              <button type="button" aria-pressed="true" style="position:relative;min-width:40px;height:32px;margin-left:-1px;padding:0 12px;border:1px solid #2B2622;border-radius:0;background:#2B2622;font-size:13px;line-height:18px;font-weight:600;color:#FFFFFF">Г</button>
+              <button type="button" aria-pressed="false" style="min-width:40px;height:32px;margin-left:-1px;padding:0 12px;border:1px solid #D9CFC1;border-radius:0 6px 6px 0;background:#FFFFFF;font-size:13px;line-height:18px;font-weight:600;color:#6B6159">П</button>
+            </div>
+          </div>
+        </div>
+        <div style="position:relative;margin-top:12px;width:366px;height:328px">
+          <svg width="366" height="328" viewBox="0 0 366 328" role="img" aria-label="Редактор формы комнаты, вид сверху. Г-образная комната: прямоугольник 300 на 420 см и ниша 120 на 150 см справа снизу. Стены: 1 — 3,0 м с окном, 2 — 2,7 м, 3 — 1,2 м, 4 — 1,5 м, 5 — 4,2 м с дверью в 1,2 м от угла, 6 — 4,2 м." style="display:block">
+<defs><clipPath id="wFloor"><polygon points="57,38 237,38 237,200 309,200 309,290 57,290"/></clipPath></defs>
+<polygon points="49.8,30.8 244.2,30.8 244.2,192.8 316.2,192.8 316.2,297.2 49.8,297.2" fill="#3A332D"/>
+<polygon points="57,38 237,38 237,200 309,200 309,290 57,290" fill="#FBF8F3"/>
+<g clip-path="url(#wFloor)" stroke="#DDD1BE" stroke-width="0.6"><line x1="87" y1="38" x2="87" y2="290"/><line x1="57" y1="68" x2="309" y2="68"/><line x1="117" y1="38" x2="117" y2="290"/><line x1="57" y1="98" x2="309" y2="98"/><line x1="147" y1="38" x2="147" y2="290"/><line x1="57" y1="128" x2="309" y2="128"/><line x1="177" y1="38" x2="177" y2="290"/><line x1="57" y1="158" x2="309" y2="158"/><line x1="207" y1="38" x2="207" y2="290"/><line x1="57" y1="188" x2="309" y2="188"/><line x1="237" y1="38" x2="237" y2="290"/><line x1="57" y1="218" x2="309" y2="218"/><line x1="267" y1="38" x2="267" y2="290"/><line x1="57" y1="248" x2="309" y2="248"/><line x1="297" y1="38" x2="297" y2="290"/><line x1="57" y1="278" x2="309" y2="278"/></g>
+<rect x="87" y="30.8" width="60" height="7.2" fill="#FFFFFF" stroke="#2B2622" stroke-width="0.8"/>
+<line x1="87" y1="34.4" x2="147" y2="34.4" stroke="#2B2622" stroke-width="0.8"/>
+<rect x="189" y="290" width="48" height="7.2" fill="#FFFFFF"/>
+<path d="M189,290 A48,48 0 0 1 237,242" fill="none" stroke="#2B2622" stroke-width="0.8" stroke-dasharray="3 3"/>
+<line x1="237" y1="290" x2="237" y2="242" stroke="#2B2622" stroke-width="1.6"/>
+<g stroke="#6B6159" stroke-width="0.9"><line x1="237" y1="299.2" x2="237" y2="319"/><line x1="309" y1="299.2" x2="309" y2="319"/><line x1="237" y1="315" x2="309" y2="315"/><line x1="233" y1="319" x2="241" y2="311"/><line x1="305" y1="319" x2="313" y2="311"/></g>
+<text x="273" y="311" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#6B6159">1,2 м</text>
+<text x="147" y="22.8" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#2B2622"><tspan fill="#6B6159">1 ·</tspan> 3,0 м</text>
+<text x="259.2" y="119" transform="rotate(-90 259.2 119)" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#2B2622"><tspan fill="#6B6159">2 ·</tspan> 2,7 м</text>
+<text x="273" y="184.8" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#2B2622"><tspan fill="#6B6159">3 ·</tspan> 1,2 м</text>
+<text x="333.2" y="245" transform="rotate(-90 333.2 245)" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#2B2622"><tspan fill="#6B6159">4 ·</tspan> 1,5 м</text>
+<text x="43.8" y="164" transform="rotate(-90 43.8 164)" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#2B2622"><tspan fill="#6B6159">6 ·</tspan> 4,2 м</text>
+<rect x="149" y="303" width="68" height="24" rx="4" fill="#2B2622"/>
+<text x="183" y="319" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">5 · 4,2 м</text>
+          </svg>
+          <button type="button" class="hd" aria-label="Угол между стенами 6 и 1 — тянуть, чтобы сдвинуть" style="left:48px;top:29px"></button>
+          <button type="button" class="hd" aria-label="Угол между стенами 1 и 2 — тянуть, чтобы сдвинуть" style="left:228px;top:29px"></button>
+          <button type="button" class="hd" aria-label="Угол между стенами 2 и 3 — тянуть, чтобы сдвинуть" style="left:228px;top:191px"></button>
+          <button type="button" class="hd" aria-label="Угол между стенами 3 и 4 — тянуть, чтобы сдвинуть" style="left:300px;top:191px"></button>
+          <button type="button" class="hd" aria-label="Угол между стенами 4 и 5 — тянуть, чтобы сдвинуть" style="left:300px;top:281px"></button>
+          <button type="button" class="hd" aria-label="Угол между стенами 5 и 6 — тянуть, чтобы сдвинуть" style="left:48px;top:281px"></button>
+          <button type="button" class="pl" aria-label="Добавить угол на стене 1" style="left:139px;top:30px"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false"><path d="M4 1v6M1 4h6" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <button type="button" class="pl" aria-label="Добавить угол на стене 2" style="left:229px;top:111px"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false"><path d="M4 1v6M1 4h6" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <button type="button" class="pl" aria-label="Добавить угол на стене 3" style="left:265px;top:192px"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false"><path d="M4 1v6M1 4h6" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <button type="button" class="pl" aria-label="Добавить угол на стене 4" style="left:301px;top:237px"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false"><path d="M4 1v6M1 4h6" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <button type="button" class="pl" aria-label="Добавить угол на стене 5" style="left:175px;top:282px"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false"><path d="M4 1v6M1 4h6" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <button type="button" class="pl" aria-label="Добавить угол на стене 6" style="left:49px;top:156px"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false"><path d="M4 1v6M1 4h6" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid #E6DED2">
+        <div style="display:flex;align-items:center;justify-content:space-between;height:32px">
+          <div style="display:flex;align-items:baseline;gap:10px">
+            <span style="font-family:'Literata',serif;font-style:italic;font-weight:500;font-size:22px;line-height:28px;color:#2B2622">2</span>
+            <label for="floor" style="font-size:16px;line-height:24px;font-weight:700">Этаж</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="display:flex;align-items:center;height:32px;box-sizing:border-box;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF">
+              <button type="button" aria-label="Этажом ниже" style="width:32px;height:30px;padding:0;border:0;border-radius:6px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6h8" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+              <input id="floor" class="num" type="number" min="1" max="9" value="8" style="width:40px;height:30px;box-sizing:border-box;padding:0;border:0;border-left:1px solid #E6DED2;border-right:1px solid #E6DED2;background:transparent;text-align:center;font-family:'Literata',serif;font-size:18px;line-height:24px;font-weight:600;color:#2B2622">
+              <button type="button" aria-label="Этажом выше" style="width:32px;height:30px;padding:0;border:0;border-radius:6px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6h8M6 2v8" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+            </div>
+            <span style="font-size:14px;line-height:20px;color:#2B2622">из 9 <span style="color:#6B6159">·</span> <strong style="font-weight:700">×2,56</strong></span>
+          </div>
+        </div>
+        <p style="margin:4px 0 0;font-size:13px;line-height:18px;color:#6B6159">На 8-м этаже толчок усиливается в 2,56 раза.</p>
+      </div>
+
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid #E6DED2">
+        <div style="display:flex;align-items:baseline;gap:10px;height:48px">
+          <span style="font-family:'Literata',serif;font-style:italic;font-weight:500;font-size:22px;line-height:28px;color:#2B2622">3</span>
+          <label for="shake" style="font-size:16px;line-height:24px;font-weight:700">Сила толчка</label>
+          <span style="margin-left:auto;font-family:'Literata',serif;font-weight:600;font-size:44px;line-height:48px;letter-spacing:-0.02em;color:#2B2622">9,0 <span style="font-size:18px;line-height:24px;font-weight:500;letter-spacing:0">балла</span></span>
+        </div>
+        <p style="margin:2px 0 0;text-align:right;font-size:13px;line-height:18px;color:#6B6159">на 8-м этаже это ускорение пола 1,02 g</p>
+        <div style="padding:0 10px;margin-top:12px">
+          <div style="position:relative;height:48px">
+            <div style="position:absolute;right:20%;top:0;height:48px;box-sizing:border-box;padding-right:6px;border-right:1px dashed #2B2622;font-size:12px;line-height:16px;font-weight:600;color:#2B2622;white-space:nowrap">расчётная для Алматы</div>
+            <div style="position:absolute;right:75.4%;top:24px;height:24px;box-sizing:border-box;padding-right:6px;border-right:1px solid #B84A30;font-size:12px;line-height:16px;font-weight:600;color:#2B2622;white-space:nowrap">Стеллаж <span style="color:#B84A30">6,2</span></div>
+            <div style="position:absolute;left:39.4%;top:24px;height:24px;box-sizing:border-box;padding-left:6px;border-left:1px solid #B84A30;font-size:12px;line-height:16px;font-weight:600;color:#2B2622;white-space:nowrap">Шкаф <span style="color:#B84A30">7,0</span></div>
+          </div>
+          <div style="position:relative;height:28px">
+            <div style="position:absolute;left:0;right:0;top:12px;height:4px;border-radius:2px;background:#E6DED2"></div>
+            <div style="position:absolute;left:0;width:80%;top:12px;height:4px;border-radius:2px;background:#3A332D"></div>
+            <div style="position:absolute;left:24.6%;top:0;width:1px;height:12px;background:#B84A30"></div>
+            <div style="position:absolute;left:39.4%;top:0;width:1px;height:12px;background:#B84A30"></div>
+            <div style="position:absolute;left:24.6%;top:10px;width:8px;height:8px;box-sizing:border-box;margin-left:-4px;border-radius:50%;background:#B84A30;border:1px solid #FFFFFF"></div>
+            <div style="position:absolute;left:39.4%;top:10px;width:8px;height:8px;box-sizing:border-box;margin-left:-4px;border-radius:50%;background:#B84A30;border:1px solid #FFFFFF"></div>
+            <input id="shake" class="rng" type="range" min="5" max="10" step="0.1" value="9" aria-valuetext="9,0 балла" style="position:absolute;left:-10px;top:0;width:calc(100% + 20px);height:28px">
+          </div>
+          <div aria-hidden="true" style="position:relative;height:16px;margin-top:4px;font-size:12px;line-height:16px;color:#6B6159">
+            <span style="position:absolute;left:0;transform:translateX(-50%)">5</span>
+            <span style="position:absolute;left:20%;transform:translateX(-50%)">6</span>
+            <span style="position:absolute;left:40%;transform:translateX(-50%)">7</span>
+            <span style="position:absolute;left:60%;transform:translateX(-50%)">8</span>
+            <span style="position:absolute;left:80%;transform:translateX(-50%);color:#2B2622;font-weight:700">9</span>
+            <span style="position:absolute;left:100%;transform:translateX(-50%)">10</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-main" style="display:flex;flex-direction:column;min-width:0">
+      <p style="margin:0;font-size:13px;line-height:18px;font-weight:500;color:#6B6159">Алматы · 8-й этаж из 9 · 9,0 балла · ускорение пола 1,02 g</p>
+      <h1 id="h-main" style="margin:8px 0 0;font-family:'Literata',serif;font-weight:500;font-size:32px;line-height:40px;letter-spacing:-0.01em;color:#2B2622">Форма комнаты</h1>
+      <p style="margin:10px 0 0;max-width:520px;height:48px;font-family:'Literata',serif;font-style:italic;font-weight:500;font-size:18px;line-height:24px;color:#6B6159">Тяните углы на плане — стены в 3D перестраиваются сразу. Мебель вернётся на место, когда нажмёте «Готово».</p>
+
+      <div style="margin-top:20px;height:640px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;padding:16px;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(43, 38, 34, 0.04)">
+        <div style="height:32px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:12px">
+            <h2 style="margin:0;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px">3D</h2>
+            <div role="group" aria-label="Камера" style="display:flex">
+              <button type="button" aria-pressed="true" style="position:relative;height:32px;padding:0 12px;border:1px solid #2B2622;border-radius:6px 0 0 6px;background:#2B2622;font-size:13px;line-height:18px;font-weight:600;color:#FFFFFF">Обзор</button>
+              <button type="button" aria-pressed="false" style="height:32px;margin-left:-1px;padding:0 12px;border:1px solid #D9CFC1;border-radius:0;background:#FFFFFF;font-size:13px;line-height:18px;font-weight:600;color:#6B6159">Сверху</button>
+              <button type="button" aria-pressed="false" style="height:32px;margin-left:-1px;padding:0 12px;border:1px solid #D9CFC1;border-radius:0 6px 6px 0;background:#FFFFFF;font-size:13px;line-height:18px;font-weight:600;color:#6B6159">С подушки</button>
+            </div>
+          </div>
+          <ul aria-label="Легенда" style="list-style:none;margin:0;padding:0;display:flex;gap:12px;font-size:12px;line-height:16px;font-weight:600;color:#2B2622">
+            <li style="display:flex;align-items:center;gap:6px"><span aria-hidden="true" style="width:8px;height:8px;border-radius:999px;background:#3A332D"></span>срез стены</li>
+            <li style="display:flex;align-items:center;gap:6px"><span aria-hidden="true" style="width:8px;height:8px;box-sizing:border-box;border-radius:999px;border:1px solid #2B2622;background:#FFFFFF"></span>угол</li>
+          </ul>
+        </div>
+
+        <div style="position:relative;margin-top:10px;height:514px">
+          <svg viewBox="-48 -26 518 514" width="518" height="514" role="img" aria-label="Изометрия Г-образной комнаты без мебели: две задние стены целиком, с окном на стене 1; остальные стены показаны низким срезом; справа спереди ниша 1,2 на 1,5 метра; дверь на стене 5 открывается внутрь, влево. Белые точки — углы, те же, что на плане." style="display:block">
+<polygon points="250,196 17.2,330.4 17.2,157.6 250,23.2" fill="#E7DFD3" />
+<polygon points="250,196 416.3,292 416.3,119.2 250,23.2" fill="#F1EBE2" />
+<polygon points="277.7,148 333.1,180 333.1,103.2 277.7,71.2" fill="#E3EAE4" stroke="#2B2622" stroke-width="0.7"/>
+<polyline points="305.4,164 305.4,87.2" fill="none" stroke="#2B2622" stroke-width="0.6"/>
+<polygon points="250,23.2 416.3,119.2 422.9,115.4 250,15.5" fill="#3A332D" />
+<polygon points="250,23.2 250,15.5 10.6,153.8 17.2,157.6" fill="#3A332D" />
+<polygon points="416.3,292 422.9,288.2 422.9,115.4 416.3,119.2" fill="#3A332D" />
+<polygon points="10.6,326.6 17.2,330.4 17.2,157.6 10.6,153.8" fill="#3A332D" />
+<polygon points="250,196 416.3,292 266.6,378.4 333.1,416.8 250,464.8 17.2,330.4" fill="#E9DFCF" />
+<polyline points="266.6,205.6 33.8,340" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="283.3,215.2 50.5,349.6" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="299.9,224.8 67.1,359.2" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="316.5,234.4 83.7,368.8" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="333.1,244 100.4,378.4" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="349.8,253.6 117,388" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="366.4,263.2 133.6,397.6" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="383,272.8 150.2,407.2" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="399.6,282.4 166.9,416.8" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="416.3,292 183.5,426.4" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="283.3,388 200.1,436" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="299.9,397.6 216.7,445.6" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="316.5,407.2 233.4,455.2" fill="none" stroke="#DDD1BE" stroke-width="0.6"/>
+<polyline points="17.2,330.4 250,196 416.3,292" fill="none" stroke="#D2C4AE" stroke-width="1.5"/>
+<polyline points="139.1,400.5 144,398 149.3,395.8 155,393.9 161,392.3 167.3,391.2 173.7,390.4 180.2,390 186.8,390 193.3,390.4 199.7,391.2 206,392.3 212,393.9 217.6,395.8 223,398 227.8,400.5" fill="none" stroke="#2B2622" stroke-width="0.9" stroke-dasharray="3 3"/>
+<polyline points="183.5,426.1 227.8,400.5" fill="none" stroke="#2B2622" stroke-width="1.6" stroke-linecap="round"/>
+<polygon points="429.6,292 279.9,378.4 279.9,370.7 429.6,284.3" fill="#E7DFD3" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="273.3,374.6 279.9,378.4 279.9,370.7 273.3,366.9" fill="#F1EBE2" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="422.9,280.5 429.6,284.3 279.9,370.7 273.3,366.9" fill="#3A332D" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="339.8,413 333.1,416.8 333.1,409.1 339.8,405.3" fill="#E7DFD3" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="266.6,378.4 333.1,416.8 333.1,409.1 266.6,370.7" fill="#F1EBE2" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="273.3,366.9 339.8,405.3 333.1,409.1 266.6,370.7" fill="#3A332D" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="346.4,416.8 256.7,468.6 256.7,461 346.4,409.1" fill="#E7DFD3" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="250,464.8 256.7,468.6 256.7,461 250,457.1" fill="#F1EBE2" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="339.8,405.3 346.4,409.1 256.7,461 250,457.1" fill="#3A332D" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="139.1,400.8 132.5,404.6 132.5,397 139.1,393.1" fill="#E7DFD3" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="3.9,330.4 132.5,404.6 132.5,397 3.9,322.7" fill="#F1EBE2" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="10.6,318.9 139.1,393.1 132.5,397 3.9,322.7" fill="#3A332D" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="256.7,468.6 250,472.5 250,464.8 256.7,461" fill="#E7DFD3" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="176.8,430.2 250,472.5 250,464.8 176.8,422.6" fill="#F1EBE2" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<polygon points="183.5,418.7 256.7,461 250,464.8 176.8,422.6" fill="#3A332D" stroke="#2B2622" stroke-width="0.6" stroke-linejoin="round"/>
+<circle cx="250" cy="188.3" r="4.5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.5"/>
+<circle cx="416.3" cy="284.3" r="4.5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.5"/>
+<circle cx="266.6" cy="370.7" r="4.5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.5"/>
+<circle cx="333.1" cy="409.1" r="4.5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.5"/>
+<circle cx="250" cy="457.1" r="4.5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.5"/>
+<circle cx="17.2" cy="322.7" r="4.5" fill="#FFFFFF" stroke="#2B2622" stroke-width="1.5"/>
+            <g font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#2B2622">
+              <polyline points="305.4,125.6 372,56 466,56" fill="none" stroke="#2B2622" stroke-width="0.8"/>
+              <circle cx="305.4" cy="125.6" r="2.6" fill="#2B2622" stroke="#FFFFFF" stroke-width="1.2"/>
+              <text x="466" y="50" text-anchor="end">Окно · <tspan fill="#6B6159">стена 1</tspan></text>
+              <polyline points="161.3,412.3 120,458 -38,458" fill="none" stroke="#2B2622" stroke-width="0.8"/>
+              <circle cx="161.3" cy="412.3" r="2.6" fill="#2B2622" stroke="#FFFFFF" stroke-width="1.2"/>
+              <text x="-38" y="452">Дверь · <tspan fill="#6B6159">стена 5</tspan></text>
+              <polyline points="258.3,421.6 300,458 466,458" fill="none" stroke="#2B2622" stroke-width="0.8"/>
+              <circle cx="258.3" cy="421.6" r="2.6" fill="#2B2622" stroke="#FFFFFF" stroke-width="1.2"/>
+              <text x="466" y="452" text-anchor="end">Ниша · <tspan fill="#6B6159">1,2 × 1,5 м</tspan></text>
+            </g>
+          </svg>
+          <div style="position:absolute;right:0;top:0;display:flex;align-items:center;gap:8px">
+            <p style="margin:0;display:flex;align-items:center;gap:6px;font-size:12px;line-height:16px;color:#6B6159"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1.5v13M1.5 8h13M8 1.5L6 3.5M8 1.5l2 2M8 14.5l-2-2M8 14.5l2-2M1.5 8l2-2M1.5 8l2 2M14.5 8l-2-2M14.5 8l-2 2" fill="none" stroke="#6B6159" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Тяните — вращать, колесо — масштаб</p>
+            <div role="group" aria-label="Поворот и масштаб" style="display:flex;gap:4px">
+              <button type="button" aria-label="Повернуть влево" style="width:32px;height:32px;padding:0;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 3v3.5h3.5M2.6 10a5.8 5.8 0 1 0 1.2-5.6L2 6.5" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" aria-label="Повернуть вправо" style="width:32px;height:32px;padding:0;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M14 3v3.5h-3.5M13.4 10a5.8 5.8 0 1 1-1.2-5.6L14 6.5" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" aria-label="Приблизить" style="width:32px;height:32px;padding:0;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3.5v9M3.5 8h9" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+              <button type="button" aria-label="Отдалить" style="width:32px;height:32px;padding:0;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.5 8h9" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;height:40px;display:flex;align-items:center;gap:8px">
+          <button type="button" style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;border:0;border-radius:6px;background:#B84A30;color:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;white-space:nowrap"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Готово — к мебели</button>
+          <button type="button" style="height:40px;padding:0 14px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;color:#2B2622;font-size:14px;line-height:20px;font-weight:600;white-space:nowrap">Сбросить форму</button>
+          <p style="margin:0 0 0 auto;font-size:12px;line-height:16px;color:#6B6159;text-align:right">Мебель скрыта,<br>пока вы правите стены</p>
+        </div>
+      </div>
+    </section>
+
+    <aside aria-label="Проверка формы и дверь" style="display:flex;flex-direction:column;min-width:0">
+      <section aria-labelledby="h-shape" style="background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;padding:20px;box-shadow:0 1px 2px rgba(43, 38, 34, 0.04)">
+        <p style="margin:0;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Форма комнаты</p>
+        <div style="margin-top:4px;display:flex;align-items:baseline;gap:10px;height:32px">
+          <h2 id="h-shape" style="margin:0;font-family:'Literata',serif;font-weight:600;font-size:26px;line-height:32px">Г-образная</h2>
+          <span style="font-size:13px;line-height:18px;color:#6B6159">6 стен · шаблон «Г»</span>
+        </div>
+        <dl style="margin:12px 0 0;display:grid;grid-template-columns:1fr auto;font-size:14px;line-height:20px">
+          <dt style="padding:6px 0;border-top:1px solid #E6DED2;color:#6B6159">Площадь</dt>
+          <dd style="margin:0;padding:6px 0;border-top:1px solid #E6DED2;font-weight:700;text-align:right">14,4 м²</dd>
+          <dt style="padding:6px 0;border-top:1px solid #E6DED2;color:#6B6159">Периметр</dt>
+          <dd style="margin:0;padding:6px 0;border-top:1px solid #E6DED2;font-weight:700;text-align:right">16,8 м</dd>
+          <dt style="padding:6px 0;border-top:1px solid #E6DED2;border-bottom:1px solid #E6DED2;color:#6B6159">Высота потолка</dt>
+          <dd style="margin:0;padding:6px 0;border-top:1px solid #E6DED2;border-bottom:1px solid #E6DED2;font-weight:700;text-align:right">2,7 м</dd>
+        </dl>
+        <div role="status" style="margin-top:14px">
+          <p style="margin:0;display:flex;align-items:center;gap:8px;font-size:14px;line-height:20px;font-weight:600;color:#4F6E5D">Стены не пересекаются<span aria-hidden="true" style="flex:none;width:24px;height:24px;border-radius:999px;background:#E3EAE4;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12" focusable="false"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="#4F6E5D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></p>
+          <p style="margin:4px 0 0;font-size:13px;line-height:18px;color:#6B6159">Контур замкнут, дверь 0,8 м помещается на стене 5.</p>
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid #E6DED2">
+          <p style="margin:0;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Как править</p>
+          <ul style="list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:10px">
+            <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:20px;color:#2B2622">
+              <span aria-hidden="true" style="flex:none;width:20px;height:20px;display:flex;align-items:center;justify-content:center"><span style="width:14px;height:14px;box-sizing:border-box;border:2px solid #2B2622;border-radius:999px;background:#FFFFFF"></span></span>
+              <span>Тяните круглую ручку — угол двигается, длины стен пересчитываются</span>
+            </li>
+            <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:20px;color:#2B2622">
+              <span aria-hidden="true" style="flex:none;width:20px;height:20px;display:flex;align-items:center;justify-content:center"><span style="width:16px;height:16px;box-sizing:border-box;border:1px solid #6B6159;border-radius:999px;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><svg width="8" height="8" viewBox="0 0 8 8" focusable="false"><path d="M4 1v6M1 4h6" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round"/></svg></span></span>
+              <span>«+» на середине стены добавляет угол — так делается ниша или выступ</span>
+            </li>
+            <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:20px;color:#2B2622">
+              <span aria-hidden="true" style="flex:none;width:20px;height:20px;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" focusable="false"><path d="M2.5 4h11M6.5 4V2.5h3V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v4.5M9.2 6.5v4.5" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>Чтобы убрать угол, выделите его и нажмите Delete</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-door" style="margin-top:16px;background:#FFFFFF;border:1px solid #E6DED2;border-radius:12px;padding:20px;box-shadow:0 1px 2px rgba(43, 38, 34, 0.04)">
+        <div style="display:flex;align-items:center;justify-content:space-between;height:32px">
+          <h2 id="h-door" style="margin:0;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:28px">Дверь</h2>
+          <button type="button" aria-label="Удалить дверь" style="width:32px;height:32px;padding:0;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 4h11M6.5 4V2.5h3V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v4.5M9.2 6.5v4.5" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div style="margin-top:12px">
+          <label for="door-wall" style="display:block;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Стена</label>
+          <div style="position:relative;margin-top:6px">
+            <select id="door-wall" style="-webkit-appearance:none;appearance:none;width:100%;height:40px;box-sizing:border-box;padding:0 36px 0 14px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;color:#2B2622">
+              <option>Стена 1</option>
+              <option>Стена 2</option>
+              <option>Стена 3</option>
+              <option>Стена 4</option>
+              <option selected="selected">Стена 5</option>
+              <option>Стена 6</option>
+            </select>
+            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false" style="position:absolute;right:14px;top:14px;pointer-events:none"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="#2B2622" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;column-gap:12px">
+          <div>
+            <label for="door-offset" style="display:block;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Отступ от угла<span class="vh">, в метрах</span></label>
+            <div style="position:relative;margin-top:6px">
+              <input id="door-offset" type="text" inputmode="decimal" value="1,2" style="width:100%;height:40px;box-sizing:border-box;padding:0 36px 0 14px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;color:#2B2622">
+              <span aria-hidden="true" style="position:absolute;right:14px;top:10px;font-size:14px;line-height:20px;color:#6B6159">м</span>
+            </div>
+          </div>
+          <div>
+            <label for="door-width" style="display:block;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Ширина<span class="vh">, в метрах</span></label>
+            <div style="position:relative;margin-top:6px">
+              <input id="door-width" type="text" inputmode="decimal" value="0,8" style="width:100%;height:40px;box-sizing:border-box;padding:0 36px 0 14px;border:1px solid #D9CFC1;border-radius:6px;background:#FFFFFF;font-size:14px;line-height:20px;font-weight:600;color:#2B2622">
+              <span aria-hidden="true" style="position:absolute;right:14px;top:10px;font-size:14px;line-height:20px;color:#6B6159">м</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <span id="door-swing" style="display:block;font-size:12px;line-height:16px;font-weight:600;color:#6B6159">Открывание</span>
+          <div role="group" aria-labelledby="door-swing" style="margin-top:6px;display:flex;gap:8px">
+            <div role="group" aria-label="Куда" style="flex:1;display:flex">
+              <button type="button" aria-pressed="true" style="position:relative;flex:1;height:32px;padding:0 12px;border:1px solid #2B2622;border-radius:6px 0 0 6px;background:#2B2622;font-size:13px;line-height:18px;font-weight:600;color:#FFFFFF">внутрь</button>
+              <button type="button" aria-pressed="false" style="flex:1;height:32px;margin-left:-1px;padding:0 12px;border:1px solid #D9CFC1;border-radius:0 6px 6px 0;background:#FFFFFF;font-size:13px;line-height:18px;font-weight:600;color:#6B6159">наружу</button>
+            </div>
+            <div role="group" aria-label="В какую сторону" style="flex:1;display:flex">
+              <button type="button" aria-pressed="true" style="position:relative;flex:1;height:32px;padding:0 12px;border:1px solid #2B2622;border-radius:6px 0 0 6px;background:#2B2622;font-size:13px;line-height:18px;font-weight:600;color:#FFFFFF">влево</button>
+              <button type="button" aria-pressed="false" style="flex:1;height:32px;margin-left:-1px;padding:0 12px;border:1px solid #D9CFC1;border-radius:0 6px 6px 0;background:#FFFFFF;font-size:13px;line-height:18px;font-weight:600;color:#6B6159">вправо</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900} }'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

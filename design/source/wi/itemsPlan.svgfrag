@@ -1,0 +1,40 @@
+<defs><pattern id="hatch2d" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#B84A30" stroke-width="1" stroke-opacity="0.5"/></pattern><marker id="pArrOchre" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="#8A5F17"/></marker></defs>
+<rect x="32" y="32" width="168" height="235.2" fill="#FBF8F3"/>
+<rect x="43.2" y="32" width="89.6" height="112" rx="2" fill="#F3EEE5" stroke="#2B2622" stroke-width="0.8"/>
+<path d="M43.2,71.2 H132.8 V142.32 A1.68,1.68 0 0 1 131.12,144 H44.88 A1.68,1.68 0 0 1 43.2,142.32 Z" fill="#DCE6DF" stroke="#4F6E5D" stroke-width="0.6"/>
+<rect x="48.8" y="36.48" width="78.4" height="23.52" rx="4" fill="#FFFFFF" stroke="#2B2622" stroke-width="0.6"/>
+<text x="88" y="123.84" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#2B2622">Кровать</text>
+<rect x="144" y="216.8" width="44.8" height="50.4" fill="#E3EAE4" stroke="#4F6E5D" stroke-width="0.8" stroke-dasharray="3 2"/>
+<rect x="46" y="32" width="123.2" height="67.2" fill="rgba(184,74,48,0.12)"/>
+<rect x="46" y="32" width="123.2" height="67.2" fill="url(#hatch2d)" stroke="#B84A30" stroke-width="0.8" stroke-dasharray="4 3"/>
+<rect x="71.2" y="200" width="112" height="44.8" fill="rgba(184,74,48,0.12)"/>
+<rect x="71.2" y="200" width="112" height="44.8" fill="url(#hatch2d)" stroke="#B84A30" stroke-width="0.8" stroke-dasharray="4 3"/>
+<path d="M144,222.4 A44.8,44.8 0 0 1 188.8,267.2" fill="none" stroke="#2B2622" stroke-width="0.6" stroke-dasharray="2 2"/>
+<line x1="144" y1="267.2" x2="144" y2="222.4" stroke="#2B2622" stroke-width="1.5"/>
+<text x="168.64" y="261.04" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="700" fill="#4F6E5D" stroke="#E3EAE4" stroke-width="3" stroke-linejoin="round" paint-order="stroke">выход</text>
+<rect x="169.2" y="32" width="30.8" height="67.2" fill="#F4DCD3" stroke="#B84A30" stroke-width="1"/>
+<text x="188.8" y="65.6" transform="rotate(-90 188.8 65.6)" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="700" fill="#2B2622">Шкаф</text>
+<rect x="183.2" y="200" width="16.8" height="44.8" fill="#F4DCD3" stroke="#B84A30" stroke-width="0.9"/>
+<text x="179.84" y="195.52" text-anchor="end" font-family="Manrope, sans-serif" font-size="12" font-weight="700" fill="#2B2622">Стеллаж</text>
+<rect x="32" y="183.2" width="25.2" height="56" fill="#F5EAD3" stroke="#8A5F17" stroke-width="0.9"/>
+<text x="49.92" y="204.48" transform="rotate(-90 49.92 204.48)" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="700" fill="#2B2622">Комод</text>
+<line x1="62.24" y1="191.04" x2="86.88" y2="191.04" stroke="#8A5F17" stroke-width="1.2" marker-end="url(#pArrOchre)"/>
+<rect x="32" y="183.2" width="4.48" height="56" fill="#F4DCD3" stroke="#B84A30" stroke-width="0.9"/>
+<circle cx="48.8" cy="230.8" r="3" fill="#F4DCD3" stroke="#B84A30" stroke-width="0.9"/>
+<text x="62.24" y="214" font-family="Manrope, sans-serif" font-size="12" font-weight="700" fill="#2B2622" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" paint-order="stroke">Телевизор</text>
+<text x="62.24" y="233.6" font-family="Manrope, sans-serif" font-size="12" font-weight="700" fill="#2B2622" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" paint-order="stroke">Ваза</text>
+<rect x="32" y="146.8" width="16.8" height="30.8" fill="#E3EAE4" stroke="#4F6E5D" stroke-width="0.9"/>
+<path d="M36.48,151.28 V158 H43.2" fill="none" stroke="#4F6E5D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="54.4" y="166.4" font-family="Manrope, sans-serif" font-size="12" font-weight="700" fill="#2B2622">Зеркало</text>
+<g fill="#3A332D"><rect x="25.28" y="25.28" width="34.72" height="6.72" /><rect x="116" y="25.28" width="90.72" height="6.72" /><rect x="25.28" y="32" width="6.72" height="241.92" /><rect x="200" y="32" width="6.72" height="241.92" /><rect x="25.28" y="267.2" width="118.72" height="6.72" /><rect x="188.8" y="267.2" width="17.92" height="6.72" /></g>
+<rect x="60" y="25.28" width="56" height="6.72" fill="#FFFFFF" stroke="#2B2622" stroke-width="0.6"/>
+<line x1="60" y1="28.64" x2="116" y2="28.64" stroke="#2B2622" stroke-width="0.6"/>
+<rect x="28.64" y="179.84" width="10.08" height="62.72" fill="none" stroke="#2B2622" stroke-width="0.8" stroke-dasharray="3 2"/>
+<g fill="#FFFFFF" stroke="#2B2622" stroke-width="0.9"><rect x="26.14" y="177.34" width="5" height="5"/><rect x="36.22" y="177.34" width="5" height="5"/><rect x="26.14" y="240.06" width="5" height="5"/><rect x="36.22" y="240.06" width="5" height="5"/></g>
+<g stroke="#6B6159" stroke-width="0.6"><line x1="32" y1="23.04" x2="32" y2="12.96"/><line x1="200" y1="23.04" x2="200" y2="12.96"/><line x1="32" y1="16.32" x2="200" y2="16.32"/><line x1="29" y1="19.32" x2="35" y2="13.32"/><line x1="197" y1="19.32" x2="203" y2="13.32"/><line x1="23.04" y1="32" x2="12.96" y2="32"/><line x1="23.04" y1="267.2" x2="12.96" y2="267.2"/><line x1="16.32" y1="32" x2="16.32" y2="267.2"/><line x1="13.32" y1="35" x2="19.32" y2="29"/><line x1="13.32" y1="270.2" x2="19.32" y2="264.2"/></g>
+<text x="116" y="11" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#6B6159">300</text>
+<text x="11" y="149.6" transform="rotate(-90 11 149.6)" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#6B6159">420</text>
+<rect x="32" y="284" width="28" height="4" fill="#2B2622"/>
+<rect x="60" y="284" width="28" height="4" fill="#FFFFFF" stroke="#2B2622" stroke-width="0.6"/>
+<text x="32" y="302" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6159">0</text>
+<text x="88" y="302" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6159">1 м</text>
