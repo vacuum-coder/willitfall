@@ -18,6 +18,9 @@ import { PANEL_BEDROOM } from '../data/presets';
 import type { BuildingType, FurnitureKind, Item } from '../physics/types';
 import type { Route } from './Header';
 import { SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
+import { WallsPlan } from './WallsPlan';
+import { ShapeCard, DoorCard } from './WallsPanels';
+import { shapeKind } from '../state/placement';
 
 const Scene3D = lazy(() => import('../three/Scene3D'));
 const TONE = { falls: C.danger, slides: C.slide, safe: C.safe, stands: C.text2 } as const;
@@ -69,6 +72,9 @@ export function MobileHeader({ route }: { route: Route }) {
       </header>
       {open && (
         <nav aria-label="Меню" style={{ position: 'absolute', top: 56, left: 0, right: 0, zIndex: 20, padding: sp(12, 16, 16), background: C.surface, borderBottom: `1px solid ${C.border}`, boxShadow: SH[3], display: 'flex', flexDirection: 'column', gap: sp(12) }}>
+          <button type="button" onClick={() => { dispatch({ type: state.walls ? 'END_WALLS' : 'BEGIN_WALLS' }); setOpen(false); location.hash = '#room'; }} style={{ ...button.secondary, height: H.xl, ...fs(16) }}>
+            {state.walls ? 'Готово — вернуться к мебели' : 'Изменить форму комнаты'}
+          </button>
           {([['room', 'Комната'], ['method', 'Как посчитано'], ['physics', 'Проверка физики']] as const).map(([r, label]) => (
             <a key={r} href={`#${r}`} onClick={() => setOpen(false)} aria-current={route === r ? 'page' : undefined} style={{ ...fs(16), fontWeight: route === r ? 700 : 500, color: route === r ? C.text : C.text2, height: H.xl, display: 'flex', alignItems: 'center' }}>
               {label}
@@ -125,7 +131,37 @@ function ViewToggle({ view, onChange, dark = false }: { view: '3d' | 'plan'; onC
 
 export function MobileRoom({ result }: { result: RoomAssessment }) {
   const [view, setView] = useState<'3d' | 'plan'>('3d');
+  const { state } = useRoom();
+  if (state.walls) return <MobileWalls />;
   return view === '3d' ? <Mobile3D result={result} onView={setView} /> : <MobilePlan result={result} onView={setView} />;
+}
+
+/** Walls mode on the phone: the outline full width, templates, shape and door cards, «Готово». */
+function MobileWalls() {
+  const { state, dispatch } = useRoom();
+  const width = useWidth();
+  const size = Math.min(width - 32, 420);
+  return (
+    <main style={{ padding: sp(16, 16, 24), display: 'flex', flexDirection: 'column', gap: sp(16) }}>
+      <h1 style={{ margin: 0, fontFamily: FONT.display, fontWeight: 500, ...fs(26), letterSpacing: LS.display }}>Форма комнаты</h1>
+      <p style={{ margin: 0, fontFamily: FONT.display, fontStyle: 'italic', ...fs(16), color: C.text2 }}>Тяните углы. Мебель вернётся на место, когда нажмёте «Готово».</p>
+      <div role="group" aria-label="Шаблон комнаты" style={{ display: 'flex', height: H.xl, boxSizing: 'border-box', border: `1px solid ${C.borderStrong}`, borderRadius: R.md, overflow: 'hidden' }}>
+        {([['rect', 'Прямоугольная'], ['L', 'Г'], ['U', 'П']] as const).map(([t, text]) => {
+          const on = shapeKind(state.room.vertices) === t;
+          return <button key={t} type="button" aria-pressed={on} onClick={() => dispatch({ type: 'APPLY_ROOM_TEMPLATE', template: t })} style={{ flex: 1, border: 0, background: on ? C.text : C.surface, color: on ? C.onAccent : C.text, ...fs(14), fontWeight: on ? 700 : 500 }}>{text}</button>;
+        })}
+      </div>
+      <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: R.lg, padding: sp(8), display: 'flex', justifyContent: 'center' }}>
+        <WallsPlan room={state.room} dispatch={dispatch} width={size - 16} height={size - 16} />
+      </div>
+      <div style={{ display: 'flex', gap: sp(8) }}>
+        <button type="button" onClick={() => dispatch({ type: 'END_WALLS' })} style={{ ...button.primary, flex: 1, height: H.xl, ...fs(16) }}>✓ Готово — к мебели</button>
+        <button type="button" onClick={() => dispatch({ type: 'RESET_SHAPE' })} style={{ ...button.secondary, height: H.xl }}>Сбросить</button>
+      </div>
+      <ShapeCard />
+      <DoorCard />
+    </main>
+  );
 }
 
 function Mobile3D({ result, onView }: { result: RoomAssessment; onView: (v: '3d' | 'plan') => void }) {
