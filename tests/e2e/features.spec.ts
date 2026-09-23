@@ -32,3 +32,23 @@ test('the child room warns about the shelf above the bed', async ({ page }) => {
   await expect(alert).toContainText('Над кроватью висит');
   await expect(alert).toContainText('прямо на спящего');
 });
+
+test('switching between a ready-made room and your own layout, both ways', async ({ page, isMobile }) => {
+  await page.goto('/');
+  await settle(page);
+  if (isMobile) await page.getByRole('button', { name: 'План', exact: true }).click();
+  const picker = page.locator('select').filter({ hasText: 'Общежитие' }).first();
+
+  await picker.selectOption('dorm');
+  await settle(page);
+  await expect(picker).toHaveValue('dorm');
+
+  // Your own layout: the picker says so, and the walls editor is open.
+  await picker.selectOption('own');
+  await expect(picker).toHaveValue('own');
+
+  // And a ready-made room can be chosen again right away.
+  await picker.selectOption('kids-room');
+  await settle(page);
+  await expect(picker).toHaveValue('kids-room');
+});

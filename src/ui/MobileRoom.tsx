@@ -144,6 +144,22 @@ function MobileWalls() {
     <main style={{ padding: sp(16, 16, 24), display: 'flex', flexDirection: 'column', gap: sp(16) }}>
       <h1 style={{ margin: 0, fontFamily: FONT.display, fontWeight: 500, ...fs(26), letterSpacing: LS.display }}>Форма комнаты</h1>
       <p style={{ margin: 0, fontFamily: FONT.display, fontStyle: 'italic', ...fs(16), color: C.text2 }}>Тяните углы. Мебель вернётся на место, когда нажмёте «Готово».</p>
+      <div style={{ position: 'relative' }}>
+        <label htmlFor="w-room" style={{ position: 'absolute', left: -9999 }}>Готовая комната</label>
+        <select
+          id="w-room"
+          value="own"
+          onChange={(e) => {
+            const chosen = ROOM_PRESETS.find((p) => p.room.id === e.target.value);
+            if (chosen) dispatch({ type: 'LOAD_PRESET', room: chosen.room });
+          }}
+          style={{ ...selectStyle, width: '100%', height: H.xl, padding: sp(0, 36, 0, 14) }}
+        >
+          <option value="own">Своя планировка</option>
+          {ROOM_PRESETS.map((p) => <option key={p.room.id} value={p.room.id}>{p.room.name}</option>)}
+        </select>
+        <Chevron right={14} />
+      </div>
       <div role="group" aria-label="Шаблон комнаты" style={{ display: 'flex', height: H.xl, boxSizing: 'border-box', border: `1px solid ${C.borderStrong}`, borderRadius: R.md, overflow: 'hidden' }}>
         {([['rect', 'Прямоугольная'], ['L', 'Г'], ['U', 'П']] as const).map(([t, text]) => {
           const on = shapeKind(state.room.vertices) === t;
@@ -332,10 +348,11 @@ function MobilePlan({ result, onView }: { result: RoomAssessment; onView: (v: '3
           <label htmlFor="m-room" style={{ position: 'absolute', left: -9999 }}>Готовая комната</label>
           <select
             id="m-room"
-            value={ROOM_PRESETS.some((p) => p.room.id === state.room.id) ? state.room.id : 'own'}
+            value={!state.walls && ROOM_PRESETS.some((p) => p.room.id === state.room.id) ? state.room.id : 'own'}
             onChange={(e) => {
               const chosen = ROOM_PRESETS.find((p) => p.room.id === e.target.value);
               if (chosen) dispatch({ type: 'LOAD_PRESET', room: chosen.room });
+              else dispatch({ type: 'BEGIN_WALLS' });
             }}
             style={{ ...selectStyle, maxWidth: 210, height: H.md, padding: sp(0, 28, 0, 10), ...fs(12) }}
           >

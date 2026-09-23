@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import polygonClipping from 'polygon-clipping';
 import { roomReducer, initialState, type AppState, type Action } from './roomReducer';
 import { doorAt } from './placement';
-import { PANEL_BEDROOM } from '../data/presets';
+import { PANEL_BEDROOM, DORM, ROOM_PRESETS } from '../data/presets';
 import { itemPolygon, polyIntersects, polyArea, type Vec } from '../physics/geometry';
 
 const start = (): AppState => initialState(PANEL_BEDROOM);
@@ -284,5 +284,27 @@ describe('placing an item straight onto a spot', () => {
     const taken = item(before, 'pax');
     const s = run(before, { type: 'PLACE_AT', id: 'bed', x: taken.x, y: taken.y, angle: 0 });
     expect(item(s, 'bed')).toMatchObject({ x: item(before, 'bed').x, y: item(before, 'bed').y });
+  });
+});
+
+describe('switching between ready-made rooms and your own layout', () => {
+  it('choosing a ready-made room while the walls are being edited leaves that mode', () => {
+    const s = run(start(), { type: 'BEGIN_WALLS' }, { type: 'LOAD_PRESET', room: DORM });
+    expect(s.walls).toBeNull();
+    expect(s.room.id).toBe(DORM.id);
+    expect(s.room.items.length).toBe(DORM.items.length);
+  });
+
+  it('changing the outline makes the room your own, so a ready-made one can be chosen again', () => {
+    const s = run(start(), { type: 'BEGIN_WALLS' }, { type: 'MOVE_VERTEX', index: 1, to: { x: 260, y: 20 } });
+    expect(s.room.id).not.toBe(PANEL_BEDROOM.id);
+    expect(ROOM_PRESETS.some((p) => p.room.id === s.room.id)).toBe(false);
+    // And a ready-made room still loads afterwards.
+    expect(run(s, { type: 'END_WALLS' }, { type: 'LOAD_PRESET', room: PANEL_BEDROOM }).room.id).toBe(PANEL_BEDROOM.id);
+  });
+
+  it('opening the walls editor without changing anything keeps the room as it was', () => {
+    const s = run(start(), { type: 'BEGIN_WALLS' }, { type: 'END_WALLS' });
+    expect(s.room.id).toBe(PANEL_BEDROOM.id);
   });
 });

@@ -59,7 +59,7 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
       <div style={{ position: 'relative', marginTop: sp(10) }}>
         <select
           id="room-select"
-          value={preset ? preset.room.id : 'own'}
+          value={state.walls || !preset ? 'own' : preset.room.id}
           onChange={(e) => {
             const chosen = ROOM_PRESETS.find((p) => p.room.id === e.target.value);
             if (chosen) dispatch({ type: 'LOAD_PRESET', room: chosen.room });
@@ -67,7 +67,7 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
           }}
           style={{ ...selectStyle, width: '100%', padding: sp(0, 36, 0, 14) }}
         >
-          {ROOM_PRESETS.map((p) => <option key={p.room.id} value={p.room.id} disabled={!!state.walls}>{p.room.name}</option>)}
+          {ROOM_PRESETS.map((p) => <option key={p.room.id} value={p.room.id}>{p.room.name}</option>)}
           <option value="own">Своя планировка</option>
         </select>
         <Chevron right={14} />

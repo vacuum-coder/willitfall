@@ -154,8 +154,14 @@ function refit(s: AppState, before: Item, changed: Item, keepPosition: boolean):
  * floor items standing against a wall stay against it; everything is pulled inside. `strict` refuses the
  * change when some furniture cannot fit (dragging a corner); otherwise what does not fit is removed and reported.
  */
+/** Same points in the same order. */
+const sameOutline = (a: Vec[], b: Vec[]) =>
+  a.length === b.length && a.every((p, i) => Math.abs(p.x - b[i].x) < 1e-6 && Math.abs(p.y - b[i].y) < 1e-6);
+
 function reshape(s: AppState, vertices: Vec[], mapWall: (old: number) => number[], strict: boolean): AppState {
   if (!isValidRoom(vertices)) return s;
+  // A changed outline is no longer the ready-made room it started from — the picker then offers «Своя планировка».
+  if (!sameOutline(vertices, s.room.vertices)) s = { ...s, room: { ...s.room, id: 'custom' } };
   const oldF = wallFrames(s.room.vertices), newF = wallFrames(vertices);
 
   const onWall = (wall: number, offset: number, width: number): { wall: number; offset: number } | null => {
@@ -276,7 +282,8 @@ function addItem(s: AppState, spec: CustomItem): AppState {
 export function roomReducer(s: AppState, a: Action): AppState {
   switch (a.type) {
     case 'LOAD_PRESET':
-      return { ...s, room: clone(a.room), selectedId: null, notice: null };
+      // Also leaves the walls editor: the chosen room comes with its own outline and furniture.
+      return { ...s, room: clone(a.room), selectedId: null, notice: null, walls: null };
     case 'CLEAR_NOTICE':
       return { ...s, notice: null };
     case 'BEGIN_WALLS':
