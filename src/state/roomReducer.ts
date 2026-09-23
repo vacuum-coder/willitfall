@@ -38,6 +38,7 @@ export type Action =
   | { type: 'ADD_ITEM'; productKey: string }
   | { type: 'ADD_ITEM'; custom: CustomItem }
   | { type: 'MOVE_ITEM'; id: string; x: number; y: number }
+  | { type: 'PLACE_AT'; id: string; x: number; y: number; angle: number }
   | { type: 'SET_ANGLE'; id: string; angle: number }
   | { type: 'RESIZE_ITEM'; id: string; w?: number; d?: number; height?: number }
   | { type: 'PLACE_ON'; id: string; supportId: string | null }
@@ -354,6 +355,9 @@ export function roomReducer(s: AppState, a: Action): AppState {
   switch (a.type) {
     case 'MOVE_ITEM':
       return moveItem(s, item, { x: a.x, y: a.y });
+    // Straight onto a spot the app worked out itself (the safe place for the bed): no sliding, no wall snapping.
+    case 'PLACE_AT':
+      return refit(s, item, { ...item, x: a.x, y: a.y, angle: normAngle(a.angle) }, true);
     case 'SET_ANGLE':
       if (item.mount.kind === 'wall') return s;
       return refit(s, item, { ...item, angle: normAngle(a.angle) }, true);

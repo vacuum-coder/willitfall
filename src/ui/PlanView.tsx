@@ -5,8 +5,9 @@ import type { Dispatch } from 'react';
 import { C } from './ds';
 import { status, type Status } from './verdict';
 import { genitive, num } from './format';
-import { doorZone, type Side, type Vec } from '../physics/geometry';
+import { doorZone, itemPolygon, type Side, type Vec } from '../physics/geometry';
 import { wallFrames, doorAt } from '../state/placement';
+import type { BedSpot } from '../state/safeSpot';
 import type { Action } from '../state/roomReducer';
 import type { Item, ItemAssessment, Room } from '../physics/types';
 
@@ -59,9 +60,11 @@ interface Props {
   labelSize?: number;
   /** Zoom onto these plan points (with a margin) instead of the whole room; read-only illustration. */
   focus?: Vec[];
+  /** Where the bed could stand clear of every fall zone: drawn as a green outline. */
+  safeSpot?: BedSpot | null;
 }
 
-export function PlanView({ room, byId, selectedId, dispatch, width = 240, height = 324, fit = 'card', labelSize = 20, focus }: Props) {
+export function PlanView({ room, byId, selectedId, dispatch, width = 240, height = 324, fit = 'card', labelSize = 20, focus, safeSpot }: Props) {
   const svg = useRef<SVGSVGElement>(null);
   const drag = useRef<{ id: string; kind: 'move' | 'rotate'; start: Vec; item: Item; pointer: number } | null>(null);
   const frame = useRef(0);
@@ -189,6 +192,13 @@ export function PlanView({ room, byId, selectedId, dispatch, width = 240, height
           </g>
         ));
       })}
+
+      {safeSpot && bed[0] && (
+        <g pointerEvents="none">
+          <path d={path(itemPolygon({ ...bed[0], ...safeSpot }))} style={{ fill: C.safeTint, stroke: C.safe }} strokeWidth="1.6" strokeDasharray="7 4" />
+          <text x={safeSpot.x} y={safeSpot.y} textAnchor="middle" {...TEXT} fontSize={labelSize} fontWeight="700" style={{ fill: C.safe, stroke: C.surface2 }} strokeWidth="4" strokeLinejoin="round" paintOrder="stroke">сюда</text>
+        </g>
+      )}
 
       {room.openings.filter((o) => o.kind === 'door').map((o, k) => {
         const { f, p0, p1 } = opening(o.wall, o.offset, o.width);

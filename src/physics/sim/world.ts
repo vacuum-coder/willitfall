@@ -44,6 +44,8 @@ export interface SimOutcome {
   id: string;
   result: 'fell' | 'slid' | 'stood';
   maxTiltDeg: number;
+  /** Seconds from the start of the shake until it passed the point of no return; null when it stayed up. */
+  fellAtS: number | null;
   finalPos: { x: number; z: number };
 }
 
@@ -195,6 +197,7 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
     const settle = Math.round(SETTLE_S / SIM_DT);
     const steps = settle + Math.ceil(((n - 1) * opts.dt) / SIM_DT) + Math.round(AFTERMATH_S / SIM_DT);
     const maxTilt = bodies.map(() => 0);
+    const fellAt: (number | null)[] = bodies.map(() => null);
     // Travel is measured from where each item rests once settled, not from where it was created.
     let start = bodies.map((b) => (b ? { ...b.translation() } : null));
     const recorded = every > 0 ? Math.floor((steps - settle) / every) + 1 : 0;
@@ -237,7 +240,10 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
       });
       world.step();
       const tilts = bodies.map((b) => (b ? tiltDeg(b.rotation()) : 0));
-      tilts.forEach((v, i) => { maxTilt[i] = Math.max(maxTilt[i], v); });
+      tilts.forEach((v, i) => {
+        maxTilt[i] = Math.max(maxTilt[i], v);
+        if (fellAt[i] === null && s > settle && (v > FELL_DEG || released[i])) fellAt[i] = (s - settle) * SIM_DT;
+      });
       opts.trace?.((s - settle) * SIM_DT, tilts);
       capture(s, o);
       if (s === settle) start = bodies.map((b) => (b ? { ...b.translation() } : null));
@@ -248,12 +254,12 @@ async function runSimulation(opts: SimOptions, every: number): Promise<{ outcome
     const end = floorAt((steps - settle) * SIM_DT);
     const outcomes: SimOutcome[] = opts.items.map((it, i) => {
       const b = bodies[i];
-      if (!b) return { id: it.id, result: 'stood', maxTiltDeg: 0, finalPos: { x: it.x + end.x, z: it.z + end.z } };
+      if (!b) return { id: it.id, result: 'stood', maxTiltDeg: 0, fellAtS: null, finalPos: { x: it.x + end.x, z: it.z + end.z } };
       const p = b.translation(), tilt = tiltDeg(b.rotation());
       const travel = Math.hypot(p.x - start[i]!.x - end.x, p.z - start[i]!.z - end.z);
       // A mount that tore off has fallen off the wall, whatever angle it landed at.
       const result = released[i] || tilt > FELL_DEG ? 'fell' : travel > SLID_M && tilt < SLID_MAX_TILT_DEG ? 'slid' : 'stood';
-      return { id: it.id, result, maxTiltDeg: maxTilt[i], finalPos: { x: p.x, z: p.z } };
+      return { id: it.id, result, maxTiltDeg: maxTilt[i], fellAtS: result === 'fell' ? fellAt[i] : null, finalPos: { x: p.x, z: p.z } };
     });
     return { outcomes, frames };
   } finally {

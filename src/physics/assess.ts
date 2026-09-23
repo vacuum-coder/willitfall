@@ -84,12 +84,14 @@ export function assessItem(
     const hitsPillow = hit(beds.map((b) => pillowZone(b, b.headSide ?? 'back')));
     const blocksDoor = hit(doors);
     const hitsBed = hit(beds.map(itemPolygon));
+    // A weakly fastened shelf above the bed comes straight down on the sleeper, wherever it is thrown afterwards.
+    const overBed = mode === 'wallFalls' && beds.some((b) => polyIntersects(itemPolygon(item), itemPolygon(b)));
     const fallsNow = x.fallsNow ?? false;
-    const severity = !fallsNow ? 0 : hitsPillow ? 4 : blocksDoor ? 3 : hitsBed ? 2 : 1;
+    const severity = !fallsNow ? 0 : hitsPillow || overBed ? 4 : blocksDoor ? 3 : hitsBed ? 2 : 1;
     return {
       itemId: item.id, mode, thresholdG: null, criticalIntensity: null, sides: [], hitsWall: false,
       slideIntensity: null, slidesNow: false,
-      ...x, zones, fallsNow, hitsPillow, blocksDoor, hitsBed, severity,
+      ...x, zones, fallsNow, hitsPillow, blocksDoor, hitsBed, overBed, severity,
     };
   };
 

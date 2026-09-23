@@ -21,6 +21,7 @@ export function tag(item: Item, a: ItemAssessment): string {
   if (s === 'safe') return anchoredWord(item);
   if (s === 'slides') return 'сдвинется';
   if (s === 'stands') return 'устоит';
+  if (a.overBed) return 'прямо на спящего';
   if (a.hitsPillow) return 'на подушку';
   if (a.blocksDoor) return 'перекроет выход';
   if (a.hitsBed) return 'на кровать';
@@ -31,6 +32,7 @@ export function advice(_item: Item, a: ItemAssessment): string {
   const s = status(a);
   if (s === 'safe') return 'Ничего делать не нужно';
   if (s === 'slides') return 'Противоскользящие накладки';
+  if (a.overBed) return 'Снять или перевесить от кровати';
   if (a.mode === 'wallFalls') return 'Перевесить на анкеры в несущую стену';
   if (s === 'stands' && a.mode === 'slides') return 'Сдвинется при более сильном толчке — противоскользящие накладки';
   if (s === 'stands') return 'Закрепить заранее — упадёт при более сильном толчке';

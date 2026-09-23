@@ -142,3 +142,24 @@ describe('assessRoom', () => {
     expect(checklist.map((a) => a.itemId)).toEqual(['pax', 'shelf', 'billy', 'hemnes', 'vase', 'bed', 'malm']);
   });
 });
+
+describe('a shelf hanging over the bed', () => {
+  const hung = (over: Partial<Item>): Item => ({ ...shelf, ...over });
+
+  it('is marked when the shelf hangs above the sleeping place', () => {
+    const a = assessItem(shelf, room([bed, shelf]), at(7), ctx);
+    expect(a.overBed).toBe(true);
+  });
+
+  it('is not marked for a shelf on another wall, or when it is on anchors', () => {
+    // Bottom wall, far from the bed (bed reaches y = 200).
+    const far = hung({ y: 407.5, mount: { kind: 'wall', wall: 2, offset: 130, mountHeight: 150, fastening: 'weak' } });
+    expect(assessItem(far, room([bed, far]), at(7), ctx).overBed).toBe(false);
+    const anchored = hung({ mount: { kind: 'wall', wall: 0, offset: 130, mountHeight: 150, fastening: 'anchor' } });
+    expect(assessItem(anchored, room([bed, anchored]), at(7), ctx).overBed).toBe(false);
+  });
+
+  it('a floor item is never «over the bed», however close it stands', () => {
+    expect(assessItem(pax, room([bed, pax]), at(9), ctx).overBed).toBe(false);
+  });
+});

@@ -1,7 +1,7 @@
 // Right column, bottom (C-Desktop «Итог при N баллах»): counts and the checklist by danger.
 
 import { useState } from 'react';
-import { C, FONT, fs, sp } from './ds';
+import { button, C, FONT, fs, R, sp } from './ds';
 import { num, plural, countPhrase } from './format';
 import { status, tag, advice, summaryCounts } from './verdict';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
@@ -19,6 +19,9 @@ export function Summary({ result }: { result: RoomAssessment }) {
     .map((a) => ({ a, item: state.room.items.find((i) => i.id === a.itemId)! }))
     .filter(({ item }) => item && item.kind !== 'bed');
   const counts = summaryCounts(items.map(({ a }) => a));
+  const bedId = state.room.items.find((i) => i.kind === 'bed')?.id;
+  const overBed = items.filter(({ a }) => a.overBed && a.fallsNow);
+  const lower = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
   const parts = [
     counts.falls > 0 && <strong key="f" style={{ fontWeight: 700, color: C.danger }}>{countPhrase(counts.falls, 'falls')}</strong>,
     counts.slides > 0 && <strong key="s" style={{ fontWeight: 700, color: C.slide }}>{countPhrase(counts.slides, 'slides')}</strong>,
@@ -31,6 +34,28 @@ export function Summary({ result }: { result: RoomAssessment }) {
       <p style={{ margin: sp(6, 0, 0), ...fs(14), color: C.text }}>
         {result.peak.status !== 'ready' ? 'Считаем…' : parts.length ? parts.flatMap((p, k) => (k ? [' · ', p] : [p])) : 'Ничего не упадёт'}
       </p>
+      {overBed.length > 0 && (
+        <p role="alert" style={{ margin: sp(12, 0, 0), padding: sp(10, 12), border: `1px solid ${C.danger}`, borderRadius: R.md, background: C.dangerTint, ...fs(13), fontWeight: 700, color: C.danger }}>
+          {overBed.length > 1 ? 'Над кроватью висят' : 'Над кроватью висит'} {overBed.map(({ item }) => lower(item.name)).join(', ')} — {overBed.length > 1 ? 'они упадут' : 'она упадёт'} прямо на спящего, тут не поможет даже поворот кровати.
+        </p>
+      )}
+
+      {result.safeSpot && (
+        <div style={{ marginTop: sp(12), padding: sp(10, 12), border: `1px solid ${C.safe}`, borderRadius: R.md, background: C.safeTint }}>
+          <p style={{ margin: 0, ...fs(13), fontWeight: 700, color: C.text }}>Кровать стоит в зоне падения</p>
+          <p style={{ margin: sp(2, 0, 8), ...fs(13), color: C.text }}>
+            Есть место, куда ничего не упадёт — {num(result.safeSpot.moved / 100)} м от нынешнего, показано на плане.
+          </p>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'PLACE_AT', id: bedId!, x: result.safeSpot!.x, y: result.safeSpot!.y, angle: result.safeSpot!.angle })}
+            style={{ ...button.secondary, width: '100%' }}
+          >
+            Переставить кровать сюда
+          </button>
+        </div>
+      )}
+
       <p style={{ margin: sp(12, 0, 4), ...fs(12), fontWeight: 600, color: C.text2 }}>Что сделать — по порядку опасности</p>
       <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
         {items.map(({ a, item }, k) => {

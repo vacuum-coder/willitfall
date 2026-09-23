@@ -11,7 +11,7 @@ import { useElementWidth } from './useElementWidth';
 import { CustomItemForm } from './CustomItemForm';
 import { num, onFloor, points } from './format';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
-import { PANEL_BEDROOM } from '../data/presets';
+import { ROOM_PRESETS } from '../data/presets';
 import type { FurnitureKind } from '../physics/types';
 
 const ADD: { label: string; productKey?: string; kind: FurnitureKind }[] = [
@@ -37,7 +37,7 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
   const [planRow, rowWidth] = useElementWidth<HTMLDivElement>(358);
   const planW = Math.min(240, Math.max(160, rowWidth - 126)), planH = Math.round(planW * 1.35);
   const { gain, floorAccel } = floorNumbers(result, settings.intensity);
-  const isPreset = room.id === PANEL_BEDROOM.id;
+  const preset = ROOM_PRESETS.find((p) => p.room.id === room.id);
 
 
   return (
@@ -59,14 +59,15 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
       <div style={{ position: 'relative', marginTop: sp(10) }}>
         <select
           id="room-select"
-          value={isPreset ? 'preset' : 'own'}
+          value={preset ? preset.room.id : 'own'}
           onChange={(e) => {
-            if (e.target.value === 'preset') dispatch({ type: 'LOAD_PRESET', room: PANEL_BEDROOM });
+            const chosen = ROOM_PRESETS.find((p) => p.room.id === e.target.value);
+            if (chosen) dispatch({ type: 'LOAD_PRESET', room: chosen.room });
             else dispatch({ type: 'BEGIN_WALLS' });
           }}
           style={{ ...selectStyle, width: '100%', padding: sp(0, 36, 0, 14) }}
         >
-          <option value="preset" disabled={!!state.walls}>{PANEL_BEDROOM.name}</option>
+          {ROOM_PRESETS.map((p) => <option key={p.room.id} value={p.room.id} disabled={!!state.walls}>{p.room.name}</option>)}
           <option value="own">Своя планировка</option>
         </select>
         <Chevron right={14} />
@@ -99,7 +100,7 @@ export function ControlsPanel({ result }: { result: RoomAssessment }) {
           <span style={{ ...fs(12), color: C.text2 }}>вид сверху · размеры в см</span>
         </div>
         <div ref={planRow} style={{ display: 'flex', gap: sp(8), marginTop: sp(8) }}>
-          <PlanView room={room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} width={planW} height={planH} />
+          <PlanView room={room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} width={planW} height={planH} safeSpot={result.safeSpot} />
           <div role="group" aria-label="Добавить предмет" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: sp(6), minWidth: 0 }}>
             {room.items.every((i) => i.kind === 'bed') && (
               <p style={{ margin: sp(0, 0, 6), ...fs(13), fontWeight: 600, color: C.text }}>Добавьте шкаф или стеллаж — начнём с самого высокого</p>

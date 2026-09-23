@@ -7,7 +7,7 @@ import { floorNom, num, points } from './format';
 import { headline, status } from './verdict';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
 import { CITY_DESIGN_INTENSITY } from '../data/records';
-import { useQuake, poseAt, floorAt, duration, type Pose } from '../three/useQuake';
+import { poseAt, floorAt, duration, type Pose, type Quake } from '../three/useQuake';
 import type { CameraPreset } from '../three/Scene3D';
 import { SceneBoundary, SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
 import { useElementWidth } from './useElementWidth';
@@ -20,13 +20,12 @@ const CAMERAS: { value: CameraPreset; label: string }[] = [
   { value: 'pillow', label: 'С подушки' },
 ];
 
-export function MainPanel({ result }: { result: RoomAssessment }) {
+export function MainPanel({ result, quake }: { result: RoomAssessment; quake: Quake }) {
   const { state, dispatch } = useRoom();
   const { settings, room } = state;
   const [camera, setCamera] = useState<CameraPreset>('overview');
   const [no3d, setNo3d] = useState(() => !hasWebGL());
   const [sceneBox, sceneWidth] = useElementWidth<HTMLDivElement>(518);
-  const quake = useQuake(room, settings, result.checklist);
   const q = quake.state;
   const pfa7 = result.peak.status === 'ready' ? result.peak.pfa7G : null;
   const floorAccel = pfa7 === null ? null : pfa7 * 2 ** (settings.intensity - 7);

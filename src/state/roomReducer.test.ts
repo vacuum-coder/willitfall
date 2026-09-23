@@ -267,3 +267,22 @@ describe('dragging the door', () => {
     expect(doorAt(PANEL_BEDROOM.vertices, { x: 5, y: 2 }, 80)).toEqual({ wall: 0, offset: 0 });
   });
 });
+
+describe('placing an item straight onto a spot', () => {
+  it('puts the bed where the safe-place suggestion points, with the suggested angle', () => {
+    // An empty 4 × 4 m room: the spot is free, so the bed lands exactly there and turns.
+    const room = { ...PANEL_BEDROOM, vertices: [{ x: 0, y: 0 }, { x: 400, y: 0 }, { x: 400, y: 400 }, { x: 0, y: 400 }],
+      openings: [], items: PANEL_BEDROOM.items.filter((i) => i.kind === 'bed') };
+    const s = run(initialState(room), { type: 'PLACE_AT', id: 'bed', x: 200, y: 300, angle: 90 });
+    expect(item(s, 'bed')).toMatchObject({ x: 200, y: 300, angle: 90 });
+    expect(inside(s, 'bed')).toBe(true);
+    expect(overlapsAny(s, 'bed')).toBe(false);
+  });
+
+  it('carries what stands on the item and refuses a spot that is taken', () => {
+    const before = start();
+    const taken = item(before, 'pax');
+    const s = run(before, { type: 'PLACE_AT', id: 'bed', x: taken.x, y: taken.y, angle: 0 });
+    expect(item(s, 'bed')).toMatchObject({ x: item(before, 'bed').x, y: item(before, 'bed').y });
+  });
+});

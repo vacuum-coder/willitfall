@@ -79,6 +79,8 @@ export interface ItemAssessment {
   hitsBed: boolean;
   hitsPillow: boolean;
   blocksDoor: boolean;
+  /** Hangs right above a bed: it does not tip over, it comes down on the sleeper. */
+  overBed: boolean;
   /** 4 pillow, 3 exit, 2 bed, 1 falls, 0 safe — only while fallsNow. */
   severity: 0 | 1 | 2 | 3 | 4;
 }

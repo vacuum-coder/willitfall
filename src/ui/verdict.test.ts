@@ -8,7 +8,7 @@ const item = (over: Partial<Item> = {}): Item => ({
 });
 const a = (over: Partial<ItemAssessment> = {}): ItemAssessment => ({
   itemId: 'x', mode: 'tips', thresholdG: 0.25, criticalIntensity: 6.8, fallsNow: true, sides: ['front'], zones: [],
-  hitsWall: false, hitsBed: false, hitsPillow: false, blocksDoor: false, severity: 1, slideIntensity: null, slidesNow: false, ...over,
+  hitsWall: false, hitsBed: false, hitsPillow: false, blocksDoor: false, overBed: false, severity: 1, slideIntensity: null, slidesNow: false, ...over,
 });
 
 describe('verdict texts', () => {
@@ -47,6 +47,13 @@ describe('verdict texts', () => {
     expect(advice(item(), a({ mode: 'slides', slidesNow: true, fallsNow: false, severity: 0 }))).toBe('Противоскользящие накладки');
     expect(advice(item(), a({ mode: 'anchored', fallsNow: false, severity: 0 }))).toBe('Ничего делать не нужно');
     expect(advice(item(), a({ mode: 'wallFalls', severity: 4 }))).toBe('Перевесить на анкеры в несущую стену');
+  });
+
+  it('a shelf right above the bed gets its own tag and advice', () => {
+    const shelf = item({ kind: 'wallShelf', name: 'Полка', mount: { kind: 'wall', wall: 0, offset: 100, mountHeight: 150, fastening: 'weak' } });
+    const a1 = a({ mode: 'wallFalls', overBed: true, severity: 4 });
+    expect(tag(shelf, a1)).toBe('прямо на спящего');
+    expect(advice(shelf, a1)).toBe('Снять или перевесить от кровати');
   });
 
   it('headline tells what hits the pillow and the exit', () => {

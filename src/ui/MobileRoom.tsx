@@ -10,10 +10,10 @@ import { CustomItemForm } from './CustomItemForm';
 import { num, onFloor, points, plural, countPhrase } from './format';
 import { status, tag, summaryCounts } from './verdict';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
-import { useQuake, poseAt, floorAt, type Pose } from '../three/useQuake';
+import { poseAt, floorAt, type Pose, type Quake } from '../three/useQuake';
 import { criticalIntensity } from '../physics/assess';
 import { RECORDS } from '../data/records';
-import { PANEL_BEDROOM } from '../data/presets';
+import { ROOM_PRESETS } from '../data/presets';
 import type { BuildingType, FurnitureKind, Item } from '../physics/types';
 import type { Route } from './Header';
 import { SceneBoundary, SceneLoading, SceneUnavailable, hasWebGL } from './SceneStates';
@@ -128,11 +128,11 @@ function ViewToggle({ view, onChange, dark = false }: { view: '3d' | 'plan'; onC
   );
 }
 
-export function MobileRoom({ result }: { result: RoomAssessment }) {
+export function MobileRoom({ result, quake }: { result: RoomAssessment; quake: Quake }) {
   const [view, setView] = useState<'3d' | 'plan'>('3d');
   const { state } = useRoom();
   if (state.walls) return <MobileWalls />;
-  return view === '3d' ? <Mobile3D result={result} onView={setView} /> : <MobilePlan result={result} onView={setView} />;
+  return view === '3d' ? <Mobile3D result={result} quake={quake} onView={setView} /> : <MobilePlan result={result} onView={setView} />;
 }
 
 /** Walls mode on the phone: the outline full width, templates, shape and door cards, «Готово». */
@@ -163,12 +163,11 @@ function MobileWalls() {
   );
 }
 
-function Mobile3D({ result, onView }: { result: RoomAssessment; onView: (v: '3d' | 'plan') => void }) {
+function Mobile3D({ result, quake, onView }: { result: RoomAssessment; quake: Quake; onView: (v: '3d' | 'plan') => void }) {
   const { state, dispatch } = useRoom();
   const { settings, room } = state;
   const width = useWidth();
   const [no3d, setNo3d] = useState(() => !hasWebGL());
-  const quake = useQuake(room, settings, result.checklist);
   const q = quake.state;
   const playback = q.phase === 'playing' || q.phase === 'done' ? q : null;
   const poses = useMemo(() => {
@@ -231,7 +230,7 @@ function Mobile3D({ result, onView }: { result: RoomAssessment; onView: (v: '3d'
         <IntensityScale id="m-shake" compact result={result} />
       </section>
 
-      {focus.item && <MobileItemCard item={focus.item} result={result} />}
+      {focus.item && <MobileItemCard item={focus.item} result={result} quake={quake} />}
 
       <div style={{ flex: 1, minHeight: sp(12) }} />
       <a href="#summary" aria-label={`Итог ${atPoints}. Открыть список дел`} style={{ position: 'sticky', bottom: 0, flex: 'none', height: 56, boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: sp(10), padding: sp(0, 16), background: C.surface, borderTop: `1px solid ${C.border}`, color: C.text, zIndex: 5 }}>
@@ -254,11 +253,13 @@ function Mobile3D({ result, onView }: { result: RoomAssessment; onView: (v: '3d'
   );
 }
 
-function MobileItemCard({ item, result }: { item: Item; result: RoomAssessment }) {
+function MobileItemCard({ item, result, quake }: { item: Item; result: RoomAssessment; quake: Quake }) {
   const { state, dispatch } = useRoom();
   const a = result.byId.get(item.id);
   const st = a ? status(a) : 'stands';
   const at1 = a?.thresholdG != null && !a.cascadeFrom && result.peak1 !== null ? criticalIntensity(a.thresholdG, result.peak1) : null;
+  const done = quake.state.phase === 'done' ? quake.state.result : null;
+  const fellAtS = done?.outcomes.find((o) => o.id === item.id)?.fellAtS ?? null;
   return (
     <section aria-labelledby="m-item" style={{ flex: 'none', margin: sp(0, 16), padding: sp(12, 16), background: C.surface, border: `1px solid ${C.border}`, borderRadius: R.lg, boxShadow: SH[1] }}>
       <div style={{ height: 28, display: 'flex', alignItems: 'baseline', gap: sp(8) }}>
@@ -282,6 +283,12 @@ function MobileItemCard({ item, result }: { item: Item; result: RoomAssessment }
             : 'Не опрокинется: стены со всех сторон.'}
         </p>
       ) : null}
+      {fellAtS !== null && (
+        <p style={{ margin: sp(6, 0, 0), ...fs(13), color: C.text }}>
+          В симуляции {item.mount.kind === 'wall' ? 'сорвалась' : 'упал'} через <strong style={{ fontWeight: 700 }}>{num(fellAtS, 1)} с</strong> после начала толчка
+        </p>
+      )}
+
       {item.kind !== 'bed' && item.mount.kind !== 'wall' && (
         item.anchored
           ? <button type="button" onClick={() => dispatch({ type: 'TOGGLE_ANCHOR', id: item.id })} style={{ ...button.secondary, marginTop: sp(10), width: '100%', height: H.xl, ...fs(16) }}>Открепить</button>
@@ -321,10 +328,25 @@ function MobilePlan({ result, onView }: { result: RoomAssessment; onView: (v: '3
     <>
       <div style={{ height: 52, flex: 'none', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: sp(12), padding: sp(0, 16), borderBottom: `1px solid ${C.border}` }}>
         <ViewToggle view="plan" onChange={onView} dark />
-        <p style={{ margin: 0, ...fs(12), color: C.text2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{state.room.id === PANEL_BEDROOM.id ? PANEL_BEDROOM.name : 'Своя планировка'}</p>
+        <div style={{ position: 'relative', minWidth: 0 }}>
+          <label htmlFor="m-room" style={{ position: 'absolute', left: -9999 }}>Готовая комната</label>
+          <select
+            id="m-room"
+            value={ROOM_PRESETS.some((p) => p.room.id === state.room.id) ? state.room.id : 'own'}
+            onChange={(e) => {
+              const chosen = ROOM_PRESETS.find((p) => p.room.id === e.target.value);
+              if (chosen) dispatch({ type: 'LOAD_PRESET', room: chosen.room });
+            }}
+            style={{ ...selectStyle, maxWidth: 210, height: H.md, padding: sp(0, 28, 0, 10), ...fs(12) }}
+          >
+            {ROOM_PRESETS.map((p) => <option key={p.room.id} value={p.room.id}>{p.room.name}</option>)}
+            <option value="own">Своя планировка</option>
+          </select>
+          <Chevron right={8} />
+        </div>
       </div>
       <main aria-label="План комнаты" style={{ position: 'relative', flex: 1, minHeight: 560, overflow: 'hidden', background: C.surface }}>
-        <PlanView room={state.room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} width={width} height={400} fit="fill" labelSize={15} />
+        <PlanView room={state.room} byId={result.byId} selectedId={state.selectedId} dispatch={dispatch} width={width} height={400} fit="fill" labelSize={15} safeSpot={result.safeSpot} />
         <ul aria-label="Легенда" style={{ position: 'absolute', left: 16, top: 408, listStyle: 'none', margin: 0, padding: 0, display: 'flex', gap: sp(16), ...fs(12), color: C.text }}>
           <li style={{ display: 'flex', alignItems: 'center', gap: sp(6) }}><span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: R.full, background: C.danger }} />зона падения</li>
           <li style={{ display: 'flex', alignItems: 'center', gap: sp(6) }}><span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: R.full, background: C.safe }} />проход</li>

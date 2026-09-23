@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState, type Dispatch, type ReactNode } from 'react';
 import { roomReducer, initialState, type Action, type AppState } from './roomReducer';
+import { safeBedSpot, type BedSpot } from './safeSpot';
 import { loadState, saveState } from './storage';
 import { PANEL_BEDROOM } from '../data/presets';
 import { periodFor } from '../data/buildings';
@@ -84,6 +85,8 @@ export interface RoomAssessment {
   assessments: ItemAssessment[];
   checklist: ItemAssessment[];
   byId: Map<string, ItemAssessment>;
+  /** Closest place for the bed clear of every fall zone, or null when it is already safe. */
+  safeSpot: BedSpot | null;
 }
 
 /** Engine verdict for every item at the current settings; empty until the floor peak is ready. */
@@ -94,8 +97,11 @@ export function useAssessment(): RoomAssessment {
   const ground = peaks.get(1)!;
   const peak1 = ground.status === 'ready' ? ground.pfa7G : null;
   return useMemo(() => {
-    if (peak.status !== 'ready') return { peak, peak1, assessments: [], checklist: [], byId: new Map() };
+    if (peak.status !== 'ready') return { peak, peak1, assessments: [], checklist: [], byId: new Map(), safeSpot: null };
     const { assessments, checklist } = assessRoom(state.room, state.settings, { pfa7G: peak.pfa7G });
-    return { peak, peak1, assessments, checklist, byId: new Map(assessments.map((a) => [a.itemId, a])) };
+    const bed = state.room.items.find((i) => i.kind === 'bed');
+    const zones = assessments.filter((a) => a.fallsNow).flatMap((a) => a.zones);
+    const safeSpot = bed ? safeBedSpot(state.room, zones, bed.id) : null;
+    return { peak, peak1, assessments, checklist, byId: new Map(assessments.map((a) => [a.itemId, a])), safeSpot };
   }, [peak, peak1, state.room, state.settings]);
 }

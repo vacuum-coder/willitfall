@@ -4,6 +4,7 @@ import { Header, type Route } from './Header';
 import { ControlsPanel } from './ControlsPanel';
 import { MainPanel } from './MainPanel';
 import { ItemCard } from './ItemCard';
+import { useQuake } from '../three/useQuake';
 import { Summary } from './Summary';
 import { C, sp } from './ds';
 import { MobileHeader, MobileRoom } from './MobileRoom';
@@ -41,7 +42,9 @@ function useIsPhone(): boolean {
 function RoomScreen({ phone }: { phone: boolean }) {
   const result = useAssessment();
   const { state } = useRoom();
-  if (phone) return <MobileRoom result={result} />;
+  // One shake for the whole screen: the 3D view plays it and the item card reads how long each item stayed up.
+  const quake = useQuake(state.room, state.settings, result.checklist);
+  if (phone) return <MobileRoom result={result} quake={quake} />;
   return (
     <main
       id="room"
@@ -51,7 +54,7 @@ function RoomScreen({ phone }: { phone: boolean }) {
       }}
     >
       <ControlsPanel result={result} />
-      <MainPanel result={result} />
+      <MainPanel result={result} quake={quake} />
       <aside aria-label="Выбранный предмет и итог" style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {state.walls ? (
           <>
@@ -60,7 +63,7 @@ function RoomScreen({ phone }: { phone: boolean }) {
           </>
         ) : (
           <>
-            <ItemCard result={result} />
+            <ItemCard result={result} quake={quake} />
             <Summary result={result} />
           </>
         )}

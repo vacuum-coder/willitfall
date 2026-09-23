@@ -112,3 +112,26 @@ describe('Rapier world matches the tipping condition', () => {
     expect(r.result).toBe('slid');
   });
 });
+
+describe('when the item goes over', () => {
+  const threshold = (G * (PAX.d / 2)) / PAX.comH;
+
+  it('reports the moment it passes the point of no return', async () => {
+    const [r] = await simulateRoom({
+      items: [PAX], floorDisp: longPulse(1.15 * threshold, 2, 3), dt: SIM_DT, dir: { x: 0, y: 1 }, mu: 1.0,
+    });
+    expect(r.result).toBe('fell');
+    // It cannot be over before the push starts, and it is down well before the 5 s run ends.
+    expect(r.fellAtS).not.toBeNull();
+    expect(r.fellAtS!).toBeGreaterThan(0);
+    expect(r.fellAtS!).toBeLessThan(5);
+  }, 60_000);
+
+  it('reports nothing for an item that stays up', async () => {
+    const [r] = await simulateRoom({
+      items: [PAX], floorDisp: longPulse(0.9 * threshold, 2, 3), dt: SIM_DT, dir: { x: 0, y: 1 }, mu: 1.0,
+    });
+    expect(r.result).toBe('stood');
+    expect(r.fellAtS).toBeNull();
+  }, 60_000);
+});

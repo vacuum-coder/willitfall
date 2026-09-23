@@ -63,6 +63,8 @@ export function floorAt(result: ShakeResult, t: number): { x: number; z: number 
 
 export const duration = (r: ShakeResult) => (r.floor.length / 2 - 1) * r.frameDt;
 
+export type Quake = ReturnType<typeof useQuake>;
+
 export function useQuake(room: Room, settings: Settings, checklist: ItemAssessment[]) {
   const [state, setState] = useState<QuakeState>({ phase: 'idle' });
   const worker = useRef<Worker | null>(null);

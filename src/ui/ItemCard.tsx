@@ -6,6 +6,7 @@ import { FallArrow } from './icons';
 import { num, onFloor, points } from './format';
 import { status, tag } from './verdict';
 import { useRoom, type RoomAssessment } from '../state/RoomContext';
+import type { Quake } from '../three/useQuake';
 import { criticalIntensity, supportTop, WALL_THROW } from '../physics/assess';
 import { tiltAngleDeg, type Filling } from '../physics/tipping';
 import { product } from '../data/furniture';
@@ -59,7 +60,7 @@ function direction(a: ItemAssessment): string {
   return s === 'front' ? 'вперёд' : s === 'back' ? 'назад' : s ? 'вбок' : '—';
 }
 
-export function ItemCard({ result }: { result: RoomAssessment }) {
+export function ItemCard({ result, quake }: { result: RoomAssessment; quake: Quake }) {
   const { state, dispatch } = useRoom();
   const [editing, setEditing] = useState(false);
   const chosen = state.selectedId ? state.room.items.find((i) => i.id === state.selectedId) : undefined;
@@ -75,6 +76,9 @@ export function ItemCard({ result }: { result: RoomAssessment }) {
   const a = result.byId.get(item.id);
   const st = a ? status(a) : 'stands';
   const pfa7 = result.peak.status === 'ready' ? result.peak.pfa7G : null;
+  // After «Тряхнуть»: how long this item stayed up in the physics engine.
+  const done = quake.state.phase === 'done' ? quake.state.result : null;
+  const fellAtS = done?.outcomes.find((o) => o.id === item.id)?.fellAtS ?? null;
 
   return (
     <section aria-labelledby="h-item" style={{ ...card, padding: sp(20) }}>
@@ -94,6 +98,12 @@ export function ItemCard({ result }: { result: RoomAssessment }) {
       )}
 
       {item.kind !== 'bed' && a && <Verdict item={item} a={a} pfa7={pfa7} peak1={result.peak1} floor={state.settings.floor} />}
+
+      {fellAtS !== null && (
+        <p style={{ margin: sp(6, 0, 0), ...fs(13), color: C.text }}>
+          В симуляции {item.mount.kind === 'wall' ? 'сорвалась' : 'упал'} через <strong style={{ fontWeight: 700 }}>{num(fellAtS, 1)} с</strong> после начала толчка
+        </p>
+      )}
 
       {item.kind !== 'bed' && a && (
         <dl style={{ margin: sp(14, 0, 0), display: 'grid', gridTemplateColumns: '1fr auto', ...fs(14) }}>
