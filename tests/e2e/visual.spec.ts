@@ -1,17 +1,25 @@
 import { test, expect, type Page } from '@playwright/test';
 
-/** Waits until the engine has answered and the 3D (if any) has drawn. */
+/** Waits until the engine has answered, the 3D (if any) has drawn and the page has stopped growing. */
 async function settle(page: Page) {
   await page.waitForFunction(() => !document.body.innerText.includes('Считаем'), undefined, { timeout: 60_000 });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(1500);
+  // The 3D canvases settle at their own pace: compare only once the page height holds still.
+  await page.waitForFunction(() => {
+    const h = document.body.scrollHeight;
+    const w = window as unknown as { __h?: number; __same?: number };
+    w.__same = h === w.__h ? (w.__same ?? 0) + 1 : 0;
+    w.__h = h;
+    return (w.__same ?? 0) >= 3;
+  }, undefined, { timeout: 30_000, polling: 300 });
 }
 
 async function compare(page: Page, name: string) {
   const canvas = page.locator('canvas');
-  // Everything but the 3D: strict. The 3D canvas separately, with the 3 % budget for WebGL rasterisation.
+  // Everything but the 3D: strict. The 3D canvas separately, where WebGL rasterises a few pixels differently.
   await expect(page).toHaveScreenshot(`${name}.png`, { mask: [canvas], fullPage: true });
-  if (await canvas.count()) await expect(canvas.first()).toHaveScreenshot(`${name}-3d.png`, { maxDiffPixelRatio: 0.03 });
+  if (await canvas.count()) await expect(canvas.first()).toHaveScreenshot(`${name}-3d.png`, { maxDiffPixels: 400, maxDiffPixelRatio: 0.03 });
 }
 
 test('room', async ({ page }) => {

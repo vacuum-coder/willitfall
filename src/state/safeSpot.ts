@@ -24,9 +24,9 @@ const boxesApart = (a: ReturnType<typeof box>, b: ReturnType<typeof box>) =>
 /**
  * The closest place for the bed clear of `zones`, of the other furniture, of the walls and of the doorway.
  * Keeps the current angle if it can, otherwise turns the bed by 90°. Null when the bed is already safe
- * or when nowhere in the room is.
+ * or when nowhere in the room is. `stats` counts the exact polygon checks — the expensive part, watched by a test.
  */
-export function safeBedSpot(room: Room, zones: Vec[][], bedId: string): BedSpot | null {
+export function safeBedSpot(room: Room, zones: Vec[][], bedId: string, stats?: { checks: number }): BedSpot | null {
   const bed = room.items.find((i) => i.id === bedId);
   if (!bed) return null;
   const hits = (poly: Vec[], polyBox: ReturnType<typeof box>, targets: { poly: Vec[]; box: ReturnType<typeof box> }[]) =>
@@ -42,7 +42,11 @@ export function safeBedSpot(room: Room, zones: Vec[][], bedId: string): BedSpot 
   const free = (place: Item) => {
     const poly = itemPolygon(place);
     const b = box(poly);
-    return contains(room.vertices, poly) && !hits(poly, b, danger) && !hits(poly, b, blockers);
+    // Cheap first: most places are rejected by a fall zone or a piece of furniture, and only what survives
+    // is checked against the outline of the room — the costly test on an L- or U-shaped room.
+    if (hits(poly, b, danger) || hits(poly, b, blockers)) return false;
+    if (stats) stats.checks += 1;
+    return contains(room.vertices, poly);
   };
 
   if (free(bed)) return null;
@@ -51,18 +55,21 @@ export function safeBedSpot(room: Room, zones: Vec[][], bedId: string): BedSpot 
   const [x0, x1] = [Math.min(...xs), Math.max(...xs)];
   const [y0, y1] = [Math.min(...ys), Math.max(...ys)];
   // The current orientation first: turning the bed is a bigger change for the user than sliding it.
-  const angles = [bed.angle, normAngle(bed.angle + 90)];
-  let best: BedSpot | null = null;
-  for (const angle of angles) {
-    for (let x = x0; x <= x1; x += GRID_CM) {
-      for (let y = y0; y <= y1; y += GRID_CM) {
-        const moved = Math.hypot(x - bed.x, y - bed.y);
-        if (best && moved >= best.moved) continue;
-        if (!free({ ...bed, x, y, angle })) continue;
-        best = { x, y, angle, moved: Math.round(moved) };
-      }
+  for (const angle of [bed.angle, normAngle(bed.angle + 90)]) {
+    const rad = (angle * Math.PI) / 180;
+    const [c, s] = [Math.abs(Math.cos(rad)), Math.abs(Math.sin(rad))];
+    // Half the turned bed: its centre cannot come nearer than this to the edge of the bounding box.
+    const hx = (bed.w * c + bed.d * s) / 2, hy = (bed.w * s + bed.d * c) / 2;
+    // Closest first, so the first free spot is the answer: the exact polygon checks run only a handful of times.
+    const spots: { x: number; y: number }[] = [];
+    for (let x = x0 + hx; x <= x1 - hx + 1e-9; x += GRID_CM) {
+      for (let y = y0 + hy; y <= y1 - hy + 1e-9; y += GRID_CM) spots.push({ x, y });
     }
-    if (best) break;
+    spots.sort((p, q) => Math.hypot(p.x - bed.x, p.y - bed.y) - Math.hypot(q.x - bed.x, q.y - bed.y));
+    for (const { x, y } of spots) {
+      if (!free({ ...bed, x, y, angle })) continue;
+      return { x, y, angle, moved: Math.round(Math.hypot(x - bed.x, y - bed.y)) };
+    }
   }
-  return best;
+  return null;
 }
